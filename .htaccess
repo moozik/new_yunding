@@ -1,0 +1,7 @@
+RewriteEngine On
+
+RewriteBase /new_yunding
+
+RewriteCond %{REQUEST_FILENAME} !-f
+RewriteCond %{REQUEST_FILENAME} !-d
+RewriteRule ^(.*)$ index.php [L,E=PATH_INFO:$1]
