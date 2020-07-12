@@ -1,0 +1,488 @@
+* {
+    margin: 0;
+    padding: 0;
+}
+.hero-list div {
+    margin-right: 1px;
+    margin-bottom: 1px;
+    display: inline-block;
+    width: 50px;
+    height: 50px;
+    position: relative;
+    cursor: pointer;
+    padding: 0;
+    border-radius: 5px;
+}
+img {
+    width: 100%;
+    height: 100%;
+}
+.hero-list {
+    font-size: 0;
+}
+.result {
+    min-width: 570px;
+}
+.pubBtn {
+    position: absolute;
+    left: 0;
+    top: 0;
+    width: 100%;
+    height: 100%;
+    z-index: 9;
+}
+.column {
+    border-left: 5px solid #fff6f3;
+    margin-top: 10px;
+}
+.large-title {
+    font-size: x-large;
+    display: block;
+}
+.armyPlus {
+    margin-top: 15px;
+    border: 2px;
+    border-bottom-style: dashed;
+}
+.armyPlus span {
+    color: deeppink;
+    cursor: pointer;
+}
+.armyPlus span:hover {
+    color: rgb(20, 16, 224);
+}
+
+.hero-list button {
+    margin-right: 5px;
+}
+.traits {
+    margin-top: 10px;
+    border-bottom: 1px solid #fff;
+}
+.hero-list div {
+    background-size: cover;
+}
+/*详情面板*/
+.synergies-box {
+    border: 1px solid #6f7584;
+    background-color: #232937;
+}
+.synergies-box .type {
+    position: relative;
+    height: auto;
+    min-height: 88px;
+    padding: 10px 18px;
+    border-bottom: 1px solid #383d4b;
+}
+/*羁绊图标*/
+.synergies-box .type:before {
+    content: "";
+    position: absolute;
+    top: 15px;
+    left: 18px;
+    display: block;
+    width: 20px;
+    height: 20px;
+    background-position-y: -20px;
+}
+.synergies-box .type p:nth-child(2) {
+    line-height: 30px;
+    text-indent: 22px;
+    font-size: 16px;
+    color: #deb762;
+    margin-bottom: 1px;
+}
+.synergies-box .type p:nth-child(3) {
+    font-size: 12px;
+    color: #acb0ba;
+}
+.synergies-box .content {
+    padding: 10px 18px;
+}
+.synergies-box .content p {
+    margin-bottom: 1px;
+}
+.synergies-box .content span:nth-child(1) {
+    vertical-align: top;
+    display: inline-block;
+    width: 22px;
+    height: 22px;
+    line-height: 22px;
+    margin-right: 10px;
+    text-indent: 0;
+    text-align: center;
+    border: 1px solid #acb0ba;
+    border-radius: 50%;
+    font-size: 12px;
+    color: #acb0ba;
+}
+.synergies-box .content span {
+    margin: 1px 0;
+}
+.synergies-box .content span:nth-child(2) {
+    vertical-align: top;
+    display: inline-block;
+    width: 290px;
+    height: auto;
+    line-height: 22px;
+    font-size: 12px;
+    color: #acb0ba;
+}
+/*英雄简介*/
+.pop1 {
+    background-color: #232937;
+}
+.pop1 .details {
+    width: 100%;
+    padding-top: 10px;
+}
+.pop1 .details div {
+    vertical-align: top;
+    display: inline-block;
+    width: 58px;
+    height: 58px;
+    margin: 0px 10px 0px 30px;
+}
+.pop1 .details p {
+    vertical-align: top;
+    display: inline-block;
+    width: 180px;
+    height: 58px;
+}
+.pop1 .details p span:nth-child(1) {
+    display: block;
+    width: 100%;
+    height: 34px;
+    line-height: 34px;
+    font-size: 20px;
+    font-weight: bold;
+    color: #deb762;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    white-space: nowrap;
+}
+.pop1 .details p span:nth-child(2) {
+    display: block;
+    width: 100%;
+    height: 30px;
+    line-height: 34px;
+    font-size: 14px;
+    font-weight: bold;
+    color: #025cff;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    white-space: nowrap;
+}
+.pop1 .details p span:nth-child(3) {
+    display: block;
+    width: 100%;
+    height: 24px;
+    line-height: 24px;
+    font-size: 12px;
+    color: #7a7e87;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    white-space: nowrap;
+}
+.pop1 .title {
+    position: relative;
+    width: 100%;
+    height: 30px;
+    line-height: 15px;
+    text-indent: 30px;
+    font-weight: bold;
+    font-size: 16px;
+    color: #deb762;
+}
+.pop1 .title:after {
+    content: "";
+    position: absolute;
+    bottom: -4px;
+    right: 0px;
+    width: 315px;
+    height: 9px;
+    background: url(//game.gtimg.cn/images/lol/guides/tft/cut2.png) no-repeat;
+}
+.pop1 .recommend .champions {
+    margin-left: 30px;
+    font-size: 0;
+}
+.pop1 .recommend img {
+    vertical-align: top;
+    display: inline-block;
+    width: 34px;
+    height: 34px;
+    padding: 1px;
+    margin: 5px 15px 5px 0;
+    border: 1px solid #826a2a;
+}
+.pop1 .skill .info {
+    margin: 0px 0 0px 30px;
+}
+.pop1 .skill .info img {
+    vertical-align: top;
+    display: inline-block;
+    width: 44px;
+    height: 44px;
+    margin-right: 10px;
+}
+.pop1 .skill .name {
+    vertical-align: top;
+    display: inline-block;
+    width: 260px;
+    height: 23px;
+}
+.pop1 .skill .name span:nth-child(1) {
+    display: block;
+    width: 100%;
+    height: 24px;
+    line-height: 24px;
+    font-size: 16px;
+    color: #deb762;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    white-space: nowrap;
+}
+.pop1 .skill .name span:nth-child(2) {
+    display: block;
+    width: 100%;
+    height: 20px;
+    line-height: 20px;
+    font-size: 12px;
+    color: #acb0ba;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    white-space: nowrap;
+}
+.pop1 .skill .description {
+    display: block;
+    width: 100%;
+    margin-top: 10px;
+    padding-bottom: 10px;
+    padding-right: 40px;
+    font-size: 12px;
+    color: #acb0ba;
+}
+.clearfix:after {
+    visibility: hidden;
+    display: block;
+    font-size: 0;
+    content: " ";
+    clear: both;
+    height: 0;
+}
+/*羁绊筛选按钮*/
+.btn-choose {
+    background: url(//game.gtimg.cn/images/lol/act/a20191029tftset2/icon-bg.png)
+        no-repeat;
+    width: 58px;
+    height: 100px;
+    display: inline-block;
+    margin: 0 5px;
+}
+.btn-choose.on {
+    background: url(//game.gtimg.cn/images/lol/act/a20191029tftset2/icon-bgon.png)
+        no-repeat;
+    width: 58px;
+    height: 98px;
+    display: inline-block;
+}
+.btn-choose i {
+    width: 58px;
+    height: 58px;
+    display: block;
+}
+.btn-choose span.group_span {
+    margin: 15px 0px 0px 14px;
+}
+.btn-choose span.group_name {
+    margin-top: 13px;
+    font-size: 12px;
+    display: block;
+    text-align: center;
+    color: #a87946;
+}
+
+/*羁绊小图标*/
+.result-jiban {
+    min-width: 570px;
+}
+.btn-choose {
+    overflow: hidden;
+}
+.group_span {
+    width: 30px;
+    height: 30px;
+    overflow: hidden;
+    position: relative;
+    display: inline-block;
+}
+.group_span_img {
+    width: 30px;
+    height: 30px;
+    filter: drop-shadow(#a97b16 30px 0);
+    -webkit-filter: drop-shadow(#a97b16 30px 0);
+    left: -30px;
+    position: absolute;
+}
+.result-jiban > div {
+    vertical-align: top;
+    display: inline-block;
+    position: relative;
+    width: auto;
+    min-width: 70px;
+    height: 28px;
+    margin: 2px 18px 2px 0;
+}
+.result-jiban > div > img {
+    position: absolute;
+    top: 6px;
+    left: 4px;
+    width: 16px;
+    height: 16px;
+    z-index: 1;
+}
+.result-jiban > div > span {
+    position: relative;
+    display: inline-block;
+    min-width: 58px;
+    height: 20px;
+    line-height: 20px;
+    padding: 0 6px 0 16px;
+    margin: 4px 0 4px 12px;
+    text-align: center;
+    font-size: 12px;
+    color: #000;
+}
+
+.grade1 > span {
+    background-color: #d1906f;
+}
+.grade2 > span {
+    background-color: #a3b2b1;
+}
+.grade3 > span {
+    background-color: #eec768;
+}
+
+.grade3 span:before {
+    position: absolute;
+    top: -4px;
+    left: -12px;
+    content: "";
+    display: block;
+    width: 24px;
+    height: 28px;
+    background: url(//game.gtimg.cn/images/lol/guides/tft/set3/spr-label.png)
+        no-repeat;
+    background-position: 0 0;
+}
+.grade2 span:before {
+    position: absolute;
+    top: -4px;
+    left: -12px;
+    content: "";
+    display: block;
+    width: 24px;
+    height: 28px;
+    background: url(//game.gtimg.cn/images/lol/guides/tft/set3/spr-label.png)
+        no-repeat;
+    background-position: 0 -28px;
+}
+.grade1 span:before {
+    position: absolute;
+    top: -4px;
+    left: -12px;
+    content: "";
+    display: block;
+    width: 24px;
+    height: 28px;
+    background: url(//game.gtimg.cn/images/lol/guides/tft/set3/spr-label.png)
+        no-repeat;
+    background-position: 0 -56px;
+}
+.grade3 {
+    background: url(//game.gtimg.cn/images/lol/guides/tft/set3/spr-label.png)
+        no-repeat;
+    background-position: 0 0;
+}
+.grade2 {
+    background: url(//game.gtimg.cn/images/lol/guides/tft/set3/spr-label.png)
+        no-repeat;
+    background-position: 0 -28px;
+}
+.grade1 {
+    background: url(//game.gtimg.cn/images/lol/guides/tft/set3/spr-label.png)
+        no-repeat;
+    background-position: 0 -56px;
+}
+
+/*英雄头像*/
+.hi_128 {background: url(//game.gtimg.cn/images/lol/act/img/tft/champions/128.png);}
+.hi_169 {background: url(//game.gtimg.cn/images/lol/act/img/tft/champions/169.png);}
+.hi_174 {background: url(//game.gtimg.cn/images/lol/act/img/tft/champions/174.png);}
+.hi_191 {background: url(//game.gtimg.cn/images/lol/act/img/tft/champions/191.png);}
+.hi_156 {background: url(//game.gtimg.cn/images/lol/act/img/tft/champions/156.png);}
+.hi_166 {background: url(//game.gtimg.cn/images/lol/act/img/tft/champions/166.png);}
+.hi_182 {background: url(//game.gtimg.cn/images/lol/act/img/tft/champions/182.png);}
+.hi_129 {background: url(//game.gtimg.cn/images/lol/act/img/tft/champions/129.png);}
+.hi_163 {background: url(//game.gtimg.cn/images/lol/act/img/tft/champions/163.png);}
+.hi_141 {background: url(//game.gtimg.cn/images/lol/act/img/tft/champions/141.png);}
+.hi_192 {background: url(//game.gtimg.cn/images/lol/act/img/tft/champions/192.png);}
+.hi_139 {background: url(//game.gtimg.cn/images/lol/act/img/tft/champions/139.png);}
+.hi_147 {background: url(//game.gtimg.cn/images/lol/act/img/tft/champions/147.png);}
+.hi_132 {background: url(//game.gtimg.cn/images/lol/act/img/tft/champions/132.png);}
+.hi_131 {background: url(//game.gtimg.cn/images/lol/act/img/tft/champions/131.png);}
+.hi_155 {background: url(//game.gtimg.cn/images/lol/act/img/tft/champions/155.png);}
+.hi_183 {background: url(//game.gtimg.cn/images/lol/act/img/tft/champions/183.png);}
+.hi_142 {background: url(//game.gtimg.cn/images/lol/act/img/tft/champions/142.png);}
+.hi_172 {background: url(//game.gtimg.cn/images/lol/act/img/tft/champions/172.png);}
+.hi_188 {background: url(//game.gtimg.cn/images/lol/act/img/tft/champions/188.png);}
+.hi_162 {background: url(//game.gtimg.cn/images/lol/act/img/tft/champions/162.png);}
+.hi_187 {background: url(//game.gtimg.cn/images/lol/act/img/tft/champions/187.png);}
+.hi_160 {background: url(//game.gtimg.cn/images/lol/act/img/tft/champions/160.png);}
+.hi_136 {background: url(//game.gtimg.cn/images/lol/act/img/tft/champions/136.png);}
+.hi_158 {background: url(//game.gtimg.cn/images/lol/act/img/tft/champions/158.png);}
+.hi_151 {background: url(//game.gtimg.cn/images/lol/act/img/tft/champions/151.png);}
+.hi_190 {background: url(//game.gtimg.cn/images/lol/act/img/tft/champions/190.png);}
+.hi_185 {background: url(//game.gtimg.cn/images/lol/act/img/tft/champions/185.png);}
+.hi_164 {background: url(//game.gtimg.cn/images/lol/act/img/tft/champions/164.png);}
+.hi_178 {background: url(//game.gtimg.cn/images/lol/act/img/tft/champions/178.png);}
+.hi_127 {background: url(//game.gtimg.cn/images/lol/act/img/tft/champions/127.png);}
+.hi_140 {background: url(//game.gtimg.cn/images/lol/act/img/tft/champions/140.png);}
+.hi_138 {background: url(//game.gtimg.cn/images/lol/act/img/tft/champions/138.png);}
+.hi_179 {background: url(//game.gtimg.cn/images/lol/act/img/tft/champions/179.png);}
+.hi_189 {background: url(//game.gtimg.cn/images/lol/act/img/tft/champions/189.png);}
+.hi_137 {background: url(//game.gtimg.cn/images/lol/act/img/tft/champions/137.png);}
+.hi_176 {background: url(//game.gtimg.cn/images/lol/act/img/tft/champions/176.png);}
+.hi_153 {background: url(//game.gtimg.cn/images/lol/act/img/tft/champions/153.png);}
+.hi_134 {background: url(//game.gtimg.cn/images/lol/act/img/tft/champions/134.png);}
+.hi_143 {background: url(//game.gtimg.cn/images/lol/act/img/tft/champions/143.png);}
+.hi_167 {background: url(//game.gtimg.cn/images/lol/act/img/tft/champions/167.png);}
+.hi_130 {background: url(//game.gtimg.cn/images/lol/act/img/tft/champions/130.png);}
+.hi_177 {background: url(//game.gtimg.cn/images/lol/act/img/tft/champions/177.png);}
+.hi_181 {background: url(//game.gtimg.cn/images/lol/act/img/tft/champions/181.png);}
+.hi_175 {background: url(//game.gtimg.cn/images/lol/act/img/tft/champions/175.png);}
+.hi_144 {background: url(//game.gtimg.cn/images/lol/act/img/tft/champions/144.png);}
+.hi_145 {background: url(//game.gtimg.cn/images/lol/act/img/tft/champions/145.png);}
+.hi_152 {background: url(//game.gtimg.cn/images/lol/act/img/tft/champions/152.png);}
+.hi_186 {background: url(//game.gtimg.cn/images/lol/act/img/tft/champions/186.png);}
+.hi_135 {background: url(//game.gtimg.cn/images/lol/act/img/tft/champions/135.png);}
+.hi_171 {background: url(//game.gtimg.cn/images/lol/act/img/tft/champions/171.png);}
+.hi_168 {background: url(//game.gtimg.cn/images/lol/act/img/tft/champions/168.png);}
+.hi_184 {background: url(//game.gtimg.cn/images/lol/act/img/tft/champions/184.png);}
+.hi_180 {background: url(//game.gtimg.cn/images/lol/act/img/tft/champions/180.png);}
+.hi_161 {background: url(//game.gtimg.cn/images/lol/act/img/tft/champions/161.png);}
+.hi_173 {background: url(//game.gtimg.cn/images/lol/act/img/tft/champions/173.png);}
+.hi_159 {background: url(//game.gtimg.cn/images/lol/act/img/tft/champions/159.png);}
+
+/*
+版本提示
+*/
+.version{
+    color: floralwhite;
+    border-radius: 5px;
+    background-color: darkgray;
+    padding: 2px;
+    width: 300px;
+}

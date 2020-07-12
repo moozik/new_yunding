@@ -1,7 +1,15 @@
 <?php
 date_default_timezone_set('Asia/Shanghai');
+
+/**
+ * 框架主类
+ */
 class SEN
 {
+    /**
+     * 访问密码
+     */
+    const PASSWORD = '520';
     /**
      * CDN url
      */
@@ -35,9 +43,9 @@ class SEN
      * page static file
      */
     const STATIC_FILE = [
-        'define' => 'define_20200325.js',
-        'frame' => 'frame_20200325.js',
-        'css' => 'css_20200325.css',
+        'define' => 'define.js',
+        'frame' => 'frame.js',
+        'css' => 'css.css',
 
         'chess' => 'chess.js',
         'race' => 'race.js',
@@ -84,7 +92,7 @@ class SEN
     // }
     static function isMe()
     {
-        if (in_array(self::getIp(), self::IPLIST)) {
+        if (in_array(self::getIp(), self::IPLIST) || SEN::PASSWORD == $_COOKIE['passwd']) {
             return true;
         } else {
             return false;
@@ -99,9 +107,21 @@ class SEN
             return implode('/', [self::$siteUrl , self::STATIC_DIR , self::STATIC_FILE[$name]]);
         }
     }
-    static function view_path($name)
+    /**
+     * 展示视图
+     */
+    static function display_page($name)
     {
-        return implode(DIRECTORY_SEPARATOR, [self::$rootDir , 'v' , self::VIEW_FILE[$name]]);
+        $res = debug_backtrace();
+        preg_match_all("/_([^_]+)$/", $res[1]['class'], $res);
+        require_once self::view_path($res[1][0], $name); 
+    }
+    /**
+     * 视图路径
+     */
+    static function view_path($className, $fileName)
+    {
+        return implode(DIRECTORY_SEPARATOR, [self::$rootDir , 'v' , $className, self::VIEW_FILE[$fileName]]);
     }
     static function static_path($name)
     {
@@ -210,6 +230,10 @@ class SEN
             }
         }
         return 'IPERR';
+    }
+    static function encode($arr)
+    {
+        return json_encode($arr, JSON_UNESCAPED_UNICODE);
     }
 }
 

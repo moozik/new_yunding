@@ -19,6 +19,7 @@
         })();
     </script>
     <link rel="stylesheet" href="<?= SEN::static_url('css') ?>" charset="utf-8">
+    <link rel="stylesheet" href="https://cdn.staticfile.org/font-awesome/4.7.0/css/font-awesome.css">
 </head>
 
 <body style="background-color: lightgray;">
@@ -26,28 +27,28 @@
         <div class="row clearfix">
             <div class="col-md-12 column">
                 <div class="jumbotron" style="padding: 2rem 2rem;">
-                    <h1><?= SEN::SITE['title'] ?></h1>
-                    <p>
-                        指标意义：阵容分数 = 羁绊价值+英雄价值。强度 = 分数/人数。强度代表平均到每个英雄的价值，代表了当前人数的强度值。
-                    </p>
+                    <h1><i class="fa fa-gamepad"></i> <?= SEN::SITE['title'] ?></h1>
+                    <h5 class="version">赛季：{{season}}</h5>
+                    <h5 class="version">版本：{{version}}</h5>
+                    <h5 class="version">更新时间：{{time}}</h5>
+
                     <p>
                         使用方法：1.在英雄池选择棋子 2.（可选）禁用英雄，转职装备，调整价格，调整计算个数 3. 点击计算
                     </p>
                     <p>
-                        手机端长按图标可添加到禁用英雄.<span style="color:red;">建议pc端浏览器使用</span> <a href="https://moozik.cn/archives/807/">给我建议</a>
+                        <span style="color:red;">建议pc端浏览器使用</span> <a href="https://moozik.cn/archives/807/">给我建议</a>
                     </p>
                 </div>
             </div>
             <div class="col-md-12 column">
 
-                <a href="https://101.qq.com/tft/index.shtml?ADTAG=cooperation.glzx.tft&type=items" target="_blank"><button type="button" class="btn btn-primary btn-lg">装备合成表</button></a>
+                <a href="https://lol.qq.com/tft/#/equipment" target="_blank"><button type="button" class="btn btn-primary btn-lg"><i class="fa fa-book"></i> 装备合成表</button></a>
+                <a href="https://lol.qq.com/tft/#/index" target="_blank"><button type="button" class="btn btn-primary btn-lg"><i class="fa fa-qq"></i> 官方阵容推荐</button></a>
+                <!-- <a href="/yunding/niceTeam.php"><button type="button" class="btn btn-primary btn-lg">推荐阵容</button></a> -->
 
-                <a href="https://101.qq.com/tft/index.shtml?ADTAG=cooperation.glzx.tft&type=strategy" target="_blank"><button type="button" class="btn btn-primary btn-lg">云顶10.6更新细节</button></a>
-
-                <a href="http://101.qq.com/tft/" target="_blank"><button type="button" class="btn btn-primary btn-lg">官方攻略中心</button></a>
                 <?php
                 if (SEN::isMe()) {
-                    // echo '<a href="/yunding/tools.php"><button type="button" class="btn btn-warning btn-lg">管理</button></a>';
+                    echo '<a href="/yunding/tools.php"><button type="button" class="btn btn-warning btn-lg">管理</button></a>';
                 }
                 ?>
             </div>
@@ -76,8 +77,8 @@
             <div class="col-md-4 column">
                 <span class="large-title">特质</span>
                 <div class="group-list">
-                    <div v-for="(group,index) in groupArr" v-if="group.id < 800" v-on:click.left="clickGroup(group)" class="groupBtn btn-choose" :class="isGroupHover(group)" :title="group.name" :data-id="group.id">
-                        <span class="group_span"><img class="group_span_img" :src="groupImg(group.id)" /></span>
+                    <div v-for="(group,index) in raceArr" v-on:click.left="clickGroup(group)" class="groupBtn btn-choose" :class="isGroupHover(group)" :title="group.name" :data-raceId="group.raceId" data-type="race">
+                        <span class="group_span"><img class="group_span_img" :src="group.imagePath" /></span>
                         <span class="group_name">{{group.name}}</span>
                     </div>
                 </div>
@@ -86,8 +87,8 @@
             <div class="col-md-4 column">
                 <span class="large-title">职业</span>
                 <div class="group-list">
-                    <div v-for="(group,index) in groupArr" v-if="group.id > 800" v-on:click.left="clickGroup(group)" class="groupBtn btn-choose" :class="isGroupHover(group)" :title="group.name" :data-id="group.id">
-                        <span class="group_span"><img class="group_span_img" :src="groupImg(group.id)" /></span>
+                    <div v-for="(group,index) in jobArr" v-on:click.left="clickGroup(group)" class="groupBtn btn-choose" :class="isGroupHover(group)" :title="group.name" :data-jobId="group.jobId" data-type="job">
+                        <span class="group_span"><img class="group_span_img" :src="group.imagePath" /></span>
                         <span class="group_name">{{group.name}}</span>
                     </div>
                 </div>
@@ -95,22 +96,18 @@
 
         </div>
         <div class="row clearfix">
-            <div class="col-md-3 column">
+            <div class="col-md-4 column">
                 <span class="large-title">已选阵容</span><span>(英雄池左键添加，再次点击取消)</span>
                 <div class="lineTwo" style="min-height: 50px;">
                     <div class="hero-list">
-                        <div :title="hero.name" v-for="hero in inHeroList" v-on:click="clickHero(hero)" :class="'hi_'+hero.img">
-                            <!-- <a href="javascript:"></a> -->
-                            <!--<img :src="heroImg(hero.img)" />-->
+                        <div :title="hero.description" v-for="hero in inHeroList" v-on:click="clickHero(hero)" :class="'hi_'+hero.TFTID">
                         </div>
                     </div>
                 </div>
                 <span class="large-title">禁用英雄</span><span>(英雄池右键添加，再次点击取消)</span>
                 <div class="lineTwo" style="min-height: 50px;">
                     <div class="hero-list">
-                        <div :title="hero.name" v-for="hero in heroBanList" v-on:click="banHero(hero)" :class="'hi_'+hero.img">
-                            <!-- <a href="javascript:"></a> -->
-                            <!--<img :src="heroImg(hero.img)" />-->
+                        <div :title="hero.description" v-for="hero in heroBanList" v-on:click="banHero(hero)" :class="'hi_'+hero.TFTID">
                         </div>
                     </div>
                 </div>
@@ -118,31 +115,33 @@
                 <div class="lineTwo">
                     <div class="hero-list">
                         <div :title="weapon.title" v-for="(weapon,index) in weaponList" v-on:click="delWeapon(index)">
-                            <img :src="weaponImg(weapon.imgId)" />
+                            <img :src="weapon.imagePath" />
                         </div>
                     </div>
                 </div>
             </div>
 
-            <div class="col-md-9 column">
+            <div class="col-md-8 column">
                 <span class="large-title">英雄池</span>
                 <p style="font-size:14px;">左键添加到'已选阵容'，右键添加到'禁用英雄'。再次点击可以取消选择或取消禁用。</p>
                 <div style="min-height:270px">
-                    <div class="hero-list" v-for="(heroList,index) in val2hero">
-                        <div :title="hero.title" v-for="hero in heroList" v-if="checkGroupHero(hero)" v-on:click.left="clickHero(hero)" @contextmenu.prevent="banHero(hero)" :data-id="hero.id" class="heroBtn" :class="'hi_'+hero.img">
+                    <div class="hero-list" v-for="price in 5">
+                        <!-- <div :title="chess.description" v-for="chess in chessArr" v-if="chess.price == price" v-on:click.left="clickHero(chess)" @contextmenu.prevent="banHero(chess)" :data-chessId="chess.chessId" class="heroBtn" :class="'hi_'+chess.TFTID"> -->
+                        <div :title="chess.description" v-for="chess in chessArr" v-if="checkGroupHero(chess, price)" v-on:click.left="clickHero(chess)" @contextmenu.prevent="banHero(chess)" :data-chessId="chess.chessId" class="heroBtn" :class="'hi_'+chess.TFTID">
                         </div>
                     </div>
+
                 </div>
                 <span class="large-title">转职装备</span>
                 <p style="font-size:14px;">装备可以重复选择，点击左侧'已选装备'可以取消选择。</p>
                 <div class="hero-list">
-                    <div :title="weapon.title" v-for="(weapon,index) in weaponArr" v-on:click.left="clickWeapon(weapon)">
-                        <img :src="weaponImg(weapon.imgId)" />
+                    <div :title="weapon.title" v-for="(weapon,index) in equipArr" v-on:click.left="clickWeapon(weapon)">
+                        <img :src="weapon.imagePath" />
                     </div>
                 </div>
                 <div class="modal-footer">
-                    <button type="button" class="btn btn-primary btn-lg" id="runBtn">计算</button>
-                    <button type="button" class="btn btn-secondary btn-lg" v-on:click="clearBtn()">清空</button>
+                    <button type="button" class="btn btn-primary btn-lg" id="runBtn"><i class="fa fa-bomb"></i> 计算</button>
+                    <button type="button" class="btn btn-secondary btn-lg" v-on:click="clearBtn()"><i class="fa fa-trash-o fa-lg"></i> 清空</button>
                 </div>
             </div>
         </div>
@@ -151,21 +150,21 @@
             <div class="col-md-4 column">
                 <span class="large-title">筛选价格</span>
                 <div class="btn-group btn-group-toggle" data-toggle="buttons"></div>
-                <button type="button" class="btn" v-bind:class="{'btn-primary':heroValue[1]}" v-on:click="valBtn(1)">1金</button>
-                <button type="button" class="btn" v-bind:class="{'btn-primary':heroValue[2]}" v-on:click="valBtn(2)">2金</button>
-                <button type="button" class="btn" v-bind:class="{'btn-primary':heroValue[3]}" v-on:click="valBtn(3)">3金</button>
-                <button type="button" class="btn" v-bind:class="{'btn-primary':heroValue[4]}" v-on:click="valBtn(4)">4金</button>
-                <button type="button" class="btn" v-bind:class="{'btn-primary':heroValue[5]}" v-on:click="valBtn(5)">5金</button>
+                <button type="button" class="btn" v-bind:class="{'btn-primary':heroValue[1]}" v-on:click="valBtn(1)">1 <i class="fa fa-rmb"></i></button>
+                <button type="button" class="btn" v-bind:class="{'btn-primary':heroValue[2]}" v-on:click="valBtn(2)">2 <i class="fa fa-rmb"></i></button>
+                <button type="button" class="btn" v-bind:class="{'btn-primary':heroValue[3]}" v-on:click="valBtn(3)">3 <i class="fa fa-rmb"></i></button>
+                <button type="button" class="btn" v-bind:class="{'btn-primary':heroValue[4]}" v-on:click="valBtn(4)">4 <i class="fa fa-rmb"></i></button>
+                <button type="button" class="btn" v-bind:class="{'btn-primary':heroValue[5]}" v-on:click="valBtn(5)">5 <i class="fa fa-rmb"></i></button>
 
                 <span class="large-title">筛选英雄个数</span>
                 <div class="btn-group btn-group-toggle" data-toggle="buttons">
-                    <label class="btn btn-primary" v-on:click="forCountFun(1)">
+                    <label class="btn btn-primary" v-on:click="forCountBtn(1)">
                         <input type="radio" name="options" v-model="forCount" value="1"> 一个
                     </label>
-                    <label class="btn btn-primary" v-on:click="forCountFun(2)">
+                    <label class="btn btn-primary" v-on:click="forCountBtn(2)">
                         <input type="radio" name="options" v-model="forCount" value="2"> 两个
                     </label>
-                    <label class="btn btn-primary active" v-on:click="forCountFun(3)">
+                    <label class="btn btn-primary active" v-on:click="forCountBtn(3)">
                         <input type="radio" name="options" v-model="forCount" value="3" checked> 三个
                     </label>
                 </div>
@@ -173,6 +172,7 @@
             </div>
 
             <div class="col-md-8 column">
+
                 <?php if (false) { ?>
                     <span class="large-title" onclick="$('#armyDiv').toggle();" style="cursor: pointer;">官方推荐阵容(隐藏)</span>
                     <div style="display: block;" id="armyDiv">
@@ -213,6 +213,7 @@
                         </div>
                     </div>
                 <?php } ?>
+
                 <span class="large-title">最优阵容</span>
                 <div v-for="army in chickenArmy" class="traits">
                     <!--英雄列表-->
@@ -244,7 +245,7 @@
     <script id="jobPopTemp" type="text/html">
         <div class="type">
             <span class="group_span" style="float: left;">
-                <img src="{{d_img}}" class="group_span_img">
+                <img src="{{imagePath}}" class="group_span_img">
             </span>
             <p>{{name}}</p>
             <p>{{introduce}}</p>
@@ -259,7 +260,7 @@
     <script id="ChampionPop2" type="text/html">
         <div class="details">
             <div class="hi_{{TFTID}}" style="background-size: cover;"></div>
-            <p><span>{{title}} {{displayName}}</span><span>{{races}},{{jobs}}</span><span>{{price}}金币</span></p>
+            <p><span>{{title}} {{displayName}}<span class="glyphicon glyphicon-sort-by-order-alt"></span></span><span>{{races}},{{jobs}}</span><span>{{price}}金币</span></p>
         </div>
         {{if equip}}
         <div class="recommend">
@@ -284,7 +285,9 @@
     <script src="https://cdn.staticfile.org/jquery/3.2.1/jquery.min.js"></script>
     <!-- 包括所有已编译的插件 -->
     <script src="https://cdn.staticfile.org/twitter-bootstrap/4.3.1/js/bootstrap.min.js"></script>
-    <script src="https://cdn.bootcss.com/vue/2.6.10/vue.min.js"></script>
+    <!-- <script src="https://cdn.bootcss.com/vue/2.6.10/vue.min.js"></script> -->
+    <script src="https://cdn.staticfile.org/vue/2.4.2/vue.min.js"></script>
+    <!-- <script src="https://cdn.staticfile.org/vue-resource/1.5.1/vue-resource.min.js"></script> -->
     <!--模板框架-->
     <script src="//ossweb-img.qq.com/images/js/ArtTemplate.js"></script>
     <!-- <script src="https://lol.qq.com/act/AutoCMS/publish/LOLAct/TFTlinelist/TFTlinelist.js"></script> -->
@@ -307,12 +310,12 @@
     <!--vue-->
     <script src="<?= SEN::static_url('frame') ?>"></script>
     <script>
-        $.getJSON({
-            url: '/yunding/default.json',
-            success: function(ret) {
-                displayPage(ret['data']);
-            },
-        });
+        // $.getJSON({
+        //     url: '/yunding/default.json',
+        //     success: function(ret) {
+        //         displayPage(ret['data']);
+        //     },
+        // });
     </script>
 </body>
 </html>

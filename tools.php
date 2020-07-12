@@ -3,13 +3,12 @@ require_once 'conf.php';
 SEN::init();
 class Tools
 {
-    const PASSWORD = '520';
     function __construct()
     {
-        if (isset($_GET['login']) && self::PASSWORD === $_GET['login']) {
-            setcookie("passwd", self::PASSWORD, time() + 86400);
+        if (isset($_GET['login']) && SEN::PASSWORD === $_GET['login']) {
+            setcookie("passwd", SEN::PASSWORD, time() + 86400);
         } else {
-            if (!SEN::isMe() && (!isset($_COOKIE['passwd']) || self::PASSWORD != $_COOKIE['passwd'])) {
+            if (!SEN::isMe()) {
                 header("HTTP/1.1 404 Not Found");
                 exit;
             }
