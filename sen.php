@@ -59,7 +59,7 @@ class SEN
         'equip' => 'http://game.gtimg.cn/images/lol/act/img/tft/js/equip.js',
     ];
     const SITE = [
-        'title' => '云顶之弈计算器 S3',
+        'title' => '云顶之弈计算器',
         'description' => '只需要选择英雄,点击计算,就可以得到根据阵容和英雄价格计算出来的最优阵容.',
         'keywords' => '云顶之弈,云顶之弈模拟器,云顶之弈计算器,自走棋,lol自走棋,自走棋模拟器'
     ];

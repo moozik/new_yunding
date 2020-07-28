@@ -178,9 +178,9 @@ var vm = new Vue({
         //当前选中英雄
         inHeroList: [],
         //价值筛选
-        heroValue: { 1: true, 2: true, 3: true, 4: false, 5: false },
+        heroValue: { 1: true, 2: true, 3: true, 4: true, 5: true },
         //待计算个数
-        forCount: 3,
+        teamCount: 9,
         //吃鸡阵容
         chickenArmy: [], //最后结果
         //官方推荐阵容
@@ -298,7 +298,7 @@ var vm = new Vue({
                 inHeroList.push(hero);
             }
             //刷新金额限制
-            this.updateCost();
+            // this.updateCost();
         },
         //绑定英雄池右键
         banHero: function (hero) {
@@ -322,24 +322,24 @@ var vm = new Vue({
             this.weaponList.splice(index, 1);
         },
         //修改金额
-        forCountBtn: function (forCount) {
-            this.forCount = forCount;
-            this.updateCost();
-        },
+        // forCountBtn: function (forCount) {
+        //     this.forCount = forCount;
+        //     this.updateCost();
+        // },
         //更新费用限制
         updateCost: function () {
-            var teamCount;
-            if (this.inHeroList.length + this.forCount > 7) {
-                teamCount = 7;
-            } else {
-                teamCount = this.inHeroList.length + this.forCount;
-            }
+            // var teamCount;
+            // if (this.inHeroList.length + this.forCount > 7) {
+            //     teamCount = 7;
+            // } else {
+            //     teamCount = this.inHeroList.length + this.forCount;
+            // }
             // for(let i in this.heroValue){
             //     this.heroValue[i] = false;
             // }
             var ret = { 1: false, 2: false, 3: false, 4: false, 5: false };
-            for (let i in levelArr[teamCount]) {
-                ret[levelArr[teamCount][i]] = true;
+            for (let i in levelArr[this.teamCount]) {
+                ret[levelArr[this.teamCount][i]] = true;
             }
             this.heroValue = ret;
         },
@@ -526,7 +526,7 @@ $("#runBtn").click(function () {
     }
     //请求接口
     $.getJSON({
-        url: "/yunding/yunding.php",
+        url: "calc",
         data: {
             action: "calc",
             data: JSON.stringify(getData),

@@ -48,27 +48,28 @@
 
                 <?php
                 if (SEN::isMe()) {
-                    echo '<a href="/yunding/tools.php"><button type="button" class="btn btn-warning btn-lg">管理</button></a>';
+                    echo '<a href="./tools"><button type="button" class="btn btn-warning btn-lg">管理</button></a>';
                 }
                 ?>
             </div>
         </div>
         <div class="row clearfix">
             <div class="col-md-4 column" style="height:410px;">
+            <!-- <div class="type">
+                <span class="group_span" style="float: left;">
+                    <img src="https://game.gtimg.cn/images/lol/act/img/tft/origins/3101.png" class="group_span_img">
+                </span>
+                <p>星之守护者</p>
+                <p>【星之守护】在施放技能时会为其他【星之守护】提供法力值。（在他们当中传播）
+                </p>
+            </div>
+            <div class="content">
+                <p><span>3</span><span>共提供15法力值</span></p>
+                <p><span>6</span><span>共提供25法力值</span></p>
+                <p><span>6</span><span>共提供45法力值</span></p>
+            </div> -->
                 <div class="synergies-box">
-                    <div class="type">
-                        <span class="group_span" style="float: left;">
-                            <img src="https://game.gtimg.cn/images/lol/act/img/tft/origins/3101.png" class="group_span_img">
-                        </span>
-                        <p>星之守护者</p>
-                        <p>【星之守护】在施放技能时会为其他【星之守护】提供法力值。（在他们当中传播）
-                        </p>
-                    </div>
-                    <div class="content">
-                        <p><span>3</span><span>共提供40法力值</span></p>
-                        <p><span>6</span><span>共提供60法力值</span></p>
 
-                    </div>
                 </div>
                 <div class="clearfix pop pop1" id="pop1">
                 </div>
@@ -156,8 +157,8 @@
                 <button type="button" class="btn" v-bind:class="{'btn-primary':heroValue[4]}" v-on:click="valBtn(4)">4 <i class="fa fa-rmb"></i></button>
                 <button type="button" class="btn" v-bind:class="{'btn-primary':heroValue[5]}" v-on:click="valBtn(5)">5 <i class="fa fa-rmb"></i></button>
 
-                <span class="large-title">筛选英雄个数</span>
-                <div class="btn-group btn-group-toggle" data-toggle="buttons">
+                <span class="large-title">阵容棋子数</span>
+                <!-- <div class="btn-group btn-group-toggle" data-toggle="buttons">
                     <label class="btn btn-primary" v-on:click="forCountBtn(1)">
                         <input type="radio" name="options" v-model="forCount" value="1"> 一个
                     </label>
@@ -169,6 +170,10 @@
                     </label>
                 </div>
                 <span> {{ forCount }}个</span>
+
+                <label for="formControlRange">阵容棋子数</label> -->
+                <input type="range" class="form-control-range" v-model="teamCount" max="9" min="0" step="1" v-on:mousemove="updateCost()">
+                <span> {{ teamCount }}个</span>
             </div>
 
             <div class="col-md-8 column">
@@ -276,7 +281,10 @@
             <p class="title">技能</p>
             <div class="info">
                 <img src="{{skillImage}}" alt="" />
-                <p class="name"><span>{{skillName}}</span><span>{{skillType}}</span></p>
+                <div class="name">
+                    <span>{{skillName}}</span>
+                    <!-- <span>{{skillType}}</span> -->
+                </div>
                 <p class="description">{{skillIntroduce}}</p>
             </div>
         </div>

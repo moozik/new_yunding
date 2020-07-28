@@ -111,6 +111,9 @@ class m_team{
             yield self::genReturn($inArr, $position);
         }
     }
+    /**
+     * 二进制列表迭代
+     */
     static private function nextCombine(&$position, &$inArrLen){
         $count_1 = 0;
         //搜索 1 0
@@ -139,6 +142,9 @@ class m_team{
         }
         return true;
     }
+    /**
+     * 由二进制列表生成chess
+     */
     static function genReturn(&$inArr, &$position){
         static $ret = [];
         if($ret != []){

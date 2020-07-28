@@ -10,6 +10,9 @@ class c_calc{
         m_dao_chess::init();
         m_dao_equip::init();
     }
+    /**
+     * 主函数
+     */
     public function execute(){
 
         $this->inputCheck();
@@ -45,15 +48,15 @@ class c_calc{
                 $this->input->forCount
             ];
         }
-        // print_r($heroList);
+        $count = array_fill(0,count($rangeData),0);
+        //保存已使用的棋子
         $usedHero = [];
-        foreach($rangeData as $loopCount){
+        foreach($rangeData as $key => $loopCount){
             foreach(m_team::heroCombine($this->canUseHero($usedHero), $loopCount) as $item){
-                // $count++;
-                print_r($item);
-                // echo "<br>";
+                $count[$key]++;
             }
         }
+        print_r($count);
     }
     /**
      * m选n结果集个数
