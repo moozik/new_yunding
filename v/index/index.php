@@ -127,7 +127,6 @@
                 <p style="font-size:14px;">左键添加到'已选阵容'，右键添加到'禁用英雄'。再次点击可以取消选择或取消禁用。</p>
                 <div style="min-height:270px">
                     <div class="hero-list" v-for="price in 5">
-                        <!-- <div :title="chess.description" v-for="chess in chessArr" v-if="chess.price == price" v-on:click.left="clickHero(chess)" @contextmenu.prevent="banHero(chess)" :data-chessId="chess.chessId" class="heroBtn" :class="'hi_'+chess.TFTID"> -->
                         <div :title="chess.description" v-for="chess in chessArr" v-if="checkGroupHero(chess, price)" v-on:click.left="clickHero(chess)" @contextmenu.prevent="banHero(chess)" :data-chessId="chess.chessId" class="heroBtn" :class="'hi_'+chess.TFTID">
                         </div>
                     </div>
