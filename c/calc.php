@@ -10,6 +10,7 @@ class c_calc{
         m_dao_chess::init();
         m_dao_equip::init();
     }
+
     /**
      * 主函数
      */
@@ -32,7 +33,11 @@ class c_calc{
          * 找4个，最多个数为292825
          */
 
-        $resultCount = self::m_chose_n($heroCount, $this->input->forCount);
+        $resultCount = lib_tools::m_chose_n($heroCount, $this->input->forCount);
+        //die($resultCount);
+        //todo
+        //1. 低于 52360的走全遍历模式
+        //2. 高于52360的走已有羁绊遍历模式
         if($this->input->forCount > 3 && $resultCount > 30000){
             //如果符合条件，那么拆分再遍历
             $rangeData = [
@@ -48,44 +53,26 @@ class c_calc{
                 $this->input->forCount
             ];
         }
-        $count = array_fill(0,count($rangeData),0);
+        $rangeData = [4];
+        $count = array_fill(0, count($rangeData), 0);
+        print_r($count);
         //保存已使用的棋子
         $usedHero = [];
         foreach($rangeData as $key => $loopCount){
-            foreach(m_team::heroCombine($this->canUseHero($usedHero), $loopCount) as $item){
+            foreach(lib_tools::heroCombine($this->canUseHero($usedHero), $loopCount) as $item){
                 $count[$key]++;
             }
+            $usedHero = array_merge($usedHero, $item);
         }
         print_r($count);
     }
+
     /**
-     * m选n结果集个数
-     * @param int $m
-     * @param int $n
-     * @return int
-     */
-    static function m_chose_n($m, $n){
-        return (self::fn($m) / (self::fn($n) * self::fn($m - $n)));
-    }
-    /**
-     * 阶乘
-     * @param int $n
-     * @return void
-     */
-    static function fn($n){
-        if($n == 0) return 1;
-        $fn = 1;
-        for($i = 1; $i <= $n; $i++){
-            $fn *= $i;
-        }
-        return $fn;
-    }
-    /**
-     * 获取可用英雄
+     * 获取可用英雄列表
      * @param array $usedHero
      * @return array
      */
-    private function canUseHero($usedHero = []){
+    private function canUseHero(&$usedHero = [], $raceId = 0, $jobId = 0){
         $ret = [];
         foreach(m_dao_chess::$data as $chess){
             //inHero banHero

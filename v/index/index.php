@@ -105,6 +105,7 @@
                         </div>
                     </div>
                 </div>
+
                 <span class="large-title">禁用英雄</span><span>(英雄池右键添加，再次点击取消)</span>
                 <div class="lineTwo" style="min-height: 50px;">
                     <div class="hero-list">
@@ -112,14 +113,27 @@
                         </div>
                     </div>
                 </div>
+
                 <span class="large-title">已选装备</span><span>(将计算转职装备，再次点击取消)</span>
-                <div class="lineTwo">
+                <div class="lineTwo" style="min-height: 50px;">
                     <div class="hero-list">
                         <div :title="weapon.title" v-for="(weapon,index) in weaponList" v-on:click="delWeapon(index)">
                             <img :src="weapon.imagePath" />
                         </div>
                     </div>
                 </div>
+
+                <span class="large-title" style="color:darkcyan;">天选之人(羁绊+1)</span>
+                <span>特质:</span>
+                <select v-model="theOneRace" class="form-control" v-on:change="theOneJob = 0">
+                    <option value="0">-</option>
+                    <option v-for="(group,index) in raceArr" :value="group.raceId">{{group.name}}</option>
+                </select>
+                <span>职业:</span>
+                <select v-model="theOneJob" class="form-control" v-on:change="theOneRace = 0">
+                    <option value="0">-</option>
+                    <option v-for="(group,index) in jobArr" :value="group.jobId">{{group.name}}</option>
+                </select>
             </div>
 
             <div class="col-md-8 column">
@@ -171,7 +185,7 @@
                 <span> {{ forCount }}个</span>
 
                 <label for="formControlRange">阵容棋子数</label> -->
-                <input type="range" class="form-control-range" v-model="teamCount" max="9" min="0" step="1" v-on:mousemove="updateCost()">
+                <input type="range" class="form-control-range" v-model="teamCount" max="9" min="0" step="1" v-on:mousemove="updateCostByTeamCount()">
                 <span> {{ teamCount }}个</span>
             </div>
 

@@ -71,7 +71,7 @@ var vm = new Vue({
             var equip,job,proStatus;
             for (let i in DATA_equip.data) {
                 //排除老版本装备
-                if(DATA_equip.data[i].equipId < 300){
+                if(DATA_equip.data[i].equipId < 400){
                     continue;
                 }
                 //只要转职装备
@@ -97,72 +97,6 @@ var vm = new Vue({
             }
             return ret;
         }(),
-
-        // heroArr: (function () {
-        //     var ret = {};
-        //     // var detail;
-        //     for (let i in heroArr) {
-        //         ret[i] = {
-        //             name: heroArr[i][0],
-        //             val: heroArr[i][1],
-        //             group: heroArr[i][2],
-        //             img: heroArr[i][3],
-        //             realId: heroArr[i][4],
-        //             id: heroArr[i][5],
-        //             title: heroArr[i][6],
-        //         };
-        //     }
-        //     return ret;
-        // })(),
-        // groupArr: (function () {
-        //     var ret = {};
-        //     var arr;
-        //     for (let i in groupArr) {
-        //         ret[i] = {
-        //             name: groupArr[i][0],
-        //             img: groupArr[i][1],
-        //             glevel: groupArr[i][2],
-        //             level: groupArr[i][3],
-        //             id: groupArr[i][4],
-        //         };
-        //     }
-        //     return ret;
-        // })(),
-        // weaponArr: (function () {
-        //     //weaponArr
-        //     var ret = Array();
-        //     for (let i in weaponArr) {
-        //         ret.push({
-        //             imgId: weaponArr[i][0],
-        //             group: weaponArr[i][1],
-        //             title: weaponArr[i][2],
-        //             name: weaponArr[i][3],
-        //         });
-        //     }
-        //     return ret;
-        // })(),
-        //处理hero结构，变为使用价格分组，便于输出
-        // val2hero: (function () {
-        //     //return val2hero;
-        //     var val2hero = Array();
-        //     for (let i in heroArr) {
-        //         //按照价格分组
-        //         if (!val2hero.hasOwnProperty(heroArr[i][1])) {
-        //             val2hero[heroArr[i][1]] = Array();
-        //         }
-        //         //[val2hero[heroArr[i][1]].length]
-        //         val2hero[heroArr[i][1]].push({
-        //             name: heroArr[i][0],
-        //             val: heroArr[i][1],
-        //             group: heroArr[i][2],
-        //             img: heroArr[i][3],
-        //             realId: heroArr[i][4],
-        //             id: heroArr[i][5],
-        //             title: heroArr[i][6],
-        //         });
-        //     }
-        //     return val2hero;
-        // })(),
         //级别到英雄价格关系
         // level2cost: levelArr,
         //==以下为动态
@@ -171,6 +105,8 @@ var vm = new Vue({
         groupCheckedId: 0,
         groupCheckedType: 'job or race',
 
+        theOneRace: 0,
+        theOneJob: 0,
         //当前羁绊组合
         groupList: [],
         //被ban英雄
@@ -191,39 +127,6 @@ var vm = new Vue({
         weaponListCache: [],
     },
     methods: {
-        //羁绊图标
-        // groupImg: function (groupid) {
-        //     // console.log(this.groupArr,groupid);
-        //     if (groupid > 800) {
-        //         //classes 职业
-        //         return (
-        //             "//game.gtimg.cn/images/lol/act/img/tft/classes/" +
-        //             this.groupArr[groupid].img +
-        //             ".png"
-        //         );
-        //     } else {
-        //         //origins 特质
-        //         return (
-        //             "//game.gtimg.cn/images/lol/act/img/tft/origins/" +
-        //             this.groupArr[groupid].img +
-        //             ".png"
-        //         );
-        //     }
-        // },
-        //英雄图标
-        // heroImg: function (imgId) {
-        //     return (
-        //         "//game.gtimg.cn/images/lol/act/img/champion/" + imgId + ".png"
-        //     );
-        // },
-        //装备图标
-        // weaponImg: function (weaponId) {
-        //     if(weaponId == 324){
-        //         return "//game.gtimg.cn/images/lol/act/img/tft/equip/" + weaponId + '.png';
-        //     }
-        //     return "//game.gtimg.cn/images/lol/act/img/tft/equip/" + weaponId + '.png';
-        // },
-        
         //判断指定英雄是否属于当前组别
         checkGroupHero: function (chess, price) {
             //金额组别不对
@@ -297,8 +200,10 @@ var vm = new Vue({
                 //添加
                 inHeroList.push(hero);
             }
+            //刷新阵容数量
+            //this.updateTeamCountByClickHero();
             //刷新金额限制
-            // this.updateCost();
+            //this.updateCost();
         },
         //绑定英雄池右键
         banHero: function (hero) {
@@ -326,8 +231,16 @@ var vm = new Vue({
         //     this.forCount = forCount;
         //     this.updateCost();
         // },
-        //更新费用限制
-        updateCost: function () {
+        //更新阵容数量 by 棋子选择
+        // updateTeamCountByClickHero: function() {
+        //     if(this.inHeroList.length >= 6){
+        //         this.teamCount = 9;
+        //     }else{
+        //         this.teamCount + 3;
+        //     }
+        // },
+        //更新费用限制 by 阵容数量
+        updateCostByTeamCount: function() {
             // var teamCount;
             // if (this.inHeroList.length + this.forCount > 7) {
             //     teamCount = 7;
@@ -503,20 +416,21 @@ $("#runBtn").click(function () {
 
     //拼接数据
     var getData = {
+        theOne: (vm.theOneJob) != 0 ? vm.theOneJob : vm.theOneRace,
         inHero: new Array(),
         costList: new Array(),
         banHero: new Array(),
-        forCount: vm.forCount,
+        forCount: vm.teamCount - vm.inHeroList.length,
         weapon: new Array(),
     };
     vm.inHeroList.forEach((e) => {
-        getData.inHero.push(e.id);
+        getData.inHero.push(e.chessId);
     });
     vm.heroBanList.forEach((e) => {
-        getData.banHero.push(e.id);
+        getData.banHero.push(e.chessId);
     });
     vm.weaponList.forEach((e) => {
-        getData.weapon.push(e.group);
+        getData.weapon.push((e.jobId) != '0' ? e.jobId : e.raceId);
     });
     // console.log(vm.heroValue);
     for (var i in vm.heroValue) {

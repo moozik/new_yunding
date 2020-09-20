@@ -53,9 +53,9 @@ class m_dao_chess{
      * @param int $id
      * @return array
      */
-    static public function get($heroId)
+    static public function get($chessId)
     {
-        return self::$data[$heroId];
+        return self::$data[$chessId];
     }
     /**
      * 判断id是否合法

@@ -47,10 +47,10 @@ class SEN
         'frame' => 'frame.js',
         'css' => 'css.css',
 
-        'chess' => 'chess.js',
-        'race' => 'race.js',
-        'job' => 'job.js',
-        'equip' => 'equip.js',
+        'chess' => 'chess.json',
+        'race' => 'race.json',
+        'job' => 'job.json',
+        'equip' => 'equip.json',
     ];
     const REMOTE_URL = [
         'chess' => 'http://game.gtimg.cn/images/lol/act/img/tft/js/chess.js',
