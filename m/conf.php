@@ -21,19 +21,19 @@ class m_conf{
     /**
      * 羁绊个数级别
      */
-    const BF_1       = [ 1=>1, 2=>1 ,3=>1, 4=>1];
-    const BF_1_2     = [ 1=>1, 2=>2 ,3=>2, 4=>2];
-    const BF_1_4     = [ 1=>1, 2=>1 ,3=>1, 4=>4];
-    const BF_REN_1_4 = [ 1=>1, 2=>1 ,3=>1, 4=>4];
-    const BF_2       = [ 1=>0, 2=>2 ,3=>2, 4=>2];
-    const BF_2_4     = [ 1=>0, 2=>2, 3=>2, 4=>4, 5=>4, 6=>4];
-    const BF_2_3_4   = [ 1=>0, 2=>2, 3=>3, 4=>4, 5=>4, 6=>4, 7=>4];
-    const BF_2_3_4_5 = [ 1=>0, 2=>2, 3=>3, 4=>4, 5=>5, 6=>5, 7=>5];
-    const BF_2_4_6   = [ 1=>0, 2=>2, 3=>2, 4=>4, 5=>4, 6=>6, 7=>6, 8=>6, 9=>6];
-    const BF_2_4_6_8 = [ 1=>0, 2=>2, 3=>2, 4=>4, 5=>4, 6=>6, 7=>6, 8=>8, 9=>8, 10=>8];
-    const BF_3       = [ 1=>0, 2=>0, 3=>3, 4=>3, 5=>3, 6=>3];
-    const BF_3_6     = [ 1=>0, 2=>0, 3=>3, 4=>3, 5=>3, 6=>6 ,7=>6, 8=>6, 9=>6, 10=>6];
-    const BF_3_6_9   = [ 1=>0, 2=>0, 3=>3, 4=>3, 5=>3, 6=>6, 7=>6, 8=>6, 9=>9, 10=>9, 11=>9, 12=>9];
+    const BF_1       = [0=>1, 1=>1];
+    const BF_1_2     = [0=>2, 1=>1, 2=>2];
+    const BF_1_4     = [0=>4, 1=>1, 2=>1 ,3=>1, 4=>4];
+    const BF_REN_1_4 = [0=>4, 1=>1, 2=>0 ,3=>0, 4=>4];
+    const BF_2       = [0=>2, 1=>0, 2=>2];
+    const BF_2_4     = [0=>4, 1=>0, 2=>2, 3=>2, 4=>4];
+    const BF_2_3_4   = [0=>4, 1=>0, 2=>2, 3=>3, 4=>4];
+    const BF_2_3_4_5 = [0=>5, 1=>0, 2=>2, 3=>3, 4=>4, 5=>5];
+    const BF_2_4_6   = [0=>6, 1=>0, 2=>2, 3=>2, 4=>4, 5=>4, 6=>6];
+    const BF_2_4_6_8 = [0=>8, 1=>0, 2=>2, 3=>2, 4=>4, 5=>4, 6=>6, 7=>6, 8=>8];
+    const BF_3       = [0=>3, 1=>0, 2=>0, 3=>3];
+    const BF_3_6     = [0=>6, 1=>0, 2=>0, 3=>3, 4=>3, 5=>3, 6=>6];
+    const BF_3_6_9   = [0=>9, 1=>0, 2=>0, 3=>3, 4=>3, 5=>3, 6=>6, 7=>6, 8=>6, 9=>9];
     
     /*
     var data = '';
@@ -201,8 +201,10 @@ class m_conf{
         // if(!self::$isInit)self::init();
         if(isset(self::races[$id][1][$count])){
             return self::races[$id][1][$count];
+        }else{
+            //找不到返回顶级羁绊的数量
+            return self::races[$id][1][0];
         }
-        return 0;
     }
     /**
      * 有效数量
@@ -215,19 +217,20 @@ class m_conf{
         if(isset(self::jobs[$id][1][$count])){
             return self::jobs[$id][1][$count];
         }else{
-
+            //找不到返回顶级羁绊的数量
+            return self::jobs[$id][1][0];
         }
     }
     /**
      * 种族权重
      */
-    static public function raceValue($id, $count){
-        return self::races[$id][2][$count];
-    }
+    // static public function raceValue($id, $count){
+    //     return self::races[$id][2][$count];
+    // }
     /**
      * 职业权重
      */
-    static public function jobValue($id, $count){
-        return self::jobs[$id][2][$count];
-    }
+    // static public function jobValue($id, $count){
+    //     return self::jobs[$id][2][$count];
+    // }
 }

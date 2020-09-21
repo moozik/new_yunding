@@ -23,31 +23,13 @@ class c_calc{
         //可用数量
         $heroCount = count($heroList);
 
-        // echo self::m_chose_n(50, 4);exit;
-        /**
-         * 2（55，2）
-         * 找2个，最多个数为1485
-         * 3（54，3）
-         * 找3个，最多个数为24804
-         * 4（53，4）
-         * 找4个，最多个数为292825
-         */
-
         $resultCount = lib_tools::m_chose_n($heroCount, $this->input->forCount);
         //die($resultCount);
-        //todo
         //1. 低于 52360的走全遍历模式
         //2. 高于52360的走已有羁绊遍历模式
-        if($this->input->forCount > 3 && $resultCount > 30000){
-            //如果符合条件，那么拆分再遍历
-            $rangeData = [
-                4 => [3, 1],
-                5 => [3, 2],
-                6 => [3, 3],
-                7 => [3, 3, 1],
-                8 => [3, 3, 2],
-                9 => [3, 3, 3],
-            ][$this->input->forCount];
+        if($resultCount > 52360){
+            //todo
+            //Permutation 
         }else{
             $rangeData = [
                 $this->input->forCount
