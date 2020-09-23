@@ -21,7 +21,7 @@ class m_chess{
      * 
      * @var int
      */
-    public $raceIds;
+    public $raceIds = [];
     /**
      * 职业
      * 可有多个职业
@@ -40,7 +40,14 @@ class m_chess{
         }
         $this->id = $chessObj->id;
         $this->price = $chessObj->price;
-        $this->raceIds = $chessObj->raceIds;
+        
+        if(is_numeric($chessObj->racesId)){
+            $this->racesId = [$chessObj->racesId];
+        }else{
+            $this->racesId = array_map(function($var){
+                return (int)$var;
+            }, explode(',', $chessObj->racesId));
+        }
 
         if(is_numeric($chessObj->jobIds)){
             $this->jobIds = [$chessObj->jobIds];
