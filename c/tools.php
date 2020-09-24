@@ -43,9 +43,9 @@ class c_tools{
             // 'var heroArr=' . SEN::encode(HERO::heroList()) . ';' .
             // 'var groupArr=' . SEN::encode(HERO::groupList()) . ';' .
             // 'var weaponArr=' . SEN::encode(HERO::weaponList()) . ';' .
-            'var levelArr=' . SEN::encode(m_conf::LEVEL2COST) . ';' .
-            'var raceLevel=' . SEN::encode(array_map(function($a){return array_slice($a,0,2);}, m_conf::races)) . ';' .
-            'var jobLevel=' . SEN::encode(array_map(function($a){return array_slice($a,0,2);}, m_conf::jobs)) . ';';
+            'var levelArr=' . SEN::encode(lib_conf::LEVEL2COST) . ';' .
+            'var raceLevel=' . SEN::encode(array_map(function($a){return array_slice($a,0,2);}, lib_conf::races)) . ';' .
+            'var jobLevel=' . SEN::encode(array_map(function($a){return array_slice($a,0,2);}, lib_conf::jobs)) . ';';
 
         file_put_contents(SEN::static_path('define'), $fileContent);
         echo 'update done.';
@@ -76,7 +76,7 @@ class c_tools{
         echo file_get_contents(SEN::log_file($_GET['f']));
     }
     /**
-     * 生成m_conf::hero_sort 的配置
+     * 生成lib_conf::hero_sort 的配置
      */
     /*public function chessSort(){
         $ret = [

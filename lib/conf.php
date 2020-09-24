@@ -1,5 +1,8 @@
 <?php
-class m_conf{
+/**
+ * 配置定义
+ */
+class lib_conf{
 
 
     /**

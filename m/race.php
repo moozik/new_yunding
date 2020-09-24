@@ -16,18 +16,18 @@ class m_race extends m_groups{
 
     public function addOne(){
         $this->count++;
-        $ret = m_conf::raceWorkCount($this->id, $this->count);
+        $ret = lib_conf::raceWorkCount($this->id, $this->count);
         if($ret === 0){
             $this->isWork = false;
             $this->isWorkCount = 0;
-            $ret = m_conf::raceWorkCount($this->id, $this->count + 1);
+            $ret = lib_conf::raceWorkCount($this->id, $this->count + 1);
             if(0 != $ret){
                 $this->featureCount = $ret;
             }
         }else{
             $this->isWork = true;
             $this->isWorkCount = $ret;
-            $this->value = m_conf::raceValue($this->id, $ret);
+            $this->value = lib_conf::raceValue($this->id, $ret);
             //featureCount归零
             $this->featureCount = 0;
         }
