@@ -9,7 +9,7 @@ class m_chess{
      *
      * @var int
      */
-    public $id;
+    public $chessId;
     /**
      * 价格 1-5
      * 
@@ -31,31 +31,41 @@ class m_chess{
     public $jobIds = [];
 
     /**
+     * 存储棋子对象
+     * @var array
+     */
+    private static $instence = [];
+    
+    /**
      * @param $chessObj
      */
-    function __construct($chessObj)
+    function __construct()
     {
-        if(is_numeric($chessObj)){
-            $chessObj = m_dao_chess::get($chessObj);
-        }
-        $this->id = $chessObj->id;
-        $this->price = $chessObj->price;
-        
-        if(is_numeric($chessObj->racesId)){
-            $this->racesId = [$chessObj->racesId];
-        }else{
-            $this->racesId = array_map(function($var){
-                return (int)$var;
-            }, explode(',', $chessObj->racesId));
-        }
+        foreach(m_dao_chess::$data as $chessId => $chessObj){
+            print_r($chessObj);
+            self::$instence[$chessId] = new self();
+            self::$instence[$chessId]->chessId = $chessObj->chessId;
+            self::$instence[$chessId]->price = $chessObj->price;
 
-        if(is_numeric($chessObj->jobIds)){
-            $this->jobIds = [$chessObj->jobIds];
-        }else{
-            $this->jobIds = array_map(function($var){
-                return (int)$var;
-            }, explode(',', $chessObj->jobIds));
+            if(is_int($chessObj->raceIds)){
+                self::$instence[$chessId]->raceIds = [(int)$chessObj->raceIds];
+            }else{
+                self::$instence[$chessId]->raceIds = array_map(function($var){
+                    return (int)$var;
+                }, explode(',', $chessObj->raceIds));
+            }
+
+            if(is_int($chessObj->jobIds)){
+                self::$instence[$chessId]->jobIds = [(int)$chessObj->jobIds];
+            }else{
+                self::$instence[$chessId]->jobIds = array_map(function($var){
+                    return (int)$var;
+                }, explode(',', $chessObj->jobIds));
+            }
         }
+    }
+    static function getInstence($chessId){
+        return self::$instence[$chessId];
     }
 
     function getArray()

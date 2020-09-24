@@ -51,7 +51,7 @@ class m_dao_chess{
     }
     /**
      * @param int $id
-     * @return array
+     * @return object
      */
     static public function get($chessId)
     {

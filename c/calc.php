@@ -9,6 +9,7 @@ class c_calc{
         m_dao_job::init();
         m_dao_chess::init();
         m_dao_equip::init();
+        new m_chess();
     }
 
     /**
@@ -22,7 +23,13 @@ class c_calc{
         $heroList = $this->canUseHero();
         //可用数量
         $heroCount = count($heroList);
+        
+        $chess = m_chess::getInstence(20);
+        $chess1 = m_chess::getInstence(20);
+        $chess2 = m_chess::getInstence(20);
 
+        print_r($chess);
+        return;
         $resultCount = lib_tools::m_chose_n($heroCount, $this->input->forCount);
         //die($resultCount);
         //1. 低于 52360的走全遍历模式
