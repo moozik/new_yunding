@@ -3,20 +3,24 @@ class m_dao_base{
     
     static function init($staticKey)
     {
-        $ret = [];
+        // $ret = [];
         $localPath = SEN::static_path($staticKey);
         if(file_exists($localPath)){
             $res = file_get_contents($localPath);
-            $json = json_decode($res);
+            $dataObj = json_decode($res);
         }else{
             $res = file_get_contents(SEN::REMOTE_URL[$staticKey]);
-            $json = json_decode($res);
-            file_put_contents($localPath, json_encode($json, JSON_UNESCAPED_UNICODE));
+            $dataObj = json_decode($res);
+            file_put_contents($localPath, json_encode($dataObj, JSON_UNESCAPED_UNICODE));
         }
-        $ret['version'] = $json->version;
-        $ret['season'] = $json->season;
-        $ret['time'] = $json->time;
-        $ret['data'] = $json->data;
-        return $ret;
+        //转int类型
+        foreach($dataObj->data as $key => $val){
+            foreach($val as $key2 => $val2){
+                if(filter_var($val2, FILTER_VALIDATE_INT)){
+                    $dataObj->data[$key]->{$key2} = intval($val2);
+                }
+            }
+        }
+        return $dataObj;
     }
 }

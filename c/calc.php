@@ -2,6 +2,7 @@
 
 class c_calc{
     private $usedHero = [];
+
     public function __construct()
     {
         //初始化dao
@@ -9,7 +10,7 @@ class c_calc{
         m_dao_job::init();
         m_dao_chess::init();
         m_dao_equip::init();
-        new m_chess();
+
     }
 
     /**
@@ -24,11 +25,13 @@ class c_calc{
         //可用数量
         $heroCount = count($heroList);
         
-        $chess = m_chess::getInstence(20);
-        $chess1 = m_chess::getInstence(20);
-        $chess2 = m_chess::getInstence(20);
-
-        print_r($chess);
+        $chessObj1 = m_data_Factory::get(lib_def::chess, 20);
+        $chessObj2 = m_data_Factory::get(lib_def::chess, 20);
+        // var_dump(memory_get_usage());
+        // $chessObj2 = $this->getChessInstence(20);
+        // var_dump(memory_get_usage());
+        var_dump($chessObj1);
+        var_dump($chessObj2);
         return;
         $resultCount = lib_tools::m_chose_n($heroCount, $this->input->forCount);
         //die($resultCount);
@@ -44,7 +47,7 @@ class c_calc{
         }
         $rangeData = [4];
         $count = array_fill(0, count($rangeData), 0);
-        print_r($count);
+        // print_r($count);
         //保存已使用的棋子
         $usedHero = [];
         foreach($rangeData as $key => $loopCount){
@@ -53,9 +56,8 @@ class c_calc{
             }
             $usedHero = array_merge($usedHero, $item);
         }
-        print_r($count);
+        // print_r($count);
     }
-
     /**
      * 获取可用英雄列表
      * @param array $usedHero

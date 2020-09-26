@@ -2,7 +2,7 @@
 /**
  * 一个阵容
  */
-class m_team{
+class m_object_team{
     public $objChesses = [];
     public $objEquips = [];
     public $objJobs = [];
@@ -42,19 +42,19 @@ class m_team{
         $this->chessCount = count($team);
         //遍历英雄
         foreach($team as $chessId){
-            $objChess = new m_chess($chessId);
+            $objChess = m_data_Factory::get(lib_def::chess, $chessId);
 
             //遍历种族 创建模型
             foreach($objChess->raceIds as $raceId){
-                if(!isset($this->objRaces[$racesId])){
-                    $this->objRaces[$racesId] = new m_races($racesId);
+                if(!isset($this->objRaces[$raceId])){
+                    $this->objRaces[$raceId] = m_data_Factory::get(lib_def::race, $raceId);
                 }
-                $this->objRaces[$racesId]->addOne();
+                $this->objRaces[$raceId]->addOne();
             }
             //遍历职业 创建模型
             foreach($objChess->jobIds as $jobId){
                 if(!isset($this->objJobs[$jobId])){
-                    $this->objJobs[$jobId] = new m_job($jobId);
+                    $this->objJobs[$jobId] = m_data_Factory::get(lib_def::job, $jobId);
                 }
                 $this->objJobs[$jobId]->addOne();
             }
@@ -71,7 +71,7 @@ class m_team{
                 //     unset($objRace);
                 // }
             }else{
-                $this->allValue += $race->value;
+                $this->allValue += $objRace->value;
                 $this->groupsCount += 1;
             }
         }
@@ -94,17 +94,17 @@ class m_team{
      */
     // public function addChess($chessId)
     // {
-    //     $chess = new m_chess($chessId);
+    //     $chess = new m_object_chess($chessId);
     //     $this->chessCount++;
 
     //     if(!isset($this->races[$chess->raceIds])){
-    //         $this->races[$chess->raceIds] = new m_race($chess->raceIds);
+    //         $this->races[$chess->raceIds] = new m_object_race($chess->raceIds);
     //     }
     //     $this->races[$chess->raceIds]->addOne();
 
     //     foreach($chess->jobIds as $jobId){
     //         if(!isset($this->jobs[$jobId])){
-    //             $this->jobs[$jobId] = new m_job($jobId);
+    //             $this->jobs[$jobId] = new m_object_job($jobId);
     //         }
     //         $this->jobs[$jobId]->addOne();
     //     }

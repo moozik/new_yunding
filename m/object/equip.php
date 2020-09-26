@@ -4,7 +4,7 @@
  * imagePath: "https://game.gtimg.cn/images/lol/act/img/tft/equip/206.png"
  */
 // class m_equip extends m_base_base{
-class m_equip{
+class m_object_equip{
     /**
      * id
      *
@@ -37,7 +37,7 @@ class m_equip{
         if(is_numeric($equipObj)){
             $equipObj = m_dao_race::get($equipObj);
         }
-        $this->id = $equipObj->equipId;
+        $this->equipId = $equipObj->equipId;
         $this->formula = $equipObj->formula;
         $this->type = $equipObj->type;
 
@@ -46,23 +46,5 @@ class m_equip{
         }else if($equipObj->raceId != '0'){
             $this->jobOrRace = (int)$equipObj->raceId;
         }
-    }
-    /**
-     * todo
-     * @return void
-     */
-    function addOne(){
-
-    }
-
-    function getArray()
-    {
-        $ret = [
-            'id'=>$this->id,
-            'count'=>$this->count,
-            'jobOrRace'=>$this->jobOrRace,
-            'isWorkCount'=>$this->isWorkCount,
-        ];
-        return $ret;
     }
 }

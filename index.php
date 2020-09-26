@@ -1,4 +1,6 @@
 <?php
+declare(strict_types=1);
+
 require_once 'sen.php';
 // print_r($_SERVER);exit;
 SEN::init();

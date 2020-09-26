@@ -37,19 +37,18 @@ class m_dao_race{
 
     static function init()
     {
-        $ret = m_dao_base::init(self::$staticKey);
-        self::$version = $ret['version'];
-        self::$season = $ret['season'];
-        self::$time = $ret['time'];
+        $retObj = m_dao_base::init(self::$staticKey);
+        self::$version = $retObj->version;
+        self::$season = $retObj->season;
+        self::$time = $retObj->time;
 
         $newData = [];
-        foreach($ret['data'] as $key => $objItem) {
+        foreach($retObj->data as $key => $objItem) {
             $newData[$objItem->raceId] = $objItem;
         }
         self::$data = $newData;
     }
     /**
-     * 701-710
      * @param int $id
      * @return array
      */
@@ -57,14 +56,4 @@ class m_dao_race{
     {
         return self::$data[$id];
     }
-    /**
-     * 判断id是否合法
-     */
-    // static public function isValid($id)
-    // {
-    //     if($id >= 1 && $id <= 10){
-    //         return true;
-    //     }
-    //     return false;
-    // }
 }

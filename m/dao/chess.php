@@ -37,14 +37,13 @@ class m_dao_chess{
 
     static function init()
     {
-        $ret = m_dao_base::init(self::$staticKey);
-        self::$version = $ret['version'];
-        self::$season = $ret['season'];
-        self::$time = $ret['time'];
+        $retObj = m_dao_base::init(self::$staticKey);
+        self::$version = $retObj->version;
+        self::$season = $retObj->season;
+        self::$time = $retObj->time;
 
         $newData = [];
-        foreach($ret['data'] as $key => $objItem) {
-            // $objItem->id = $key + 200;
+        foreach($retObj->data as $key => $objItem) {
             $newData[$objItem->chessId] = $objItem;
         }
         self::$data = $newData;
@@ -57,14 +56,4 @@ class m_dao_chess{
     {
         return self::$data[$chessId];
     }
-    /**
-     * 判断id是否合法
-     */
-    // static public function isValid($id)
-    // {
-    //     if($id >= 200 && $id <= 280){
-    //         return true;
-    //     }
-    //     return false;
-    // }
 }

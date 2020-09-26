@@ -74,7 +74,8 @@ class SEN
     {
         //自动加载 _分割
         spl_autoload_register(function($className){
-            require_once str_replace('_', DIRECTORY_SEPARATOR, strtolower($className)) . '.php';
+            // require_once str_replace('_', DIRECTORY_SEPARATOR, strtolower($className)) . '.php';
+            require_once str_replace('_', DIRECTORY_SEPARATOR, $className) . '.php';
         });
         self::$rootDir = realpath('.');
         self::$siteUrl = dirname($_SERVER['REQUEST_SCHEME'] . '://' . $_SERVER['HTTP_HOST'] . $_SERVER['SCRIPT_NAME']);
