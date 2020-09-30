@@ -3,113 +3,115 @@
  * 一个阵容
  */
 class m_object_team{
+    //=======数据对象 不做更改
+    //阵容包括的英雄
     public $objChesses = [];
-    public $objEquips = [];
+    // public $objEquips = [];
     public $objJobs = [];
     public $objRaces = [];
 
     /**
      * 羁绊总个数
-     *
-     * @var integer
+     * @var int
      */
-    public $groupsCount = 0;
+    public $groups = [];
+    /**
+     * 生效羁绊总个数
+     * @var int
+     */
+    public $groupsWork = [];
     /**
      * 英雄个数
-     *
      * @var integer
      */
     public $chessCount = 0;
     /**
-     * 总价值
-     *
+     * 阵容总价值
      * @var integer
      */
     public $allValue = 0;
+    
     function __construct($input = [])
     {
         if(!empty($input)){
-            $this->newTeam($input);
+            $this->addTeam($input);
         }
     }
+    /**
+     * 添加一个新英雄
+     * @return bool
+     */
+    public function addChess($chessId){
+        if(array_key_exists($chessId, $this->objChesses)){
+            return false;
+        }
+        $chessObj = m_data_Factory::get(lib_def::chess, $chessId);
+        $this->objChesses[$chessId] = $chessObj;
+
+        //棋子数量
+        $this->chessCount += 1;
+        //总价值
+        $this->allValue += $chessObj->price;
+        //遍历职业 更新职业数量
+        foreach(array_merge($chessObj->jobIds,$chessObj->raceIds) as $jobId => $jobObj){
+            if(array_key_exists($jobId, $this->groups)){
+                $this->groups[$jobId]++;
+                $workCount = $jobObj->workCount($this->groups[$jobId]);
+                if(0 != $workCount){
+                    if($workCount != $this->groupsWork[$jobId]){
+                        //新羁绊
+                        $this->allValue += $workCount;
+                    }
+                    $this->groupsWork[$jobId] = $workCount;
+                }
+            }
+        }
+        return true;
+    }
+    /**
+     * 刷新阵容价值
+     */
+    // public function frashValue(){
+    //     //英雄
+    //     foreach($this->objChesses as &$objChess){
+    //         $this->allValue += $objChess->price;
+    //     }
+
+    // }
     /**
      * 输入chessId列表
      * @param array $team
      * @return void
      */
-    public function newTeam($team)
+    public function addTeam($team)
     {
-        $this->chessCount = count($team);
         //遍历英雄
         foreach($team as $chessId){
-            $objChess = m_data_Factory::get(lib_def::chess, $chessId);
-
-            //遍历种族 创建模型
-            foreach($objChess->raceIds as $raceId){
-                if(!isset($this->objRaces[$raceId])){
-                    $this->objRaces[$raceId] = m_data_Factory::get(lib_def::race, $raceId);
-                }
-                $this->objRaces[$raceId]->addOne();
-            }
-            //遍历职业 创建模型
-            foreach($objChess->jobIds as $jobId){
-                if(!isset($this->objJobs[$jobId])){
-                    $this->objJobs[$jobId] = m_data_Factory::get(lib_def::job, $jobId);
-                }
-                $this->objJobs[$jobId]->addOne();
-            }
-            $this->objChesses[] = $objChess;
+            $this->addChess($chessId);
         }
-        //英雄
-        foreach($this->objChesses as &$objChess){
-            $this->allValue += $objChess->price;
-        }
-        //种族
-        foreach($this->objRaces as &$objRace){
-            if(!$objRace->isWork){
-                // if($objRace->featureCount === 0){
-                //     unset($objRace);
-                // }
-            }else{
-                $this->allValue += $objRace->value;
-                $this->groupsCount += 1;
-            }
-        }
-        //职业
-        foreach($this->objJobs as &$objJob){
-            if(!$objJob->isWork){
-                // if($objJob->featureCount === 0){
-                //     unset($objJob);
-                // }
-            }else{
-                $this->allValue += $objJob->value;
-                $this->groupsCount += 1;
-            }
-        }
+        // //种族
+        // foreach($this->objRaces as &$objRace){
+        //     if(!$objRace->isWork){
+        //         // if($objRace->featureCount === 0){
+        //         //     unset($objRace);
+        //         // }
+        //     }else{
+        //         $this->allValue += $objRace->value;
+        //         $this->groupsCount += 1;
+        //     }
+        // }
+        // //职业
+        // foreach($this->objJobs as &$objJob){
+        //     if(!$objJob->isWork){
+        //         // if($objJob->featureCount === 0){
+        //         //     unset($objJob);
+        //         // }
+        //     }else{
+        //         $this->allValue += $objJob->value;
+        //         $this->groupsCount += 1;
+        //     }
+        // }
     }
-
-    /**
-     * @param $chessId 英雄id >200
-     * @return void
-     */
-    // public function addChess($chessId)
-    // {
-    //     $chess = new m_object_chess($chessId);
-    //     $this->chessCount++;
-
-    //     if(!isset($this->races[$chess->raceIds])){
-    //         $this->races[$chess->raceIds] = new m_object_race($chess->raceIds);
-    //     }
-    //     $this->races[$chess->raceIds]->addOne();
-
-    //     foreach($chess->jobIds as $jobId){
-    //         if(!isset($this->jobs[$jobId])){
-    //             $this->jobs[$jobId] = new m_object_job($jobId);
-    //         }
-    //         $this->jobs[$jobId]->addOne();
-    //     }
-    //     $this->chess[] = $chess;
-    // }
 
     /**
      * 计算阵容价值

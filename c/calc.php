@@ -10,7 +10,6 @@ class c_calc{
         m_dao_job::init();
         m_dao_chess::init();
         m_dao_equip::init();
-
     }
 
     /**
@@ -21,19 +20,22 @@ class c_calc{
         $this->inputCheck();
 
         //获取可用英雄
-        $heroList = $this->canUseHero();
+        $chessList = $this->canUseChess();
         //可用数量
-        $heroCount = count($heroList);
+        $chessCount = count($chessList);
         
-        $chessObj1 = m_data_Factory::get(lib_def::chess, 20);
-        $chessObj2 = m_data_Factory::get(lib_def::chess, 20);
-        // var_dump(memory_get_usage());
-        // $chessObj2 = $this->getChessInstence(20);
-        // var_dump(memory_get_usage());
-        var_dump($chessObj1);
-        var_dump($chessObj2);
-        return;
-        $resultCount = lib_tools::m_chose_n($heroCount, $this->input->forCount);
+        // var_dump(memory_get_usage()/1024/1024);
+        // $ret = [];
+        // for($i=0;$i<2000;$i++){
+        //     foreach(lib_conf::chess_sort as $chessId){
+        //         $ret[] = m_data_Factory::get(lib_def::chess, $chessId);
+        //     }
+        // }
+        // var_dump(memory_get_usage()/1024/1024);
+        // var_dump($chessObj1);
+        // var_dump($chessObj2);
+        // return;
+        $resultCount = lib_tools::m_chose_n($chessCount, $this->input->forCount);
         //die($resultCount);
         //1. 低于 52360的走全遍历模式
         //2. 高于52360的走已有羁绊遍历模式
@@ -51,7 +53,7 @@ class c_calc{
         //保存已使用的棋子
         $usedHero = [];
         foreach($rangeData as $key => $loopCount){
-            foreach(lib_tools::heroCombine($this->canUseHero($usedHero), $loopCount) as $item){
+            foreach(lib_tools::choseIterator($this->canUseChess($usedHero), $loopCount) as $item){
                 $count[$key]++;
             }
             $usedHero = array_merge($usedHero, $item);
@@ -63,7 +65,7 @@ class c_calc{
      * @param array $usedHero
      * @return array
      */
-    private function canUseHero(&$usedHero = [], $raceId = 0, $jobId = 0){
+    private function canUseChess(&$usedHero = [], $raceId = 0, $jobId = 0){
         $ret = [];
         foreach(m_dao_chess::$data as $chess){
             //inHero banHero

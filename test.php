@@ -1,4 +1,8 @@
 <?php
+print_r($_SERVER);
+
+//123
+echo intval('123,456');
 
 $obj = new stdClass();
 

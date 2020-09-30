@@ -16,24 +16,6 @@ class m_object_race extends m_object_groups{
         foreach($raceObj->level as $count => $text){
             $this->level[] = $count;
         }
+        $this->count2level = CONF::races[$this->raceId][1];
     }
-
-    // public function addOne(){
-    //     $this->count++;
-    //     $ret = lib_conf::raceWorkCount($this->id, $this->count);
-    //     if($ret === 0){
-    //         $this->isWork = false;
-    //         $this->isWorkCount = 0;
-    //         $ret = lib_conf::raceWorkCount($this->id, $this->count + 1);
-    //         if(0 != $ret){
-    //             $this->featureCount = $ret;
-    //         }
-    //     }else{
-    //         $this->isWork = true;
-    //         $this->isWorkCount = $ret;
-    //         // $this->value = lib_conf::raceValue($this->id, $ret);
-    //         //featureCount归零
-    //         $this->featureCount = 0;
-    //     }
-    // }
 }

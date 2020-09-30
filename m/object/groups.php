@@ -41,4 +41,17 @@ abstract class m_object_groups{
      * @var int
      */
     // public $featureCount = 0;
+
+    /**
+     * 返回可用羁绊数量
+     * @return int
+     */
+    public function workCount($count){
+        if(array_key_exists($count, $this->count2level)){
+            return $this->count2level[$count];
+        }else{
+            //找不到返回顶级羁绊的数量
+            return $this->count2level[0];
+        }
+    }
 }

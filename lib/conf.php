@@ -22,7 +22,7 @@ class lib_conf{
         9 => [1,2,3,4,5],
     ];
     /**
-     * 羁绊个数级别
+     * 羁绊个数=>有效数量
      */
     const BF_1       = [0=>1, 1=>1];
     const BF_1_2     = [0=>2, 1=>1, 2=>2];
@@ -37,7 +37,7 @@ class lib_conf{
     const BF_3       = [0=>3, 1=>0, 2=>0, 3=>3];
     const BF_3_6     = [0=>6, 1=>0, 2=>0, 3=>3, 4=>3, 5=>3, 6=>6];
     const BF_3_6_9   = [0=>9, 1=>0, 2=>0, 3=>3, 4=>3, 5=>3, 6=>6, 7=>6, 8=>6, 9=>9];
-    
+
     /*
     var data = '';
     races.data.forEach((item, index) => {
@@ -128,7 +128,7 @@ class lib_conf{
     /**
      * 英雄按照价格排序
      */
-    const hero_sort = [
+    const chess_sort = [
         26,//5	时光守护者	基兰
         64,//5	盲僧	李青
         81,//5	探险家	伊泽瑞尔
@@ -194,36 +194,7 @@ class lib_conf{
     ];
     static public function init(){
     }
-    /**
-     * 有效数量
-     * @param int $id
-     * @param int $count
-     * @return int
-     */
-    static public function raceWorkCount($id, $count){
-        // if(!self::$isInit)self::init();
-        if(isset(self::races[$id][1][$count])){
-            return self::races[$id][1][$count];
-        }else{
-            //找不到返回顶级羁绊的数量
-            return self::races[$id][1][0];
-        }
-    }
-    /**
-     * 有效数量
-     * @param int $id
-     * @param int $count
-     * @return int
-     */
-    static public function jobWorkCount($id, $count){
-        // if(!self::$isInit)self::init();
-        if(isset(self::jobs[$id][1][$count])){
-            return self::jobs[$id][1][$count];
-        }else{
-            //找不到返回顶级羁绊的数量
-            return self::jobs[$id][1][0];
-        }
-    }
+
     /**
      * 种族权重
      */

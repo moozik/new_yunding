@@ -28,6 +28,12 @@ class m_object_chess{
      * @var array
      */
     public $jobIds = [];
+    /**
+     * 推荐装备
+     * 
+     * @var array
+     */
+    public $equipIds = [];
     
     /**
      * @param $chessObj
@@ -41,20 +47,8 @@ class m_object_chess{
         $this->chessId = $chessObj->chessId;
         $this->name = $chessObj->title . ' ' . $chessObj->displayName;
         
-        if(is_int($chessObj->raceIds)){
-            $this->raceIds[$chessObj->raceIds] = m_data_Factory::get(lib_def::race, $chessObj->raceIds);
-        }else{
-            $this->raceIds = array_map(function($var){
-                return m_data_Factory::get(lib_def::race, intval($var));
-            }, explode(',', $chessObj->raceIds));
-        }
-
-        if(is_int($chessObj->jobIds)){
-            $this->jobIds[$chessObj->jobIds] = m_data_Factory::get(lib_def::job, $chessObj->jobIds);
-        }else{
-            $this->jobIds = array_map(function($var){
-                return m_data_Factory::get(lib_def::job, intval($var));
-            }, explode(',', $chessObj->jobIds));
-        }
+        $this->raceIds = m_data_Factory::getArr(lib_def::race, $chessObj->raceIds);
+        $this->jobIds = m_data_Factory::getArr(lib_def::job, $chessObj->jobIds);
+        $this->equipIds = m_data_Factory::getArr(lib_def::equip, $chessObj->recEquip);
     }
 }

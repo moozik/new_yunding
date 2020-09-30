@@ -10,41 +10,41 @@ class m_object_equip{
      *
      * @var int
      */
-    public $id;
-    /**
-     * 当前装备数量
-     *
-     * @var int
-     */
-    public $count;
+    public $equipId;
 
     /**
      * 当前装备指向职业或种族
      *
      * @var int
      */
-    public $jobOrRace = 0;
-
+    public $jobId = 0;
+    public $raceId = 0;
     /**
-     * 当前转职装备有效数量
-     *
-     * @var int
+     * 配方
      */
-    public $isWorkCount = 0;
+    public $formula = '';
+    /**
+     * 名字
+     */
+    public $name = '';
+    public $type = 0;
+    public $keywords = '';
 
     function __construct($equipObj)
     {
         if(is_numeric($equipObj)){
-            $equipObj = m_dao_race::get($equipObj);
+            $equipObj = m_dao_equip::get($equipObj);
         }
         $this->equipId = $equipObj->equipId;
         $this->formula = $equipObj->formula;
         $this->type = $equipObj->type;
+        $this->keywords = $equipObj->keywords;
+        $this->name = $equipObj->name;
 
         if($equipObj->jobId != '0'){
-            $this->jobOrRace = (int)$equipObj->jobId;
+            $this->jobId = (int)$equipObj->jobId;
         }else if($equipObj->raceId != '0'){
-            $this->jobOrRace = (int)$equipObj->raceId;
+            $this->raceId = (int)$equipObj->raceId;
         }
     }
 }

@@ -16,6 +16,7 @@ class m_data_Factory{
 
     /**
      * 返回对象
+     * @return object
      */
     static function get(int $key, int $id) : object{
         if(array_key_exists($id, self::$instence[$key])){
@@ -32,5 +33,21 @@ class m_data_Factory{
                 self::$instence[$key][$id] = new m_object_equip($id);break;
         }
         return self::$instence[$key][$id];
+    }
+    /**
+     * 返回数组
+     * @return array
+     */
+    static function getArr(int $key, $id) : array{
+        if(is_int($id) || (is_string($id) && is_numeric($id))){
+            return [$id => self::get($key, intval($id))];
+        }
+        if(is_string($id)){
+            $ret = [];
+            foreach(explode(',', $id) as $idItem){
+                $ret[$idItem] = self::get($key, intval($idItem));
+            }
+            return $ret;
+        }
     }
 }

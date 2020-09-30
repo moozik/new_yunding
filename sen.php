@@ -67,32 +67,45 @@ class SEN
     const VIEW_FILE = [
         'index' => 'index.php',
     ];
-    public static $rootDir = '';
-    public static $siteUrl = '';
-    public static $webDir = '';
-    static function init()
-    {
+    static function init(){
         //自动加载 _分割
         spl_autoload_register(function($className){
             // require_once str_replace('_', DIRECTORY_SEPARATOR, strtolower($className)) . '.php';
             require_once str_replace('_', DIRECTORY_SEPARATOR, $className) . '.php';
         });
-        self::$rootDir = realpath('.');
-        self::$siteUrl = dirname($_SERVER['REQUEST_SCHEME'] . '://' . $_SERVER['HTTP_HOST'] . $_SERVER['SCRIPT_NAME']);
-        self::$webDir = dirname($_SERVER['SCRIPT_NAME']);
+        define('ROOT_DIR', realpath('.'));
+        define('SITE_URL', dirname($_SERVER['REQUEST_SCHEME'] . '://' . $_SERVER['HTTP_HOST'] . $_SERVER['SCRIPT_NAME']));
+
+        // define('WEB_DIR', dirname($_SERVER['SCRIPT_NAME']));
         if(!file_exists(self::log_dir())) {
             mkdir(self::log_dir());
         }
         if(!file_exists(self::cache_dir())) {
             mkdir(self::cache_dir());
         }
+        self::genLogid();
     }
     // static function getAction(){
     //     $action = substr($_SERVER['REDIRECT_URL'], strlen(self::$webDir));
     //     return trim($action, '/');
     // }
-    static function isMe()
-    {
+    
+    static function genLogid(){
+        $arr = gettimeofday();
+        $logId = $arr['sec'] * 100000 + $arr['usec'] / 10 & 2147483647 | 2147483648;
+        define('LOG_ID', $logId);
+    }
+    /**
+     * 开发环境
+     */
+    static function isDevelop(){
+        return 'localhost' === $_SERVER['HTTP_HOST'] || '127.0.0.1' === $_SERVER['HTTP_HOST'];
+    }
+
+    /**
+     * 管理员
+     */
+    static function isMe(){
         if (in_array(self::getIp(), self::IPLIST) || SEN::PASSWORD == $_COOKIE['passwd']) {
             return true;
         } else {
@@ -100,19 +113,17 @@ class SEN
         }
     }
 
-    static function static_url($name)
-    {
+    static function static_url($name){
         if (self::USE_CDN) {
             return implode('/', [self::CDN_URL , self::STATIC_DIR , self::STATIC_FILE[$name]]);
         } else {
-            return implode('/', [self::$siteUrl , self::STATIC_DIR , self::STATIC_FILE[$name]]);
+            return implode('/', [SITE_URL , self::STATIC_DIR , self::STATIC_FILE[$name]]);
         }
     }
     /**
      * 展示视图
      */
-    static function display_page($name)
-    {
+    static function display_page($name){
         $res = debug_backtrace();
         preg_match_all("/_([^_]+)$/", $res[1]['class'], $res);
         require_once self::view_path($res[1][0], $name); 
@@ -120,46 +131,41 @@ class SEN
     /**
      * 视图路径
      */
-    static function view_path($className, $fileName)
-    {
-        return implode(DIRECTORY_SEPARATOR, [self::$rootDir , 'v' , $className, self::VIEW_FILE[$fileName]]);
+    static function view_path($className, $fileName){
+        return implode(DIRECTORY_SEPARATOR, [ROOT_DIR , 'v' , $className, self::VIEW_FILE[$fileName]]);
     }
-    static function static_path($name)
-    {
-        return implode(DIRECTORY_SEPARATOR, [self::$rootDir , self::STATIC_DIR , self::STATIC_FILE[$name]]);
+    static function static_path($name){
+        return implode(DIRECTORY_SEPARATOR, [ROOT_DIR , self::STATIC_DIR , self::STATIC_FILE[$name]]);
     }
-    static function cache_dir()
-    {
-        return implode(DIRECTORY_SEPARATOR, [self::$rootDir , self::CACHE_DIR]);
+    static function cache_dir(){
+        return implode(DIRECTORY_SEPARATOR, [ROOT_DIR , self::CACHE_DIR]);
     }
-    static function log_dir()
-    {
-        return implode(DIRECTORY_SEPARATOR, [self::$rootDir , self::LOG_DIR]);
+    static function log_dir(){
+        return implode(DIRECTORY_SEPARATOR, [ROOT_DIR , self::LOG_DIR]);
     }
-    static function log_file($logFile)
-    {
+    static function log_file($logFile){
         //'.log.'.date('Ymd')
         return implode(DIRECTORY_SEPARATOR, [self::log_dir() , $logFile . '.log.' . date('Y_W')]);
     }
-    static function nice_file()
-    {
-        return implode(DIRECTORY_SEPARATOR, [self::$rootDir , self::NICE_FILE]);
+    static function nice_file(){
+        return implode(DIRECTORY_SEPARATOR, [ROOT_DIR , self::NICE_FILE]);
     }
-    static function ico_url()
-    {
-        return self::$siteUrl . '/' . self::ICO_FILE;
+    static function ico_url(){
+        return SITE_URL . '/' . self::ICO_FILE;
     }
 
-    static function fatalLog($msg)
-    {
+    static function debugLog($msg){
+        if(self::isDevelop()){
+            self::Log($msg, self::log_file('trace'));
+        }
+    }
+    static function fatalLog($msg){
         self::Log($msg, self::log_file('fatal'));
     }
-    static function traceLog($msg)
-    {
+    static function traceLog($msg){
         self::Log($msg, self::log_file('trace'));
     }
-    static function accessLog($msg)
-    {
+    static function accessLog($msg){
         self::Log($msg, self::log_file('access'), false);
     }
     /**
@@ -168,15 +174,14 @@ class SEN
      * @param boolean $short 是否简写
      * @return void
      */
-    static function Log($msg, $file, $short = true)
-    {
+    static function Log($msg, $file, $short = true){
         $ip = self::getIp();
         if($short){
             error_log(
                 sprintf(
-                    "%s[%s]\n[%s]\n",
+                    "%s[LOGID:%s]\n[%s]\n",
                     date('Y-m-d H:i:s'),
-                    $ip,
+                    LOG_ID,
                     $msg
                 ),
                 3,
@@ -189,11 +194,12 @@ class SEN
             }
             error_log(
                 sprintf(
-                    "%s[%s %s%s][%s]\n[%s]\n",
+                    "%s[%s %s%s][logid:%s][%s]\n[%s]\n",
                     date('Y-m-d H:i:s'),
                     $ip,
                     $position['country'],
                     $position['area'],
+                    LOG_ID,
                     $_SERVER['HTTP_USER_AGENT'],
                     $msg
                 ),
@@ -202,8 +208,7 @@ class SEN
             );
         }
     }
-    static function getIp()
-    {
+    static function getIp(){
         foreach (array(
             'HTTP_CLIENT_IP',
             'HTTP_X_FORWARDED_FOR',
@@ -232,8 +237,7 @@ class SEN
         }
         return 'IPERR';
     }
-    static function encode($arr)
-    {
+    static function encode($arr){
         return json_encode($arr, JSON_UNESCAPED_UNICODE);
     }
 }

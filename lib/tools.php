@@ -6,7 +6,7 @@ class lib_tools{
      * @param int $count
      * @return yield
      */
-    static function heroCombine(&$inArr, $count){
+    static function choseIterator(&$inArr, $count){
         $inArrLen = count($inArr);
         if($inArrLen < $count){
             throw new Exception('inArr count error.');
