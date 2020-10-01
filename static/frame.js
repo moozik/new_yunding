@@ -110,11 +110,11 @@ var vm = new Vue({
         //当前羁绊组合
         groupList: [],
         //被ban英雄
-        heroBanList: [],
+        chessBanList: [],
         //当前选中英雄
-        inHeroList: [],
+        inChessList: [],
         //价值筛选
-        heroValue: { 1: true, 2: true, 3: true, 4: true, 5: true },
+        chessValue: { 1: true, 2: true, 3: true, 4: true, 5: true },
         //待计算个数
         teamCount: 9,
         //吃鸡阵容
@@ -128,7 +128,7 @@ var vm = new Vue({
     },
     methods: {
         //判断指定英雄是否属于当前组别
-        checkGroupHero: function (chess, price) {
+        checkGroupChess: function (chess, price) {
             //金额组别不对
             if(chess.price != price){
                 return false;
@@ -184,36 +184,36 @@ var vm = new Vue({
             }
         },
         //绑定英雄池左键
-        clickHero: function (hero) {
-            inHeroList = this.inHeroList;
-            //clickHero
-            ret = this.heroInArray(hero, inHeroList);
+        clickChess: function (chess) {
+            inChessList = this.inChessList;
+            //clickChess
+            ret = this.chessInArray(chess, inChessList);
             if (ret !== false) {
                 //英雄已存在，删除
-                inHeroList.splice(ret, 1);
+                inChessList.splice(ret, 1);
             } else {
                 //英雄不存在，添加
 
                 //10个英雄上限
-                if (inHeroList.length === 10) return;
+                if (inChessList.length === 10) return;
 
                 //添加
-                inHeroList.push(hero);
+                inChessList.push(chess);
             }
             //刷新阵容数量
-            //this.updateTeamCountByClickHero();
+            //this.updateTeamCountByClickChess();
             //刷新金额限制
             //this.updateCost();
         },
         //绑定英雄池右键
-        banHero: function (hero) {
-            heroBanList = this.heroBanList;
-            //banHero
-            ret = this.heroInArray(hero, heroBanList);
+        banChess: function (chess) {
+            chessBanList = this.chessBanList;
+            //banChess
+            ret = this.chessInArray(chess, chessBanList);
             if (ret !== false) {
-                heroBanList.splice(ret, 1);
+                chessBanList.splice(ret, 1);
             } else {
-                heroBanList.push(hero);
+                chessBanList.push(chess);
             }
         },
         //绑定转职装备
@@ -232,8 +232,8 @@ var vm = new Vue({
         //     this.updateCost();
         // },
         //更新阵容数量 by 棋子选择
-        // updateTeamCountByClickHero: function() {
-        //     if(this.inHeroList.length >= 6){
+        // updateTeamCountByClickChess: function() {
+        //     if(this.inChessList.length >= 6){
         //         this.teamCount = 9;
         //     }else{
         //         this.teamCount + 3;
@@ -242,59 +242,59 @@ var vm = new Vue({
         //更新费用限制 by 阵容数量
         updateCostByTeamCount: function() {
             // var teamCount;
-            // if (this.inHeroList.length + this.forCount > 7) {
+            // if (this.inChessList.length + this.forCount > 7) {
             //     teamCount = 7;
             // } else {
-            //     teamCount = this.inHeroList.length + this.forCount;
+            //     teamCount = this.inChessList.length + this.forCount;
             // }
-            // for(let i in this.heroValue){
-            //     this.heroValue[i] = false;
+            // for(let i in this.chessValue){
+            //     this.chessValue[i] = false;
             // }
             var ret = { 1: false, 2: false, 3: false, 4: false, 5: false };
             for (let i in levelArr[this.teamCount]) {
                 ret[levelArr[this.teamCount][i]] = true;
             }
-            this.heroValue = ret;
+            this.chessValue = ret;
         },
-        saveNiceTeam: function (heroList, index) {
-            heroList.weapon = this.weaponListCache;
-            heroList.teamname = $('.teamname'+index).val();
+        saveNiceTeam: function (chessList, index) {
+            chessList.weapon = this.weaponListCache;
+            chessList.teamname = $('.teamname'+index).val();
             $.post(
                 "/yunding/yunding.php?action=niceTeam",
-                { niceTeam: JSON.stringify(heroList) },
+                { niceTeam: JSON.stringify(chessList) },
                 function (result) {
                     alert(result);
                 }
             );
         },
         //判断指定英雄是否在指定数组中 不存在返回false，存在返回下标
-        heroInArray: function (hero, arr) {
+        chessInArray: function (chess, arr) {
             key = false;
-            arr.forEach((heroItem, index) => {
-                if (hero.chessId == heroItem.chessId) {
+            arr.forEach((chessItem, index) => {
+                if (chess.chessId == chessItem.chessId) {
                     key = index;
                 }
             });
             return key;
         },
         valBtn: function (val) {
-            if (this.heroValue[val]) {
+            if (this.chessValue[val]) {
                 //true
-                this.heroValue[val] = false;
+                this.chessValue[val] = false;
             } else {
                 //false
-                this.heroValue[val] = true;
+                this.chessValue[val] = true;
             }
         },
         clearBtn: function () {
-            this.inHeroList.splice(0);
-            //this.heroBanList.splice(0);
+            this.inChessList.splice(0);
+            //this.chessBanList.splice(0);
             this.chickenArmy.splice(0);
             this.chickenArmyPlus.splice(0);
             this.groupChecked = 0;
             this.forCount = 3;
             this.weaponList.splice(0);
-            this.heroValue = {
+            this.chessValue = {
                 1: true,
                 2: true,
                 3: true,
@@ -321,9 +321,9 @@ $(document).on("mouseenter", ".groupBtn", function () {
 /**
  * 鼠标移入英雄图标
  */
-$(document).on("mouseenter", ".heroBtn", function () {
+$(document).on("mouseenter", ".chessBtn", function () {
     $(".synergies-box").css("display", "none");
-    var hero = DATA_chess.data;
+    var chess = DATA_chess.data;
     var ret = vm.chessArr[$(this).attr("data-chessId")];
     ret.equip = [];
     if (typeof ret.recEquip != "undefined") {
@@ -359,47 +359,47 @@ $(document).on("mouseenter", ".heroBtn", function () {
 //提前处理官方js
 // Object.keys(TFTLineup_V3_List).forEach((k) => {
 //     TFTLineup_V3_List[k].idStr = 'detail' + k;
-//     TFTLineup_V3_List[k].early_heroes = TFTLineup_V3_List[k].early_heroes.split(',');
-//     TFTLineup_V3_List[k].metaphase_heroes = TFTLineup_V3_List[k].metaphase_heroes.split(',');
-//     TFTLineup_V3_List[k].line_hero = TFTLineup_V3_List[k].line_hero.split(',');
+//     TFTLineup_V3_List[k].early_chesses = TFTLineup_V3_List[k].early_chesses.split(',');
+//     TFTLineup_V3_List[k].metaphase_chesses = TFTLineup_V3_List[k].metaphase_chesses.split(',');
+//     TFTLineup_V3_List[k].line_chess = TFTLineup_V3_List[k].line_chess.split(',');
 // });
 //匹配官方阵容
 /*function matchLOL() {
     //匹配js中的阵容
-    var heroImgArr = new Array();
-    vm.inHeroList.forEach((hero) => {
-        heroImgArr.push(hero.img);
+    var chessImgArr = new Array();
+    vm.inChessList.forEach((chess) => {
+        chessImgArr.push(chess.img);
     });
-    var early_heroes, result;
+    var early_chesses, result;
     Object.keys(TFTLineup_V3_List).forEach((k) => {
         console.log(TFTLineup_V3_List[k]);
 
-        //early_heroes 匹配前期阵容
-        // if(heroImgArr.length <= 4){
-        //     result = Array.intersect(heroImgArr, TFTLineup_List[k].early_heroes);
+        //early_chesses 匹配前期阵容
+        // if(chessImgArr.length <= 4){
+        //     result = Array.intersect(chessImgArr, TFTLineup_List[k].early_chesses);
         //     if(result.length === 3){
         //         vm.chickenArmyPlus.push(TFTLineup_List[k]);
         //         return true;
         //     }
         // }
-        //匹配中期 metaphase_heroes 中期阵容
-        if (heroImgArr.length >= 4) {
+        //匹配中期 metaphase_chesses 中期阵容
+        if (chessImgArr.length >= 4) {
             result = Array.intersect(
-                heroImgArr,
-                TFTLineup_V3_List[k].metaphase_heroes
+                chessImgArr,
+                TFTLineup_V3_List[k].metaphase_chesses
             );
-            if (heroImgArr.length - result.length <= 1) {
+            if (chessImgArr.length - result.length <= 1) {
                 vm.chickenArmyPlus.push(TFTLineup_V3_List[k]);
                 return true;
             }
         }
-        //匹配后期 line_hero 成型阵容
-        if (heroImgArr.length >= 4) {
+        //匹配后期 line_chess 成型阵容
+        if (chessImgArr.length >= 4) {
             result = Array.intersect(
-                heroImgArr,
-                TFTLineup_V3_List[k].line_hero
+                chessImgArr,
+                TFTLineup_V3_List[k].line_chess
             );
-            if (heroImgArr.length - result.length <= 2) {
+            if (chessImgArr.length - result.length <= 2) {
                 vm.chickenArmyPlus.push(TFTLineup_V3_List[k]);
                 return true;
             }
@@ -416,59 +416,60 @@ $("#runBtn").click(function () {
 
     //拼接数据
     var getData = {
+        //天选羁绊
         theOne: (vm.theOneJob) != 0 ? vm.theOneJob : vm.theOneRace,
-        inHero: new Array(),
-        costList: new Array(),
-        banHero: new Array(),
-        forCount: vm.teamCount - vm.inHeroList.length,
+        //队伍成员个数
+        teamCount: vm.teamCount,
+        inChess: new Array(),
+        banChess: new Array(),
         weapon: new Array(),
+        costList: new Array(),
     };
-    vm.inHeroList.forEach((e) => {
-        getData.inHero.push(e.chessId);
+    vm.inChessList.forEach((e) => {
+        getData.inChess.push(parseInt(e.chessId));
     });
-    vm.heroBanList.forEach((e) => {
-        getData.banHero.push(e.chessId);
+    vm.chessBanList.forEach((e) => {
+        getData.banChess.push(parseInt(e.chessId));
     });
     vm.weaponList.forEach((e) => {
-        getData.weapon.push((e.jobId) != '0' ? e.jobId : e.raceId);
+        getData.weapon.push((e.jobId) != '0' ? (parseInt(e.jobId) + 100) : parseInt(e.raceId));
     });
-    // console.log(vm.heroValue);
-    for (var i in vm.heroValue) {
-        if (vm.heroValue[i]) {
+    // console.log(vm.chessValue);
+    for (var i in vm.chessValue) {
+        if (vm.chessValue[i]) {
             getData.costList.push(parseInt(i));
         }
     }
     //请求接口
     $.getJSON({
-        url: "calc",
+        url: "teamCalc",
         data: {
-            action: "calc",
             data: JSON.stringify(getData),
         },
         success: function (ret) {
-            if (0 == ret["errno"]) {
+            if ('ok' == ret["msg"]) {
                 displayPage(ret["data"]);
             } else {
-                alert(ret["errmsg"]);
+                alert(ret["msg"]);
             }
         },
     });
 });
 function displayPage(ret) {
     // console.log(ret);
-    var hero = [];
+    var chess = [];
     var group = [];
     var groupArr = vm.groupArr;
     ret.forEach((item, index) => {
-        hero = [];
+        chess = [];
         group = [];
         //组合英雄对象
         item[0].forEach((hId) => {
             // console.log(hId);
-            hero.push({
-                name: heroArr[hId][0],
-                img: heroArr[hId][3],
-                title: heroArr[hId][7],
+            chess.push({
+                name: chessArr[hId][0],
+                img: chessArr[hId][3],
+                title: chessArr[hId][7],
             });
         });
         //组合羁绊对象 组合羁绊图片对象
@@ -506,12 +507,12 @@ function displayPage(ret) {
         });
         //压入结果集，展示结果
         vm.chickenArmy.push({
-            hero: hero,
+            chess: chess,
             group: group,
             score: item[5],
             tips: item[8],
             op: item[9],
         });
-        // console.log(hero,group);
+        // console.log(chess,group);
     });
 }

@@ -53,6 +53,7 @@ class SEN
         'equip' => 'equip.json',
     ];
     const REMOTE_URL = [
+        //https://game.gtimg.cn/images/lol/act/img/tft/js/10.19-2020.S4/chess.js
         'chess' => 'http://game.gtimg.cn/images/lol/act/img/tft/js/chess.js',
         'race' => 'http://game.gtimg.cn/images/lol/act/img/tft/js/race.js',
         'job' => 'http://game.gtimg.cn/images/lol/act/img/tft/js/job.js',
@@ -154,19 +155,19 @@ class SEN
         return SITE_URL . '/' . self::ICO_FILE;
     }
 
-    static function debugLog($msg){
+    static function debugLog(string $name, string $msg){
         if(self::isDevelop()){
-            self::Log($msg, self::log_file('trace'));
+            self::Log($name, $msg, self::log_file('trace'));
         }
     }
-    static function fatalLog($msg){
-        self::Log($msg, self::log_file('fatal'));
+    static function fatalLog(string $name, string $msg){
+        self::Log($name, $msg, self::log_file('fatal'));
     }
-    static function traceLog($msg){
-        self::Log($msg, self::log_file('trace'));
+    static function traceLog(string $name, string $msg){
+        self::Log($name, $msg, self::log_file('trace'));
     }
-    static function accessLog($msg){
-        self::Log($msg, self::log_file('access'), false);
+    static function accessLog(string $name, string $msg){
+        self::Log($name, $msg, self::log_file('access'), false);
     }
     /**
      * @param string $msg
@@ -174,12 +175,12 @@ class SEN
      * @param boolean $short 是否简写
      * @return void
      */
-    static function Log($msg, $file, $short = true){
+    static function Log($name, $msg, $file, $short = true){
         $ip = self::getIp();
         if($short){
             error_log(
                 sprintf(
-                    "%s[LOGID:%s]\n[%s]\n",
+                    "%s[logid:%s]\n%s\n",
                     date('Y-m-d H:i:s'),
                     LOG_ID,
                     $msg
@@ -194,7 +195,7 @@ class SEN
             }
             error_log(
                 sprintf(
-                    "%s[%s %s%s][logid:%s][%s]\n[%s]\n",
+                    "%s[%s-%s%s][logid:%s][%s]\n[%s]\n",
                     date('Y-m-d H:i:s'),
                     $ip,
                     $position['country'],
@@ -236,9 +237,6 @@ class SEN
             }
         }
         return 'IPERR';
-    }
-    static function encode($arr){
-        return json_encode($arr, JSON_UNESCAPED_UNICODE);
     }
 }
 

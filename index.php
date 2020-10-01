@@ -6,7 +6,7 @@ require_once 'sen.php';
 SEN::init();
 $route = [
     'index',
-    'calc',
+    'teamCalc',
     'tools',
 ];
 // $action = $_SERVER['QUERY_STRING'];
@@ -17,12 +17,12 @@ if(empty($action)){
 if(in_array($action, $route)){
     $controlName = 'c_' . $action;
     if(class_exists($controlName)){
-        try{
-            $obj = new $controlName();
-            $obj->execute();
-        }catch(Exception $e){
-            echo $e->getMessage();
-        }
+        // try{
+        $obj = new $controlName();
+        $obj->execute();
+        // }catch(Exception $e){
+        //     echo $e->getMessage();
+        // }
     }else{
         echo 'controler nofound.';
     }

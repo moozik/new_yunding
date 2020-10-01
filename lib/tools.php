@@ -97,4 +97,17 @@ class lib_tools{
         }
         return $fn;
     }
+
+    static function encode($arr){
+        return json_encode($arr, JSON_UNESCAPED_UNICODE);
+    }
+
+    /**
+     * 数组成员类型转为int
+     */
+    static function arrIntval($arr){
+        return array_map(function($var){
+            return intval($var);
+        },$arr);
+    }
 }

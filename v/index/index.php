@@ -100,23 +100,23 @@
             <div class="col-md-4 column">
                 <span class="large-title">已选阵容</span><span>(英雄池左键添加，再次点击取消)</span>
                 <div class="lineTwo" style="min-height: 50px;">
-                    <div class="hero-list">
-                        <div :title="hero.description" v-for="hero in inHeroList" v-on:click="clickHero(hero)" :class="'hi_'+hero.TFTID">
+                    <div class="chess-list">
+                        <div :title="chess.description" v-for="chess in inChessList" v-on:click="clickChess(chess)" :class="'hi_'+chess.TFTID">
                         </div>
                     </div>
                 </div>
 
                 <span class="large-title">禁用英雄</span><span>(英雄池右键添加，再次点击取消)</span>
                 <div class="lineTwo" style="min-height: 50px;">
-                    <div class="hero-list">
-                        <div :title="hero.description" v-for="hero in heroBanList" v-on:click="banHero(hero)" :class="'hi_'+hero.TFTID">
+                    <div class="chess-list">
+                        <div :title="chess.description" v-for="chess in chessBanList" v-on:click="banChess(chess)" :class="'hi_'+chess.TFTID">
                         </div>
                     </div>
                 </div>
 
                 <span class="large-title">已选装备</span><span>(将计算转职装备，再次点击取消)</span>
                 <div class="lineTwo" style="min-height: 50px;">
-                    <div class="hero-list">
+                    <div class="chess-list">
                         <div :title="weapon.title" v-for="(weapon,index) in weaponList" v-on:click="delWeapon(index)">
                             <img :src="weapon.imagePath" />
                         </div>
@@ -132,7 +132,7 @@
                 <span>职业:</span>
                 <select v-model="theOneJob" class="form-control" v-on:change="theOneRace = 0">
                     <option value="0">-</option>
-                    <option v-for="(group,index) in jobArr" :value="group.jobId">{{group.name}}</option>
+                    <option v-for="(group,index) in jobArr" :value="parseInt(group.jobId) + 100">{{group.name}}</option>
                 </select>
             </div>
 
@@ -140,15 +140,14 @@
                 <span class="large-title">英雄池</span>
                 <p style="font-size:14px;">左键添加到'已选阵容'，右键添加到'禁用英雄'。再次点击可以取消选择或取消禁用。</p>
                 <div style="min-height:270px">
-                    <div class="hero-list" v-for="price in 5">
-                        <div :title="chess.description" v-for="chess in chessArr" v-if="checkGroupHero(chess, price)" v-on:click.left="clickHero(chess)" @contextmenu.prevent="banHero(chess)" :data-chessId="chess.chessId" class="heroBtn" :class="'hi_'+chess.TFTID">
+                    <div class="chess-list" v-for="price in 5">
+                        <div :title="chess.description" v-for="chess in chessArr" v-if="checkGroupChess(chess, price)" v-on:click.left="clickChess(chess)" @contextmenu.prevent="banChess(chess)" :data-chessId="chess.chessId" class="chessBtn" :class="'hi_'+chess.TFTID">
                         </div>
                     </div>
-
                 </div>
                 <span class="large-title">转职装备</span>
                 <p style="font-size:14px;">装备可以重复选择，点击左侧'已选装备'可以取消选择。</p>
-                <div class="hero-list">
+                <div class="chess-list">
                     <div :title="weapon.title" v-for="(weapon,index) in equipArr" v-on:click.left="clickWeapon(weapon)">
                         <img :src="weapon.imagePath" />
                     </div>
@@ -164,11 +163,11 @@
             <div class="col-md-4 column">
                 <span class="large-title">筛选价格</span>
                 <div class="btn-group btn-group-toggle" data-toggle="buttons"></div>
-                <button type="button" class="btn" v-bind:class="{'btn-primary':heroValue[1]}" v-on:click="valBtn(1)">1 <i class="fa fa-rmb"></i></button>
-                <button type="button" class="btn" v-bind:class="{'btn-primary':heroValue[2]}" v-on:click="valBtn(2)">2 <i class="fa fa-rmb"></i></button>
-                <button type="button" class="btn" v-bind:class="{'btn-primary':heroValue[3]}" v-on:click="valBtn(3)">3 <i class="fa fa-rmb"></i></button>
-                <button type="button" class="btn" v-bind:class="{'btn-primary':heroValue[4]}" v-on:click="valBtn(4)">4 <i class="fa fa-rmb"></i></button>
-                <button type="button" class="btn" v-bind:class="{'btn-primary':heroValue[5]}" v-on:click="valBtn(5)">5 <i class="fa fa-rmb"></i></button>
+                <button type="button" class="btn" v-bind:class="{'btn-primary':chessValue[1]}" v-on:click="valBtn(1)">1 <i class="fa fa-rmb"></i></button>
+                <button type="button" class="btn" v-bind:class="{'btn-primary':chessValue[2]}" v-on:click="valBtn(2)">2 <i class="fa fa-rmb"></i></button>
+                <button type="button" class="btn" v-bind:class="{'btn-primary':chessValue[3]}" v-on:click="valBtn(3)">3 <i class="fa fa-rmb"></i></button>
+                <button type="button" class="btn" v-bind:class="{'btn-primary':chessValue[4]}" v-on:click="valBtn(4)">4 <i class="fa fa-rmb"></i></button>
+                <button type="button" class="btn" v-bind:class="{'btn-primary':chessValue[5]}" v-on:click="valBtn(5)">5 <i class="fa fa-rmb"></i></button>
 
                 <span class="large-title">阵容棋子数</span>
                 <!-- <div class="btn-group btn-group-toggle" data-toggle="buttons">
@@ -208,23 +207,23 @@
                                 <p>{{army.characteristic}}</p>
                                 <b>前期：</b>
                                 <p>{{army.early_point}}</p>
-                                <div class="hero-list">
-                                    <div v-for="heroItem in army.early_heroes">
-                                        <img :src="heroImg(heroItem)" />
+                                <div class="chess-list">
+                                    <div v-for="chessItem in army.early_chesses">
+                                        <img :src="chessImg(chessItem)" />
                                     </div>
                                 </div>
                                 <b>中期：</b>
                                 <p>{{army.metaphase_point}}</p>
-                                <div class="hero-list">
-                                    <div v-for="heroItem in army.metaphase_heroes">
-                                        <img :src="heroImg(heroItem)" />
+                                <div class="chess-list">
+                                    <div v-for="chessItem in army.metaphase_chesses">
+                                        <img :src="chessImg(chessItem)" />
                                     </div>
                                 </div>
                                 <b>后期阵容：</b>
                             </div>
-                            <div class="hero-list">
-                                <div v-for="heroItem in army.line_hero">
-                                    <img :src="heroImg(heroItem)" />
+                            <div class="chess-list">
+                                <div v-for="chessItem in army.line_chess">
+                                    <img :src="chessImg(chessItem)" />
                                 </div>
                             </div>
 
@@ -235,11 +234,11 @@
                 <span class="large-title">最优阵容</span>
                 <div v-for="army in chickenArmy" class="traits">
                     <!--英雄列表-->
-                    <div class="hero-list result">
-                        <div :title="heroItem.title" v-for="heroItem in army.hero" :class="'hi_'+heroItem.img">
+                    <div class="chess-list result">
+                        <div :title="chessItem.title" v-for="chessItem in army.chess" :class="'hi_'+chessItem.img">
                         </div>
                     </div>
-                    <div class="hero-list result">
+                    <div class="chess-list result">
                         <button type="button" class="btn btn-secondary" disabled="disabled">分数:{{army.score}}</button>
                         <button type="button" class="btn btn-info" disabled="disabled">强度:{{army.op}}</button>
                         <button v-if="army.tips" type="button" class="btn btn-success" disabled="disabled">{{army.tips}}</button>
@@ -315,14 +314,14 @@
     <!--阵容推荐-->
     <!--<script src="//lol.qq.com/act/AutoCMS/publish/LOLAct/TFTLineup_V3/TFTLineup_V3.js"></script>-->
     <!--所有英雄列表-->
-    <!--<script src="http://game.gtimg.cn/images/lol/act/img/js/heroList/hero_list.js"></script>-->
+    <!--<script src="http://game.gtimg.cn/images/lol/act/img/js/chessList/chess_list.js"></script>-->
     <!--元素效果-->
     <!--<script src="//lol.qq.com/act/AutoCMS/publish/LOLAct/TFTrace/TFTrace.js"></script>-->
     <!--职业效果-->
     <!--<script src="//lol.qq.com/act/AutoCMS/publish/LOLAct/TFTjob/TFTjob.js"></script>-->
     <!--英雄-->
-    <!--<script src="//lol.qq.com/act/AutoCMS/publish/LOLAct/TFTHeroesData_V3/TFTHeroesData_V3.js"></script>-->
-    <!--<script src="//lol.qq.com/act/AutoCMS/publish/LOLAct/TFTHeroesData/TFTHeroesData.js"></script>-->
+    <!--<script src="//lol.qq.com/act/AutoCMS/publish/LOLAct/TFTChessesData_V3/TFTChessesData_V3.js"></script>-->
+    <!--<script src="//lol.qq.com/act/AutoCMS/publish/LOLAct/TFTChessesData/TFTChessesData.js"></script>-->
 
     <!--装备-->
     <!--<script src="//lol.qq.com/act/AutoCMS/publish/LOLAct/TFTequipment_V3/TFTequipment_V3.js"></script>-->
