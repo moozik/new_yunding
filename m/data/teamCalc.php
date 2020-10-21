@@ -8,6 +8,7 @@ class m_data_teamCalc{
     private $weapon = [];
     private $costList = [1,2,3,4,5];
     
+    //可用的所有英雄
     private $chess = [];
     function __construct()
     {
@@ -25,6 +26,12 @@ class m_data_teamCalc{
         //获取英雄 阵容 金额 天选 转职装备
         $this->chess = $this->getChessArr();
         //todo
+        /**
+         * 1、找出当前可用，可遍历的所有羁绊，循环
+         *      限制条件有：
+         *          羁绊的人数要求：天选+装备+英雄羁绊
+         *          羁绊的英雄要求：是否够金额，是否被ban
+         */
     }
 
     
@@ -38,7 +45,7 @@ class m_data_teamCalc{
         foreach(m_dao_chess::$data as $chess){
             //inChess banChess
             if(in_array($chess->chessId, $this->inChess)
-            || in_array($chess->chessId, $this->banChess)){
+                || in_array($chess->chessId, $this->banChess)){
                 continue;
             }
             //costList
