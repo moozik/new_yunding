@@ -1,7 +1,7 @@
 <?php
 class lib_tools{
     /**
-     * 英雄组合生成器
+     * 组合生成器
      * @param array $inArr
      * @param int $count
      * @return yield
@@ -98,16 +98,40 @@ class lib_tools{
         return $fn;
     }
 
-    static function encode($arr){
-        return json_encode($arr, JSON_UNESCAPED_UNICODE);
-    }
-
     /**
      * 数组成员类型转为int
+     * @return array
      */
     static function arrIntval($arr){
         return array_map(function($var){
             return intval($var);
         },$arr);
+    }
+
+    /**
+     * 根据json原数据生成levelmap数组
+     * @return array
+     */
+    static function getLevelMap($obj) : array{
+        if(isset($obj->raceId) && '9' == $obj->raceId){
+            //忍者特殊处理
+            return [0=>4, 1=>1, 2=>0, 3=>0, 4=>4];
+        }
+        $ret = [];
+        // var_dump($obj->level);exit;
+        foreach(array_keys((array)$obj->level) as $count){
+            $ret[$count] = $count;
+        }
+        //默认顶级羁绊个数
+        $ret[0] = $count;
+        if(!array_key_exists(1, $ret)){
+            $ret[1] = 0;
+        }
+        for($i = 2; $i < $count; $i++){
+            if(!array_key_exists($i, $ret)){
+                $ret[$i] = $ret[$i - 1];
+            }
+        }
+        return $ret;
     }
 }

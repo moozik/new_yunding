@@ -127,7 +127,7 @@
                 <span>特质:</span>
                 <select v-model="theOneRace" class="form-control" v-on:change="theOneJob = 0">
                     <option value="0">-</option>
-                    <option v-for="(group,index) in raceArr" :value="group.raceId">{{group.name}}</option>
+                    <option v-for="(group,index) in raceArr" :value="parseInt(group.raceId)">{{group.name}}</option>
                 </select>
                 <span>职业:</span>
                 <select v-model="theOneJob" class="form-control" v-on:change="theOneRace = 0">

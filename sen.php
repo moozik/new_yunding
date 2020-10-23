@@ -155,19 +155,23 @@ class SEN
         return SITE_URL . '/' . self::ICO_FILE;
     }
 
-    static function debugLog(string $name, string $msg){
+    static function debugLog(string $name, $msg){
         if(self::isDevelop()){
-            self::Log($name, $msg, self::log_file('trace'));
+            if(is_array($msg))
+                $msg = print_r($msg, 1);
+            if(is_object($msg))
+                $msg = lib_string::encode($msg);
+            self::Log('DEBUG', $name, $msg, self::log_file('trace'));
         }
     }
     static function fatalLog(string $name, string $msg){
-        self::Log($name, $msg, self::log_file('fatal'));
+        self::Log('FATAL', $name, $msg, self::log_file('fatal'));
     }
     static function traceLog(string $name, string $msg){
-        self::Log($name, $msg, self::log_file('trace'));
+        self::Log('TRACE', $name, $msg, self::log_file('trace'));
     }
     static function accessLog(string $name, string $msg){
-        self::Log($name, $msg, self::log_file('access'), false);
+        self::Log('TRACE', $name, $msg, self::log_file('access'), false);
     }
     /**
      * @param string $msg
@@ -175,14 +179,16 @@ class SEN
      * @param boolean $short 是否简写
      * @return void
      */
-    static function Log($name, $msg, $file, $short = true){
+    static function Log($logType, $name, $msg, $file, $short = true){
         $ip = self::getIp();
         if($short){
             error_log(
                 sprintf(
-                    "%s[logid:%s]\n%s\n",
+                    "%s-%s[logid:%s]\n%s:%s\n",
+                    $logType,
                     date('Y-m-d H:i:s'),
                     LOG_ID,
+                    $name,
                     $msg
                 ),
                 3,
@@ -195,7 +201,8 @@ class SEN
             }
             error_log(
                 sprintf(
-                    "%s[%s-%s%s][logid:%s][%s]\n[%s]\n",
+                    "%s-%s[%s-%s%s][logid:%s][%s]\n[%s]\n",
+                    $logType,
                     date('Y-m-d H:i:s'),
                     $ip,
                     $position['country'],

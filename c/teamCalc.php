@@ -3,8 +3,7 @@
 class c_teamCalc extends lib_controlerBase{
     private $usedHero = [];
 
-    public function init()
-    {
+    public function init(){
         $this->teamData = new m_data_teamCalc();
     }
     /**
@@ -29,9 +28,9 @@ class c_teamCalc extends lib_controlerBase{
     /**
      * 组装返回结构
      */
-    public function display(){
-        //todo
-        return;
-    }
+    // public function display(){
+    //     //todo
+    //     return;
+    // }
 
 }

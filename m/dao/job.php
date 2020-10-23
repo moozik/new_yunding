@@ -12,9 +12,9 @@ class m_dao_job{
     /**
      * json[data]对象
      *
-     * @var object
+     * @var array
      */
-    static public $data;
+    static public $data = [];
 
     /**
      * 版本
@@ -35,6 +35,10 @@ class m_dao_job{
      */
     static public $time;
 
+    /**
+     * Gid有效个数map
+     */
+    static public $GidMap = [];
     static function init()
     {
         $retObj = m_dao_base::init(self::$staticKey);
@@ -42,18 +46,10 @@ class m_dao_job{
         self::$season = $retObj->season;
         self::$time = $retObj->time;
 
-        $newData = [];
         foreach($retObj->data as $key => $objItem) {
-            $newData[$objItem->jobId] = $objItem;
+            self::$data[$objItem->jobId] = $objItem;
+            self::$GidMap[$objItem->jobId + 100] = lib_tools::getLevelMap($objItem);
         }
-        self::$data = $newData;
-    }
-    /**
-     * @param int $id
-     * @return array
-     */
-    static public function get($id)
-    {
-        return self::$data[$id];
+        // sen::debugLog('job GidMap', self::$GidMap);
     }
 }

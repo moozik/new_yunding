@@ -8,7 +8,7 @@ class m_object_race extends m_object_groups{
     function __construct($raceObj)
     {
         if(is_numeric($raceObj)){
-            $raceObj = m_dao_race::get($raceObj);
+            $raceObj = m_dao_race::$data[$raceObj];
         }
         $this->raceId = $raceObj->raceId;
         $this->name = $raceObj->name;
@@ -16,6 +16,6 @@ class m_object_race extends m_object_groups{
         foreach($raceObj->level as $count => $text){
             $this->level[] = $count;
         }
-        $this->count2level = CONF::races[$this->raceId][1];
+        $this->count2level = lib_conf::races[$this->raceId][1];
     }
 }

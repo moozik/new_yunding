@@ -1,6 +1,6 @@
 <?php
 /**
- * 每个棋子 职业 种族之存储一个对象
+ * 每个棋子 职业 种族只存储一个对象
  */
 class m_data_Factory{
 
@@ -13,7 +13,6 @@ class m_data_Factory{
         lib_def::race => [],
         lib_def::equip => []
     ];
-
     /**
      * 返回对象
      * @return object
@@ -46,6 +45,22 @@ class m_data_Factory{
             $ret = [];
             foreach(explode(',', $id) as $idItem){
                 $ret[$idItem] = self::get($key, intval($idItem));
+            }
+            return $ret;
+        }
+    }
+    /**
+     * 返回数组
+     * @return array
+     */
+    static function getJobArr(int $key, $id) : array{
+        if(is_int($id) || (is_string($id) && is_numeric($id))){
+            return [($id + 100) => self::get($key, intval($id))];
+        }
+        if(is_string($id)){
+            $ret = [];
+            foreach(explode(',', $id) as $idItem){
+                $ret[($idItem+100)] = self::get($key, intval($idItem));
             }
             return $ret;
         }

@@ -8,14 +8,17 @@ class m_object_job extends m_object_groups{
     function __construct($jobObj)
     {
         if(is_numeric($jobObj)){
-            $jobObj = m_dao_job::get($jobObj);
+            if($jobObj > 100){
+                $jobObj -= 100;
+            }
+            $jobObj = m_dao_job::$data[$jobObj];
         }
-        $this->jobId = $jobObj->jobId;
+        $this->jobId = $jobObj->jobId + 100;
         $this->name = $jobObj->name;
         $this->level = [];
         foreach($jobObj->level as $count => $text){
             $this->level[] = $count;
         }
-        $this->count2level = CONF::jobs[$this->jobId][1];
+        $this->count2level = lib_conf::jobs[$jobObj->jobId][1];
     }
 }

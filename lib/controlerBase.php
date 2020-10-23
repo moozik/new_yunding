@@ -15,11 +15,6 @@ abstract class lib_controlerBase{
 
     public function __construct()
     {
-        //初始化dao
-        // m_dao_race::init();
-        // m_dao_job::init();
-        // m_dao_chess::init();
-        // m_dao_equip::init();
         $this->init();
     }
 
@@ -69,6 +64,6 @@ abstract class lib_controlerBase{
      * 展示
      */
     protected function display(){
-        echo lib_tools::encode($this->result);
+        echo lib_string::encode($this->result);
     }
 }
