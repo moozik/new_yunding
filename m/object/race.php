@@ -11,6 +11,7 @@ class m_object_race extends m_object_groups{
             $raceObj = m_dao_race::$data[$raceObj];
         }
         $this->raceId = $raceObj->raceId;
+        $this->GId = $raceObj->raceId;
         $this->name = $raceObj->name;
         $this->level = [];
         foreach($raceObj->level as $count => $text){

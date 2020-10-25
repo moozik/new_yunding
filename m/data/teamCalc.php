@@ -48,7 +48,10 @@ class m_data_teamCalc{
 
         //当前可选羁绊
         $this->getCount2Gid($this->freeCount2Gid, $this->inputGid2count, $this->freeGid2count, $this->req);
-        sen::debugLog('freeCount2Gid', $this->freeCount2Gid);
+        sen::debugLog('freeCount2Gid', array_map(function($v){
+            $v[lib_def::Gid] = lib_tools::Gid2Name($v[lib_def::Gid]);
+            return $v;
+        },$this->freeCount2Gid));
 
         return $this->freeCount2Gid;
     }
@@ -76,31 +79,43 @@ class m_data_teamCalc{
             // }else{
             //     continue;
             // }
+
+            //遍历对应羁绊的 羁绊有效个数map
             foreach(self::$GidLevelMap[$Gid] as $countIn => $countRet){
                 // echo "a,$countIn=>$countRet\n";
-                //从已有英雄个数对应羁绊的下一位开始计算
-                if(0 === $countIn || $countIn <= $existCount || ($countIn - $existCount) > $req->freePosition){
+                
+                //跳过0位
+                if(0 === $countIn){
                     continue;
                 }
-                // echo "b,$countIn=>$countRet\n";
-                /**
-                 * 可选羁绊($countIn)命中条件
-                 * 1. 可选羁绊个数 == 有效羁绊个数 | $countIn == $countRet
-                 * 2. 可选羁绊个数 《= 当前可用羁绊个数 | $countIn 《= $freeGid2count[$Gid]
-                 * 3. 
-                 */
+                //跳过当前既有羁绊的个数 比如传入3三国，便不再考虑三国*3
+                if($countIn <= $existCount){
+                    continue;
+                }
+                //当前羁绊所需个数-已有个数 > 当前剩余位置
+                if(($countIn - $existCount) > $req->freePosition){
+                    continue;
+                }
+                //可选羁绊个数 != 有效羁绊个数
                 if($countIn != $countRet){
                     continue;
                 }
+                //可选羁绊个数 > 当前可用羁绊个数
                 if($countIn > $freeGid2count[$Gid]){
                     continue;
                 }
                 //可选羁绊
-                if(isset($freeCount2Gid[$countIn])){
-                    $freeCount2Gid[$countIn][] = $Gid;
-                }else{
-                    $freeCount2Gid[$countIn] = [$Gid];
-                }
+                $freeCount2Gid[] = [
+                    lib_def::Gid => $Gid,
+                    lib_def::Gcount => $countIn,
+                    lib_def::Gneed => $countIn - $existCount,
+                ];
+                //$Gid;
+                // if(isset($freeCount2Gid[$countIn])){
+                //     $freeCount2Gid[$countIn][] = $Gid;
+                // }else{
+                //     $freeCount2Gid[$countIn] = [$Gid];
+                // }
             }
         }
     }
@@ -135,28 +150,6 @@ class m_data_teamCalc{
         foreach($req->weapon as $Gid){
             lib_number::numberAddOrDefault($inputGid2count[$Gid], 1);
         }
-    }
-    /**
-     * 获取可用英雄列表
-     * @param m_object_teamCalcReq $req
-     * @return array
-     */
-    static function getFreeChess(m_object_teamCalcReq $req){
-        $ret = [];
-        foreach(m_dao_chess::$data as $chess){
-            //inChess banChess
-            if(in_array($chess->chessId, $req->inChess)
-                || in_array($chess->chessId, $req->banChess)){
-                continue;
-            }
-            //costList
-            if(!in_array($chess->price, $req->costList)){
-                continue;
-            }
-            $ret[] = $chess->chessId;
-        }
-        SEN::debugLog('getFreeChess', print_r($ret, true));
-        return $ret;
     }
 
     /**

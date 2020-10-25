@@ -134,4 +134,31 @@ class lib_tools{
         }
         return $ret;
     }
+
+    /**
+     * Debug:
+     * 递归转换Gid为羁绊名称
+     */
+    static function Gid2NameArr($arr){
+        foreach($arr as $k => &$v){
+            if(is_array($v)){
+                $v = self::Gid2NameArr($v);
+            }
+            if(is_int($v)){
+                $v = self::Gid2Name($v);
+            }
+        }
+        return $arr;
+    }
+
+    /**
+     * 转换Gid为羁绊名称
+     */
+    static function Gid2Name($Gid){
+        if($Gid > 100){
+            return m_dao_job::$data[$Gid - 100]->name;
+        }else{
+            return m_dao_race::$data[$Gid]->name;
+        }
+    }
 }

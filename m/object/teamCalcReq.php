@@ -73,7 +73,35 @@ class m_object_teamCalcReq{
         if(empty($this->costList)){
             throw new Exception("参数错误costList");
         }
-        $this->chessArr = m_data_teamCalc::getFreeChess($this);
-        SEN::debugLog('m_object_teamCalcReq', serialize($this));
+        $this->chessArr = self::getFreeChess($this);
+        $this->chessArrObj = self::getFreeChess($this, true);
+        // SEN::debugLog('m_object_teamCalcReq', serialize($this));
+    }
+
+    /**
+     * 获取可用英雄列表
+     * @param m_object_teamCalcReq $req
+     * @return array
+     */
+    static function getFreeChess(m_object_teamCalcReq $req, $isObj = false){
+        $ret = [];
+        foreach(m_dao_chess::$data as $chess){
+            //inChess banChess
+            if(in_array($chess->chessId, $req->inChess)
+                || in_array($chess->chessId, $req->banChess)){
+                continue;
+            }
+            //costList
+            if(!in_array($chess->price, $req->costList)){
+                continue;
+            }
+            if($isObj){
+                $ret[] = m_data_Factory::get(lib_def::chess, $chess->chessId);
+            }else{
+                $ret[] = $chess->chessId;
+            }
+        }
+        // SEN::debugLog('getFreeChess', print_r($ret, true));
+        return $ret;
     }
 }

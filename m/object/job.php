@@ -13,7 +13,8 @@ class m_object_job extends m_object_groups{
             }
             $jobObj = m_dao_job::$data[$jobObj];
         }
-        $this->jobId = $jobObj->jobId + 100;
+        $this->jobId = $jobObj->jobId;
+        $this->GId = $jobObj->jobId + 100;
         $this->name = $jobObj->name;
         $this->level = [];
         foreach($jobObj->level as $count => $text){
