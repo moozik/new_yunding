@@ -24,6 +24,10 @@ class m_object_teamCalcReq{
      */
     public $chessArr = [];
     /**
+     * 可用英雄对象列表
+     */
+    public $chessArrObj = [];
+    /**
      * 转职装备 Gid
      */
     public $weapon = [];
@@ -96,7 +100,7 @@ class m_object_teamCalcReq{
                 continue;
             }
             if($isObj){
-                $ret[] = m_data_Factory::get(lib_def::chess, $chess->chessId);
+                $ret[$chess->chessId] = m_data_Factory::get(lib_def::chess, $chess->chessId);
             }else{
                 $ret[] = $chess->chessId;
             }

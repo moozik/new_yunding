@@ -90,7 +90,7 @@ class SEN
     //     $action = substr($_SERVER['REDIRECT_URL'], strlen(self::$webDir));
     //     return trim($action, '/');
     // }
-    
+
     static function genLogid(){
         $arr = gettimeofday();
         $logId = $arr['sec'] * 100000 + $arr['usec'] / 10 & 2147483647 | 2147483648;

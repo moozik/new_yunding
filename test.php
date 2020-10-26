@@ -2,6 +2,31 @@
 require_once 'sen.php';
 SEN::init();
 
+echo lib_array::sumBykey([
+    ['a'=>3],
+    ['a'=>3],
+    ['a'=>3],
+    ['a'=>3],
+    ['b'=>3],
+],'b');
+
+exit;
+$Gcombination = [1,2,3];
+foreach(lib_tools::choseIterator($Gcombination, 2) as $GcomItem){
+    print_r($GcomItem);
+}
+
+exit;
+
+m_dao_race::init();
+m_dao_job::init();
+m_dao_chess::init();
+m_dao_equip::init();
+
+$chess = m_data_Factory::get(lib_def::chess, 39);
+var_dump($chess);
+exit;
+
 $aaa=['123','34vvvv','000999',555,0];
 
 print_r(lib_tools::arrIntval($aaa));

@@ -16,7 +16,6 @@ class m_dao_race{
      */
     static public $data = [];
 
-    static public $GidMap = [];
     /**
      * 版本
      *
@@ -36,6 +35,10 @@ class m_dao_race{
      */
     static public $time;
 
+    /**
+     * Gid有效个数map
+     */
+    static public $GidMap = [];
     static function init()
     {
         $retObj = m_dao_base::init(self::$staticKey);

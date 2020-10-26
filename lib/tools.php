@@ -9,7 +9,7 @@ class lib_tools{
     static function choseIterator(&$inArr, $count){
         $inArrLen = count($inArr);
         if($inArrLen < $count){
-            throw new Exception('inArr count error.');
+            throw new lib_fatalException(sprintf('inArr count error.inarr%s,count%s',lib_string::encode($inArr),$count));
         }
         if($inArrLen === $count){
             yield $inArr;
@@ -31,6 +31,7 @@ class lib_tools{
      * 二进制列表迭代
      */
     static private function nextCombine(&$position, &$inArrLen){
+        lib_timer::start(__FUNCTION__);
         $count_1 = 0;
         //搜索 1 0
         for($o = 0; $o < $inArrLen - 1; $o++){
@@ -56,12 +57,14 @@ class lib_tools{
         for($o = 0; $o < $count_1; $o++){
             $position[$o] = 1;
         }
+        lib_timer::stop(__FUNCTION__);
         return true;
     }
     /**
      * 由二进制列表生成chess
      */
     static function genReturn(&$inArr, &$position){
+        lib_timer::start(__FUNCTION__);
         static $ret = [];
         if($ret != []){
             $ret = [];
@@ -71,6 +74,7 @@ class lib_tools{
                 $ret[] = $inArr[$key];
             }
         }
+        lib_timer::stop(__FUNCTION__);
         return $ret;
     }
 
@@ -113,6 +117,7 @@ class lib_tools{
      * @return array
      */
     static function getLevelMap($obj) : array{
+        lib_timer::start(__FUNCTION__);
         if(isset($obj->raceId) && '9' == $obj->raceId){
             //忍者特殊处理
             return [0=>4, 1=>1, 2=>0, 3=>0, 4=>4];
@@ -132,6 +137,7 @@ class lib_tools{
                 $ret[$i] = $ret[$i - 1];
             }
         }
+        lib_timer::stop(__FUNCTION__);
         return $ret;
     }
 

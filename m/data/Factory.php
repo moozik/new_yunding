@@ -34,6 +34,21 @@ class m_data_Factory{
         return self::$instence[$key][$id];
     }
     /**
+     * Gid工厂
+     * @return m_object_groups
+     */
+    static function getGid(int $Gid) : object{
+        if($Gid > 100){
+            $key = lib_def::job;
+        }
+        $key = lib_def::race;
+        if(array_key_exists($Gid, self::$instence[$key])){
+            return self::$instence[$key][$Gid];
+        }
+        self::$instence[$key][$Gid] = $Gid > 100 ? new m_object_job($Gid) : new m_object_race($Gid);
+        return self::$instence[$key][$Gid];
+    }
+    /**
      * 返回数组
      * @return array
      */

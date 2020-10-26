@@ -47,11 +47,11 @@ abstract class m_object_groups{
      * @return int
      */
     public function workCount($count){
-        if(array_key_exists($count, $this->count2level)){
-            return $this->count2level[$count];
+        if(array_key_exists($count, $this->GidMap)){
+            return $this->GidMap[$count];
         }else{
             //找不到返回顶级羁绊的数量
-            return $this->count2level[0];
+            return $this->GidMap[0];
         }
     }
 }

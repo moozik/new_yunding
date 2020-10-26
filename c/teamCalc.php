@@ -1,8 +1,5 @@
 <?php
-
 class c_teamCalc extends lib_controlerBase{
-    private $usedHero = [];
-
     public function init(){
         $this->teamData = new m_data_teamCalc();
     }

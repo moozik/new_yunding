@@ -20,6 +20,6 @@ class m_object_job extends m_object_groups{
         foreach($jobObj->level as $count => $text){
             $this->level[] = $count;
         }
-        $this->count2level = lib_conf::jobs[$jobObj->jobId][1];
+        $this->GidMap = lib_tools::getLevelMap($jobObj);
     }
 }
