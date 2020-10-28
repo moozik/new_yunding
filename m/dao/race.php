@@ -50,6 +50,6 @@ class m_dao_race{
             self::$data[$objItem->raceId] = $objItem;
             self::$GidMap[$objItem->raceId] = lib_tools::getLevelMap($objItem);
         }
-        // sen::debugLog('race GidMap', self::$GidMap);
+        // lib_log::debug('race GidMap', self::$GidMap);
     }
 }

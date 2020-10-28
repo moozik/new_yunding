@@ -50,6 +50,6 @@ class m_dao_job{
             self::$data[$objItem->jobId] = $objItem;
             self::$GidMap[$objItem->jobId + 100] = lib_tools::getLevelMap($objItem);
         }
-        // sen::debugLog('job GidMap', self::$GidMap);
+        // lib_log::debug('job GidMap', self::$GidMap);
     }
 }

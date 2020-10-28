@@ -26,9 +26,9 @@ if(in_array($action, $route)){
             //致命异常
             $fatalStr = sprintf("exception occured,errno:[%s], msg:[%s] \n#  %s(%s) \n%s",
             $e->getCode(), $e->getMessage(), $e->getFile(),$e->getLine(),$e->getTraceAsString());
-            SEN::fatalLog('index', $fatalStr);
+            lib_log::fatal('index', $fatalStr);
         }catch(Exception $e){
-            SEN::traceLog('index', $e->getMessage());
+            lib_log::trace('index', $e->getMessage());
         }
     }else{
         echo 'controler nofound.';

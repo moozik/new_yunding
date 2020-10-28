@@ -58,7 +58,7 @@ abstract class lib_controlerBase{
             throw $e;
         }catch(Exception $e){
             $this->result['msg'] = $e->getMessage();
-            SEN::fatalLog('lib_controlerBase', $e->getMessage());
+            lib_log::fatal('lib_controlerBase', $e->getMessage());
         }
     }
 

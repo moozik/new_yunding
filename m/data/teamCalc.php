@@ -37,7 +37,7 @@ class m_data_teamCalc{
         m_dao_equip::init();
         // self::$GidLevelMap = array_merge(m_dao_job::$GidMap, m_dao_race::$GidMap);
         self::$GidLevelMap = m_dao_job::$GidMap + m_dao_race::$GidMap;
-        sen::debugLog('GidLevelMap', self::$GidLevelMap);
+        lib_log::debug('GidLevelMap', self::$GidLevelMap);
     }
 
     /**
@@ -48,7 +48,7 @@ class m_data_teamCalc{
 
         lib_timer::start('getGid2count');
         $this->getGid2count($this->inputGid2count, $this->req);
-        // sen::debugLog('inputGid2count', $this->inputGid2count);
+        // lib_log::debug('inputGid2count', $this->inputGid2count);
 
         //当前已组成羁绊列表
         foreach($this->inputGid2count as $Gid => $count){
@@ -63,7 +63,7 @@ class m_data_teamCalc{
         lib_timer::start('getFreeGbyfreeChess');
         $this->freeGid2count = $this->getFreeGbyfreeChess($this->req);
         lib_timer::stop('getFreeGbyfreeChess');
-        // sen::debugLog('freeGid2count', $this->freeGid2count);
+        // lib_log::debug('freeGid2count', $this->freeGid2count);
 
 
 
@@ -71,14 +71,14 @@ class m_data_teamCalc{
         lib_timer::start('freeChessGidintersection');
         $this->freeChessGidintersection();
         lib_timer::stop('freeChessGidintersection');
-        // sen::debugLog('freeChessGidintersection', $this->freeChessGidintersection);
+        // lib_log::debug('freeChessGidintersection', $this->freeChessGidintersection);
         // return $this->freeChessGidintersection;
 
         //当前可选羁绊
         lib_timer::start('canChoseGidList');
         $this->canChoseGidList($this->canChoseGidList, $this->inputGid2count, $this->freeGid2count, $this->req);
         lib_timer::stop('canChoseGidList');
-        // sen::debugLog('canChoseGidList', array_map(function($v){
+        // lib_log::debug('canChoseGidList', array_map(function($v){
         //     $v[lib_def::Gid] = lib_tools::Gid2Name($v[lib_def::Gid]);
         //     return $v;
         // },$this->canChoseGidList));
@@ -92,10 +92,10 @@ class m_data_teamCalc{
         lib_timer::start('generateGcombination');
         $this->generateGcombination();
         lib_timer::stop('generateGcombination');
-        // sen::debugLog('GcombinationResult', $this->GcombinationResult);
+        // lib_log::debug('GcombinationResult', $this->GcombinationResult);
 
-        sen::debugLog('loopCount', lib_number::getCount());
-        sen::debugLog('lib_timer', lib_timer::$result);
+        lib_log::debug('loopCount', lib_number::getCount());
+        lib_log::debug('lib_timer', lib_timer::$result);
         //遍历可选羁绊组合，获取对应棋子组合
         return $this->generateGcombination;
     }
@@ -123,7 +123,7 @@ class m_data_teamCalc{
         //可能的最大组合个数
         $n = $this->req->teamCount + 1 - count($this->inputGid2readyCount);
         for($i = $n; $i > 0; $i--){
-            sen::debugLog('generateGcombination:i', $i);
+            lib_log::debug('generateGcombination:i', $i);
             //遍历选择器 羁绊m选n
             foreach(lib_tools::choseIterator($this->canChoseGidList, $i) as $Gcombination){
                 lib_number::addCount(__FUNCTION__.$i);
@@ -179,7 +179,7 @@ class m_data_teamCalc{
                 //记录当前羁绊组合
                 $this->generateGcombination[] = $Gcombination;
             }
-            sen::debugLog('generateGcombination:', sprintf("i:%s,count:%s", $i, lib_number::getCount(__FUNCTION__.$i)));
+            lib_log::debug('generateGcombination:', sprintf("i:%s,count:%s", $i, lib_number::getCount(__FUNCTION__.$i)));
         }
     }
 
@@ -334,7 +334,7 @@ class m_data_teamCalc{
      * 设置参数
      */
     public function setInput($input){
-        SEN::traceLog('calcInput', print_r($input, true));
+        lib_log::trace('calcInput', print_r($input, true));
         $this->req = new m_object_teamCalcReq($input);
     }
 }

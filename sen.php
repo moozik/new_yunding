@@ -31,7 +31,6 @@ class SEN
      */
     const LOG_DIR = 'log';
 
-    const NICE_FILE = 'nice.json';
     const ICO_FILE = 'gold.ico';
     /**
      * ip白名单
@@ -65,9 +64,6 @@ class SEN
         'keywords' => '云顶之弈,云顶之弈模拟器,云顶之弈计算器,自走棋,lol自走棋,自走棋模拟器'
     ];
 
-    const VIEW_FILE = [
-        'index' => 'index.php',
-    ];
     static function init(){
         //自动加载 _分割
         spl_autoload_register(function($className){
@@ -78,26 +74,15 @@ class SEN
         define('SITE_URL', dirname($_SERVER['REQUEST_SCHEME'] . '://' . $_SERVER['HTTP_HOST'] . $_SERVER['SCRIPT_NAME']));
 
         // define('WEB_DIR', dirname($_SERVER['SCRIPT_NAME']));
-        if(!file_exists(self::log_dir())) {
-            mkdir(self::log_dir());
-        }
-        if(!file_exists(self::cache_dir())) {
-            mkdir(self::cache_dir());
-        }
-        self::genLogid();
-    }
-    // static function getAction(){
-    //     $action = substr($_SERVER['REDIRECT_URL'], strlen(self::$webDir));
-    //     return trim($action, '/');
-    // }
 
-    static function genLogid(){
-        $arr = gettimeofday();
-        $logId = $arr['sec'] * 100000 + $arr['usec'] / 10 & 2147483647 | 2147483648;
-        define('LOG_ID', $logId);
+        // if(!file_exists(self::cache_dir())) {
+        //     mkdir(self::cache_dir());
+        // }
+        
     }
     /**
      * 开发环境
+     * @return bool
      */
     static function isDevelop(){
         return 'localhost' === $_SERVER['HTTP_HOST'] || '127.0.0.1' === $_SERVER['HTTP_HOST'];
@@ -105,6 +90,7 @@ class SEN
 
     /**
      * 管理员
+     * @return bool
      */
     static function isMe(){
         if (in_array(self::getIp(), self::IPLIST) || SEN::PASSWORD == $_COOKIE['passwd']) {
@@ -123,17 +109,12 @@ class SEN
     }
     /**
      * 展示视图
+     * @param $name 视图名称
      */
     static function display_page($name){
         $res = debug_backtrace();
-        preg_match_all("/_([^_]+)$/", $res[1]['class'], $res);
-        require_once self::view_path($res[1][0], $name); 
-    }
-    /**
-     * 视图路径
-     */
-    static function view_path($className, $fileName){
-        return implode(DIRECTORY_SEPARATOR, [ROOT_DIR , 'v' , $className, self::VIEW_FILE[$fileName]]);
+        preg_match("/_([^_]+)$/", $res[1]['class'], $res);
+        require_once implode(DIRECTORY_SEPARATOR, [ROOT_DIR , 'v' , $res[1], $name . '.php']);
     }
     static function static_path($name){
         return implode(DIRECTORY_SEPARATOR, [ROOT_DIR , self::STATIC_DIR , self::STATIC_FILE[$name]]);
@@ -141,81 +122,10 @@ class SEN
     static function cache_dir(){
         return implode(DIRECTORY_SEPARATOR, [ROOT_DIR , self::CACHE_DIR]);
     }
-    static function log_dir(){
-        return implode(DIRECTORY_SEPARATOR, [ROOT_DIR , self::LOG_DIR]);
-    }
-    static function log_file($logFile){
-        //'.log.'.date('Ymd')
-        return implode(DIRECTORY_SEPARATOR, [self::log_dir() , $logFile . '.log.' . date('Y_W')]);
-    }
-    static function nice_file(){
-        return implode(DIRECTORY_SEPARATOR, [ROOT_DIR , self::NICE_FILE]);
-    }
     static function ico_url(){
         return SITE_URL . '/' . self::ICO_FILE;
     }
 
-    static function debugLog(string $name, $msg){
-        if(self::isDevelop()){
-            if(is_array($msg))
-                $msg = print_r($msg, 1);
-            if(is_object($msg))
-                $msg = lib_string::encode($msg);
-            self::Log('DEBUG', $name, $msg, self::log_file('trace'));
-        }
-    }
-    static function fatalLog(string $name, string $msg){
-        self::Log('FATAL', $name, $msg, self::log_file('fatal'));
-    }
-    static function traceLog(string $name, string $msg){
-        self::Log('TRACE', $name, $msg, self::log_file('trace'));
-    }
-    static function accessLog(string $name, string $msg){
-        self::Log('TRACE', $name, $msg, self::log_file('access'), false);
-    }
-    /**
-     * @param string $msg
-     * @param string $file
-     * @param boolean $short 是否简写
-     * @return void
-     */
-    static function Log($logType, $name, $msg, $file, $short = true){
-        $ip = self::getIp();
-        if($short){
-            error_log(
-                sprintf(
-                    "%s-%s[logid:%s]\n%s:%s\n",
-                    $logType,
-                    date('Y-m-d H:i:s'),
-                    LOG_ID,
-                    $name,
-                    $msg
-                ),
-                3,
-                $file
-            );
-        }else{
-            if (file_exists(iplocation::$filename)){
-                $ipLocation = new iplocation();
-                $position = $ipLocation->getlocation($ip);
-            }
-            error_log(
-                sprintf(
-                    "%s-%s[%s-%s%s][logid:%s][%s]\n[%s]\n",
-                    $logType,
-                    date('Y-m-d H:i:s'),
-                    $ip,
-                    $position['country'],
-                    $position['area'],
-                    LOG_ID,
-                    $_SERVER['HTTP_USER_AGENT'],
-                    $msg
-                ),
-                3,
-                $file
-            );
-        }
-    }
     static function getIp(){
         foreach (array(
             'HTTP_CLIENT_IP',

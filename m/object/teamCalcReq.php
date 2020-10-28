@@ -79,7 +79,7 @@ class m_object_teamCalcReq{
         }
         $this->chessArr = self::getFreeChess($this);
         $this->chessArrObj = self::getFreeChess($this, true);
-        // SEN::debugLog('m_object_teamCalcReq', serialize($this));
+        // lib_log::debug('m_object_teamCalcReq', serialize($this));
     }
 
     /**
@@ -105,7 +105,7 @@ class m_object_teamCalcReq{
                 $ret[] = $chess->chessId;
             }
         }
-        // SEN::debugLog('getFreeChess', print_r($ret, true));
+        // lib_log::debug('getFreeChess', print_r($ret, true));
         return $ret;
     }
 }

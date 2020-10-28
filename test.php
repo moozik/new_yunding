@@ -2,6 +2,16 @@
 require_once 'sen.php';
 SEN::init();
 
+echo ROOT_DIR;
+
+function te(){
+    lib_log::debug('bb','123');
+}
+
+te();
+
+exit;
+
 echo lib_array::sumBykey([
     ['a'=>3],
     ['a'=>3],
