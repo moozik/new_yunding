@@ -47,7 +47,7 @@ class lib_log{
     }
 
     static function debug(string $name, $msg){
-        if(sen::isDevelop()){
+        if(IS_DEVELOP){
             if(is_array($msg))
                 $msg = print_r($msg, 1);
             if(is_object($msg))

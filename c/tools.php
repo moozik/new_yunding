@@ -9,7 +9,7 @@ class c_tools{
         if (isset($_GET['login']) && SEN::PASSWORD === $_GET['login']) {
             setcookie("passwd", SEN::PASSWORD, time() + 86400);
         } else {
-            if (!SEN::isMe()) {
+            if (!IS_MANAGER) {
                 header("HTTP/1.1 404 Not Found");
                 exit;
             }
@@ -26,7 +26,7 @@ class c_tools{
             'clean' => '清空缓存文件',
         ];
 
-        echo "<a href='" . SEN::$webDir . "'>返回</a> | ";
+        echo "<a href='" . SITE_URL . "'>返回</a> | ";
         foreach ($action_list as $param => $title) {
             echo "<a href='?a={$param}'>{$title}</a> | ";
         }
@@ -43,9 +43,9 @@ class c_tools{
             // 'var heroArr=' . SEN::encode(HERO::heroList()) . ';' .
             // 'var groupArr=' . SEN::encode(HERO::groupList()) . ';' .
             // 'var weaponArr=' . SEN::encode(HERO::weaponList()) . ';' .
-            'var levelArr=' . SEN::encode(lib_conf::LEVEL2COST) . ';' .
-            'var raceLevel=' . SEN::encode(array_map(function($a){return array_slice($a,0,2);}, lib_conf::races)) . ';' .
-            'var jobLevel=' . SEN::encode(array_map(function($a){return array_slice($a,0,2);}, lib_conf::jobs)) . ';';
+            'var levelArr=' . lib_string::encode(lib_conf::LEVEL2COST) . ';' .
+            'var raceLevel=' . lib_string::encode(array_map(function($a){return array_slice($a,0,2);}, lib_conf::races)) . ';' .
+            'var jobLevel=' . lib_string::encode(array_map(function($a){return array_slice($a,0,2);}, lib_conf::jobs)) . ';';
 
         file_put_contents(SEN::static_path('define'), $fileContent);
         echo 'update done.';

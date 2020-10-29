@@ -1,6 +1,28 @@
 <?php
 class lib_tools{
     /**
+     * 数组组合生成器
+     * @param array $inArr
+     * @param int $count
+     * @return yield
+     */
+    static function choseIteratorArr(&$inArr){
+        $inArrLen = count($inArr);
+        //二进制组合
+        $positionArr = [];
+        foreach($inArr as $key => $rowItem){
+            //个数
+            $positionArr[$key][0] = count($rowItem);
+            //角标
+            $positionArr[$key][1] = 0;
+        }
+        //返回第一个组合
+        yield self::genReturnArr($inArr, $positionArr);
+        while(self::nextCombineArr($positionArr, $inArrLen)){
+            yield self::genReturnArr($inArr, $positionArr);
+        }
+    }
+    /**
      * 组合生成器
      * @param array $inArr
      * @param int $count
@@ -28,6 +50,34 @@ class lib_tools{
         }
     }
     /**
+     * 数组列表迭代
+     */
+    static private function nextCombineArr(&$positionArr, &$inArrLen){
+        foreach($positionArr as $index => &$item){
+            if($item[0] == $item[1] + 1){
+                //截止点
+                if(!isset($positionArr[$index + 1])){
+                    return false;
+                }
+                //循环归零
+                for($i = 0; $i <= $index; $i++){
+                    $positionArr[$i][1] = 0;
+                }
+                //向下进位
+                $positionArr[$index + 1][1]++;
+                //判断下一位状态
+                if($positionArr[$index + 1][0] == $positionArr[$index + 1][1] + 1){
+                    continue;
+                }
+                return true;
+            }else{
+                //自增1
+                $item[1]++;
+                return true;
+            }
+        }
+    }
+    /**
      * 二进制列表迭代
      */
     static private function nextCombine(&$position, &$inArrLen){
@@ -48,6 +98,7 @@ class lib_tools{
         }
         //截止点
         if($o === $inArrLen - 1 || 1 != $position[$o] || 0 != $position[$o + 1]){
+            lib_timer::stop(__FUNCTION__);
             return false;
         }
         //交换10
@@ -59,6 +110,21 @@ class lib_tools{
         }
         lib_timer::stop(__FUNCTION__);
         return true;
+    }
+    /**
+     * 由二进制列表生成chess
+     */
+    static function genReturnArr(&$inArr, &$positionArr){
+        lib_timer::start(__FUNCTION__);
+        static $ret = [];
+        if($ret != []){
+            $ret = [];
+        }
+        foreach($positionArr as $key => &$item){
+            $ret[] = $inArr[$key][$item[1]];
+        }
+        lib_timer::stop(__FUNCTION__);
+        return $ret;
     }
     /**
      * 由二进制列表生成chess

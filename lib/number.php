@@ -22,6 +22,7 @@ class lib_number{
      */
     static function getCount($name = ''){
         if('' === $name){
+            ksort(self::$count);
             return self::$count;
         }
         return self::$count[$name];

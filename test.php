@@ -2,6 +2,70 @@
 require_once 'sen.php';
 SEN::init();
 
+$inArr = [
+    [[1],[2],[3]],
+    [['a'],['b'],['c']]
+];
+
+foreach(lib_tools::choseIteratorArr($inArr) as $item){
+    print_r($item);
+}
+
+exit;
+
+class test2{
+    use lib_decorator;
+    protected $isDecoratorEnable = true;
+
+    public $result = 123;
+    function beforeAction(&$method, &$params){
+        echo '（bef）';
+        lib_number::addCount('call_'.$method);
+        lib_timer::start($method);
+    }
+    function afterAction(&$method, &$params, &$res){
+        echo '（aft）';
+        lib_timer::stop($method);
+    }
+    function name($a, &$b){
+        echo memory_get_usage()."\n";
+        $b++;
+        return [$a, $b];
+    }
+}
+
+$obj = new test2;
+$a = 234;
+$b = & $a;
+
+$c = '123';
+
+print_r($obj->de_name($c, $obj->result));
+echo $obj->result;
+exit;
+
+$a = 123;
+xdebug_debug_zval('a');
+$b = $a;
+xdebug_debug_zval('a');
+unset($b);
+xdebug_debug_zval('a');
+exit;
+
+class test{
+    function __call($method, $params){
+        echo $method;
+        echo $params;
+        echo __FUNCTION__;
+    }
+}
+
+$obj = new test();
+$obj->unfunc();
+
+
+exit;
+
 echo ROOT_DIR;
 
 function te(){

@@ -47,7 +47,7 @@
                 <!-- <a href="/yunding/niceTeam.php"><button type="button" class="btn btn-primary btn-lg">推荐阵容</button></a> -->
 
                 <?php
-                if (SEN::isMe()) {
+                if (IS_MANAGER) {
                     echo '<a href="./tools"><button type="button" class="btn btn-warning btn-lg">管理</button></a>';
                 }
                 ?>

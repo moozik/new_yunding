@@ -21,4 +21,14 @@ class lib_timer{
         }
         return $time;
     }
+
+    static function getResult(){
+        foreach(self::$result as $key => &$time){
+            if($time < 0.0001){
+                $time = 0.0001;
+            }
+        }
+        ksort(self::$result);
+        return self::$result;
+    }
 }

@@ -1,6 +1,7 @@
 <?php
 
 class m_data_teamCalc{
+    use lib_decorator;
     /**
      * @var m_object_teamCalcReq
      */
@@ -29,6 +30,9 @@ class m_data_teamCalc{
     //羁绊组合结果
     private $generateGcombination = [];
 
+    //羁绊组合结果个数
+    const G_RESULT_COUNT = 20;
+
     function __construct(){
         //初始化dao
         m_dao_race::init();
@@ -40,15 +44,22 @@ class m_data_teamCalc{
         lib_log::debug('GidLevelMap', self::$GidLevelMap);
     }
 
+    function beforeAction(&$method, &$params){
+        lib_number::addCount('call_'.$method);
+        lib_timer::start($method);
+        lib_log::debug('afterAction:'.$method, $params);
+    }
+    function afterAction(&$method, &$params, &$res){
+        lib_timer::stop($method);
+        lib_log::debug('afterAction:'.$method, $res);
+    }
     /**
      * 计算最优阵容
      */
     public function calc(){
         //当前已有羁绊数量
 
-        lib_timer::start('getGid2count');
-        $this->getGid2count($this->inputGid2count, $this->req);
-        // lib_log::debug('inputGid2count', $this->inputGid2count);
+        $this->de_getGid2count();
 
         //当前已组成羁绊列表
         foreach($this->inputGid2count as $Gid => $count){
@@ -57,27 +68,17 @@ class m_data_teamCalc{
                 $this->inputGid2readyCount[$Gid] = $usedCount;
             }
         }
-        lib_timer::stop('getGid2count');
 
         //当前可用棋子，对应的可用羁绊数量
-        lib_timer::start('getFreeGbyfreeChess');
-        $this->freeGid2count = $this->getFreeGbyfreeChess($this->req);
-        lib_timer::stop('getFreeGbyfreeChess');
-        // lib_log::debug('freeGid2count', $this->freeGid2count);
-
-
+        $this->de_getFreeGbyfreeChess();
 
         //当前可用棋子，对应的羁绊交集数组
-        lib_timer::start('freeChessGidintersection');
-        $this->freeChessGidintersection();
-        lib_timer::stop('freeChessGidintersection');
-        // lib_log::debug('freeChessGidintersection', $this->freeChessGidintersection);
+        $this->de_freeChessGidintersection();
         // return $this->freeChessGidintersection;
 
         //当前可选羁绊
-        lib_timer::start('canChoseGidList');
-        $this->canChoseGidList($this->canChoseGidList, $this->inputGid2count, $this->freeGid2count, $this->req);
-        lib_timer::stop('canChoseGidList');
+        $this->de_canChoseGidList();
+
         // lib_log::debug('canChoseGidList', array_map(function($v){
         //     $v[lib_def::Gid] = lib_tools::Gid2Name($v[lib_def::Gid]);
         //     return $v;
@@ -89,13 +90,10 @@ class m_data_teamCalc{
         n = $req->teamCount + 1 - count($this->inputGid2readyCount)
          */
         //组合可选羁绊组合
-        lib_timer::start('generateGcombination');
-        $this->generateGcombination();
-        lib_timer::stop('generateGcombination');
-        // lib_log::debug('GcombinationResult', $this->GcombinationResult);
+        $this->de_generateGcombination();
 
         lib_log::debug('loopCount', lib_number::getCount());
-        lib_log::debug('lib_timer', lib_timer::$result);
+        lib_log::debug('lib_timer', lib_timer::getResult());
         //遍历可选羁绊组合，获取对应棋子组合
         return $this->generateGcombination;
     }
@@ -122,62 +120,72 @@ class m_data_teamCalc{
     function generateGcombination(){
         //可能的最大组合个数
         $n = $this->req->teamCount + 1 - count($this->inputGid2readyCount);
+        //todo 20201029 22:00
         for($i = $n; $i > 0; $i--){
             lib_log::debug('generateGcombination:i', $i);
             //遍历选择器 羁绊m选n
-            foreach(lib_tools::choseIterator($this->canChoseGidList, $i) as $Gcombination){
-                lib_number::addCount(__FUNCTION__.$i);
+            //从多至少
+            //todo 这里不能全排列，种族和职业是搭配的 而且同一个羁绊的多个级别会同时出现
+            foreach(lib_tools::choseIterator($this->canChoseGidList, $i) as $GcombinationArr){
+                print_r($GcombinationArr);exit;
+                lib_number::addCount(__FUNCTION__.$i.'loop1');
+                foreach(lib_tools::choseIteratorArr($GcombinationArr) as $Gcombination){
+                    lib_number::addCount(__FUNCTION__.$i.'loop2');
 
-                //理论所需个数
-                $needCount = lib_array::sumBykey($Gcombination, lib_def::Gneed);
-                //过滤羁绊组合，需要人数!=空闲位置
-                if(1 == $i && $needCount != $this->req->freePosition){
-                    //1羁绊情况下，需求个数不为空缺人数，跳出
-                    continue;
-                }
-                //过滤羁绊组合，需要人数<空闲位置
-                if($needCount < $this->req->freePosition){
-                    lib_number::addCount(__FUNCTION__.'_con1');
-                    continue;
-                }
-
-                //多羁绊情况下，计算多羁绊最少需要的人数，若需要的人数大于空缺人数，跳出
-                //羁绊交集棋子列表
-                $combinationArr = $this->GcombinationNeedChessCount($Gcombination, $needCount);
-                if(false === $combinationArr){
-                    lib_number::addCount(__FUNCTION__.'_con2');
-                    continue;
-                }
-                //没有共用棋子且没有高级羁绊，跳出
-                $flag = false;
-                foreach($Gcombination as $Gitem){
-                    if($Gitem[lib_def::GOPlevel] >= lib_def::Ghigh){
-                        $flag = true;
-                        break;
+                    //理论所需个数
+                    $needCount = lib_array::sumBykey($Gcombination, lib_def::Gneed);
+                    //过滤羁绊组合，需要人数!=空闲位置
+                    if(1 == $i && $needCount != $this->req->freePosition){
+                        //1羁绊情况下，需求个数不为空缺人数，跳出
+                        lib_number::addCount(__FUNCTION__.'_continue_i=1');
+                        continue;
                     }
-                }
-                //没有顶级羁绊且共用结果为空，低质量组合，跳出
-                if(!$flag && empty($combinationArr) && $this->req->teamCount >= 3){
-                    lib_number::addCount(__FUNCTION__.'_con3');
-                    continue;
-                }
+                    //过滤羁绊组合，需要人数<空闲位置
+                    if($needCount < $this->req->freePosition){
+                        lib_number::addCount(__FUNCTION__.'_continue_needCount<freePosition');
+                        continue;
+                    }
 
+                    //多羁绊情况下，计算多羁绊最少需要的人数，若需要的人数大于空缺人数，跳出
+                    //羁绊交集棋子列表
+                    $combinationArr = $this->GcombinationNeedChessCount($Gcombination, $needCount);
+                    if(false === $combinationArr){
+                        lib_number::addCount(__FUNCTION__.'_continue_GcombinationNeedChessCount false');
+                        continue;
+                    }
+                    //没有共用棋子且没有高级羁绊，跳出
+                    $flag = false;
+                    foreach($Gcombination as $Gitem){
+                        if($Gitem[lib_def::GOPlevel] >= lib_def::Ghigh){
+                            $flag = true;
+                            break;
+                        }
+                    }
+                    //没有顶级羁绊且共用结果为空，低质量组合，跳出
+                    if(!$flag && empty($combinationArr) && $this->req->teamCount >= 3){
+                        lib_number::addCount(__FUNCTION__.'_continue_lowValue');
+                        continue;
+                    }
 
-                //所需个数 != 空缺个数
-                if($needCount - count($combinationArr) != $this->req->freePosition){
-                    lib_number::addCount(__FUNCTION__.'_con8');
-                    continue;
+                    //所需个数 != 空缺个数
+                    if($needCount - count($combinationArr) != $this->req->freePosition){
+                        lib_number::addCount(__FUNCTION__.'_continue_needCount not match');
+                        continue;
+                    }
+
+                    // var_dump(
+                    //     $combinationArr,
+                    //     $needCount,
+                    //     $this->req->freePosition,
+                    //     $Gcombination
+                    // );
+                    // exit;
+                    //记录当前羁绊组合
+                    $this->generateGcombination[] = $Gcombination;
                 }
-
-                // var_dump(
-                //     $combinationArr,
-                //     $needCount,
-                //     $this->req->freePosition,
-                //     $Gcombination
-                // );
-                // exit;
-                //记录当前羁绊组合
-                $this->generateGcombination[] = $Gcombination;
+            }
+            if(self::G_RESULT_COUNT < count($this->generateGcombination)){
+                break;
             }
             lib_log::debug('generateGcombination:', sprintf("i:%s,count:%s", $i, lib_number::getCount(__FUNCTION__.$i)));
         }
@@ -187,40 +195,60 @@ class m_data_teamCalc{
      * 计算多羁绊交集棋子个数 入参个数最少为2
      */
     function GcombinationNeedChessCount(&$Gcombination, $needCount){
+        lib_number::addCount('call__'.__FUNCTION__);
+        lib_number::addCount(__FUNCTION__.'_count_'.count($Gcombination));
+        lib_number::addCount(__FUNCTION__.'_needCount_'.$needCount);
         //每两个羁绊，计算交集个数
-        if(1 == count($Gcombination)){
+        // if(1 == count($Gcombination)){
+        //     return [];
+        // }
+        lib_timer::start(__FUNCTION__);
+        
+        $races = [];
+        $jobs = [];
+        foreach($Gcombination as $G){
+            if($G[lib_def::Gid] > 100){
+                $jobs[] = $G[lib_def::Gid];
+            }else{
+                $races[] = $G[lib_def::Gid];
+            }
+        }
+        if(empty($races)){
             return [];
         }
-        lib_timer::start(__FUNCTION__);
+        
         $combinationArr = [];
-        foreach(lib_tools::choseIterator($Gcombination, 2) as $Gtwo){
-            lib_number::addCount(__FUNCTION__);
-            $min = min($Gtwo[0][lib_def::Gid], $Gtwo[1][lib_def::Gid]);
-            $max = max($Gtwo[0][lib_def::Gid], $Gtwo[1][lib_def::Gid]);
-            if(!isset($this->freeChessGidintersection[$min][$max])){
-                lib_number::addCount(__FUNCTION__.'_con4');
-                continue;
+        //todo 这里不能随机算，9羁绊情况下遍历次数过多
+        // foreach(lib_tools::choseIterator($Gcombination, 2) as $Gtwo){
+        foreach($races as $min)
+            foreach($jobs as $max){
+                lib_number::addCount(__FUNCTION__);
+                // $min = min($Gtwo[0][lib_def::Gid], $Gtwo[1][lib_def::Gid]);
+                // $max = max($Gtwo[0][lib_def::Gid], $Gtwo[1][lib_def::Gid]);
+                if(!isset($this->freeChessGidintersection[$min][$max])){
+                    lib_number::addCount(__FUNCTION__.'_continue_!isset');
+                    continue;
+                }
+                // echo $min.'-'.$max.':'.$this->freeChessGidintersection[$min][$max]."\n";
+                foreach($this->freeChessGidintersection[$min][$max] as $chessId){
+                    $combinationArr[$chessId] = 1;
+                }
+                // lib_array::append($combinationArr, $this->freeChessGidintersection[$min][$max]);
+                // $combinationArr += $this->freeChessGidintersection[$min][$max];
+                
+                //剪枝
+                if(count($combinationArr) > $this->req->freePosition){
+                    lib_number::addCount(__FUNCTION__.'_return_>freePosition');
+                    lib_timer::stop(__FUNCTION__);
+                    return false;
+                }
+                if(count($combinationArr) + $this->req->freePosition > $needCount){
+                    lib_number::addCount(__FUNCTION__.'_return_>needCount');
+                    lib_timer::stop(__FUNCTION__);
+                    return false;
+                }
             }
-            // echo $min.'-'.$max.':'.$this->freeChessGidintersection[$min][$max]."\n";
-            foreach($this->freeChessGidintersection[$min][$max] as $chessId){
-                $combinationArr[$chessId] = 1;
-            }
-            // lib_array::append($combinationArr, $this->freeChessGidintersection[$min][$max]);
-            // $combinationArr += $this->freeChessGidintersection[$min][$max];
-            
-            //剪枝
-            if(count($combinationArr) > $this->req->freePosition){
-                lib_number::addCount(__FUNCTION__.'_con5');
-                lib_timer::stop(__FUNCTION__);
-                return false;
-            }
-            if(count($combinationArr) + $this->req->freePosition > $needCount){
-                lib_number::addCount(__FUNCTION__.'_con6');
-                lib_timer::stop(__FUNCTION__);
-                return false;
-            }
-            
-        }
+        // }
         lib_timer::stop(__FUNCTION__);
         return array_keys($combinationArr);
     }
@@ -229,12 +257,12 @@ class m_data_teamCalc{
      * @param $chessArr 当前可用英雄
      * @param $
      */
-    function canChoseGidList(&$canChoseGidList, &$inputGid2count, &$freeGid2count, m_object_teamCalcReq $req){
+    function canChoseGidList(){
         //遍历所有羁绊
         foreach(array_keys(self::$GidLevelMap) as $Gid){
             //修正已有羁绊数量
-            if(array_key_exists($Gid, $inputGid2count)){
-                $existCount = $inputGid2count[$Gid];
+            if(array_key_exists($Gid, $this->inputGid2count)){
+                $existCount = $this->inputGid2count[$Gid];
             }else{
                 $existCount = 0;
             }
@@ -262,7 +290,7 @@ class m_data_teamCalc{
                     continue;
                 }
                 //当前羁绊所需个数-已有个数 > 当前剩余位置
-                if(($countIn - $existCount) > $req->freePosition){
+                if(($countIn - $existCount) > $this->req->freePosition){
                     continue;
                 }
                 //可选羁绊个数 != 有效羁绊个数
@@ -270,11 +298,14 @@ class m_data_teamCalc{
                     continue;
                 }
                 //可选羁绊个数 > 当前可用羁绊个数
-                if($countIn > $freeGid2count[$Gid]){
+                if($countIn > $this->freeGid2count[$Gid]){
                     continue;
                 }
+                if(!isset($this->canChoseGidList[intval($Gid/100)][$Gid])){
+                    $this->canChoseGidList[intval($Gid/100)][$Gid] = [];
+                }
                 //可选羁绊
-                $canChoseGidList[] = [
+                $this->canChoseGidList[intval($Gid/100)][$Gid][] = [
                     lib_def::Gid => $Gid,
                     lib_def::Gcount => $countIn,
                     lib_def::Gneed => $countIn - $existCount,
@@ -298,19 +329,20 @@ class m_data_teamCalc{
      * @param $theOne 当前天选
      * @param $weaponArr 当前转职装备
      */
-    function getGid2count(&$inputGid2count, m_object_teamCalcReq $req){
-        foreach($req->inChess as $chessId){
+    function getGid2count(){
+        $this->inputGid2count = [];
+        foreach($this->req->inChess as $chessId){
             foreach(m_data_Factory::get(lib_def::chess, $chessId)->Gids as $Gid => $Gitem){
                 lib_number::addCount(__FUNCTION__);
-                lib_number::addOrDefault($inputGid2count[$Gid], 1);
+                lib_number::addOrDefault($this->inputGid2count[$Gid], 1);
             }
         }
-        if(0 !== $req->theOne){
-            lib_number::addOrDefault($inputGid2count[$req->theOne], 1);
+        if(0 !== $this->req->theOne){
+            lib_number::addOrDefault($this->inputGid2count[$this->req->theOne], 1);
         }
-        foreach($req->weapon as $Gid){
+        foreach($this->req->weapon as $Gid){
             lib_number::addCount(__FUNCTION__);
-            lib_number::addOrDefault($inputGid2count[$Gid], 1);
+            lib_number::addOrDefault($this->inputGid2count[$Gid], 1);
         }
     }
 
@@ -318,16 +350,15 @@ class m_data_teamCalc{
      * 根据可用英雄获取可用羁绊个数
      * @param m_object_teamCalcReq $req
      */
-    static function getFreeGbyfreeChess(m_object_teamCalcReq $req){
-        $ret = [];
-        foreach($req->chessArr as $chessId){
+    function getFreeGbyfreeChess(){
+        $this->freeGid2count = [];
+        foreach($this->req->chessArr as $chessId){
             foreach(m_data_Factory::get(lib_def::chess, $chessId)->Gids as $Gid => $Gitem){
                 lib_number::addCount(__FUNCTION__);
                 // var_dump($ret,$Gid);exit;
-                lib_number::addOrDefault($ret[$Gid], 1);
+                lib_number::addOrDefault($this->freeGid2count[$Gid], 1);
             }
         }
-        return $ret;
     }
 
     /**

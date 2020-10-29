@@ -72,20 +72,26 @@ class SEN
         });
         define('ROOT_DIR', realpath('.'));
         define('SITE_URL', dirname($_SERVER['REQUEST_SCHEME'] . '://' . $_SERVER['HTTP_HOST'] . $_SERVER['SCRIPT_NAME']));
-
+        define('IS_DEVELOP', self::isDevelop());
+        define('IS_MANAGER', self::isMe());
         // define('WEB_DIR', dirname($_SERVER['SCRIPT_NAME']));
 
         // if(!file_exists(self::cache_dir())) {
         //     mkdir(self::cache_dir());
         // }
-        
     }
     /**
      * 开发环境
      * @return bool
      */
     static function isDevelop(){
-        return 'localhost' === $_SERVER['HTTP_HOST'] || '127.0.0.1' === $_SERVER['HTTP_HOST'];
+        if(array_key_exists('SESSIONNAME', $_SERVER) && 'Console' === $_SERVER['SESSIONNAME']){
+            return true;
+        }
+        if(array_key_exists('HTTP_HOST', $_SERVER) && in_array($_SERVER['HTTP_HOST'],['localhost', '127.0.0.1'])){
+            return true;
+        }
+        return false;
     }
 
     /**
