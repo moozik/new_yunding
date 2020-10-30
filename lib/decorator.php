@@ -7,7 +7,7 @@ trait lib_decorator{
      * 装饰器方法名前缀
      */
     protected $decoratorTag = 'de_';
-    //装饰器入口
+    //装饰器入口 不支持传引用
     public function __call($method, $params){
         lib_log::debug('__call', sprintf("method:%s,params:%s",$method,lib_string::encode($params)));
         if($this->decoratorTag !== substr($method, 0, 3)){

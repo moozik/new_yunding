@@ -25,7 +25,7 @@ class lib_timer{
     static function getResult(){
         foreach(self::$result as $key => &$time){
             if($time < 0.0001){
-                $time = 0.0001;
+                self::$result[$key] = 0.0001;
             }
         }
         ksort(self::$result);

@@ -1,7 +1,9 @@
 <?php
 
 class m_data_teamCalc{
+    //装饰器
     use lib_decorator;
+    
     /**
      * @var m_object_teamCalcReq
      */
@@ -41,17 +43,17 @@ class m_data_teamCalc{
         m_dao_equip::init();
         // self::$GidLevelMap = array_merge(m_dao_job::$GidMap, m_dao_race::$GidMap);
         self::$GidLevelMap = m_dao_job::$GidMap + m_dao_race::$GidMap;
-        lib_log::debug('GidLevelMap', self::$GidLevelMap);
+        // lib_log::debug('GidLevelMap', self::$GidLevelMap);
     }
 
     function beforeAction(&$method, &$params){
         lib_number::addCount('call_'.$method);
         lib_timer::start($method);
-        lib_log::debug('afterAction:'.$method, $params);
+        // lib_log::debug('afterAction:'.$method, $params);
     }
     function afterAction(&$method, &$params, &$res){
         lib_timer::stop($method);
-        lib_log::debug('afterAction:'.$method, $res);
+        // lib_log::debug('afterAction:'.$method, $res);
     }
     /**
      * 计算最优阵容
@@ -118,30 +120,125 @@ class m_data_teamCalc{
      * 组合可选羁绊
      */
     function generateGcombination(){
-        //可能的最大组合个数
-        $n = $this->req->teamCount + 1 - count($this->inputGid2readyCount);
-        //todo 20201029 22:00
-        for($i = $n; $i > 0; $i--){
-            lib_log::debug('generateGcombination:i', $i);
-            //遍历选择器 羁绊m选n
-            //从多至少
-            //todo 这里不能全排列，种族和职业是搭配的 而且同一个羁绊的多个级别会同时出现
-            foreach(lib_tools::choseIterator($this->canChoseGidList, $i) as $GcombinationArr){
-                print_r($GcombinationArr);exit;
-                lib_number::addCount(__FUNCTION__.$i.'loop1');
-                foreach(lib_tools::choseIteratorArr($GcombinationArr) as $Gcombination){
-                    lib_number::addCount(__FUNCTION__.$i.'loop2');
+        //最终阵容人数 - 已有羁绊个数 = 最大羁绊个数
+        $n = $this->req->teamCount - count($this->inputGid2readyCount);
+        lib_log::debug(__FUNCTION__.'_n', $n);
+        //race和job的数量差不超过2 也就是 abs(jobCount - raceCount) < 2
+        $ret = [];
+        for($raceCount = $n - 1; $raceCount >= 0; $raceCount--){
+            for($jobCount = $n - 1; $jobCount >= 0; $jobCount--){
+                lib_number::addCount(__FUNCTION__.'_racejob');
+                //限制羁绊总数
+                if($raceCount + $jobCount > $n){
+                    // lib_number::addCount(__FUNCTION__.'_racejob_continue_1');
+                    continue;
+                }
+                //限制种族和职业羁绊数量的差值 越小越严格 覆盖越差 性能越好
+                if(abs($raceCount - $jobCount) > 1){
+                    // lib_number::addCount(__FUNCTION__.'_racejob_continue_2');
+                    continue;
+                }
+                if(0 === $raceCount && 0 === $jobCount){
+                    continue;
+                }
+                $ret[] = [
+                    'r' => $raceCount,
+                    'j' => $jobCount,
+                ];
+                // lib_number::addCount(__FUNCTION__.'_racejob_result_2');
+                // lib_log::debug(__FUNCTION__.'_racejob_result_2', $raceCount.'_'.$jobCount);
+            }
+        }
+        // lib_log::debug('canChoseGidList',$this->canChoseGidList);
 
+        //遍历种族和职业得组合
+        foreach($ret as $raceAndJob){
+
+            lib_number::addCount(__FUNCTION__.'loop0');
+            // lib_log::debug('generateGcombination:i', $raceAndJob);
+            //从可选种族中选出 $raceAndJob['r'] 个，$raceArr中是各种级别
+            foreach(lib_tools::choseIterator($this->canChoseGidList[0], $raceAndJob['r']) as $raceArr){
+                // foreach($raceArr as $k => $race){
+                //     unset($raceArr[$k]);
+                //     $raceArr[$race[lib_def::Gid]] = $race;
+                // }
+                // //刀妹
+                // $daomei = array_key_exists(2, $raceArr) && array_key_exists(5, $raceArr);
+                // //卡特
+                // $kate = array_key_exists(7, $raceArr) && array_key_exists(12, $raceArr);
+                // $num = $daomei + $kate;
+                // $raceNeedCount = lib_array::sumBykey($raceArr, lib_def::Gneed);
+                // //如果race人数过多，跳出
+                // if($raceNeedCount - $num > $this->req->freePosition){
+                //     lib_number::addCount(__FUNCTION__.'continue_race');
+                //     continue;
+                // }
+            
+            foreach(lib_tools::choseIterator($this->canChoseGidList[1], $raceAndJob['j']) as $jobArr){
+                lib_number::addCount(__FUNCTION__.'loop1');
+                // foreach($jobArr as $k => $job){
+                //     unset($jobArr[$k]);
+                //     $jobArr[$job[lib_def::Gid]] = $job;
+                // }
+                // //狼人
+                // $langren = array_key_exists(103, $jobArr) && array_key_exists(106, $jobArr);
+                // //肾
+                // $shen = array_key_exists(103, $jobArr) && array_key_exists(106, $jobArr);
+                // $num = $langren + $shen;
+
+                // $jobNeedCount = lib_array::sumBykey($jobArr, lib_def::Gneed);
+                // //如果job人数过多，跳出
+                // if($jobNeedCount - $num > $this->req->freePosition){
+                //     lib_number::addCount(__FUNCTION__.'continue_job');
+                //     continue;
+                // }
+
+                $count = $raceAndJob['r'] + $raceAndJob['j'];
+                $Gidarr = array_merge($raceArr, $jobArr);
+                //从子数组中循环选择
+                foreach(lib_tools::choseIteratorArr($Gidarr) as $Gcombination){
+
+                    lib_number::addCount(__FUNCTION__.$count.'loop2');
                     //理论所需个数
-                    $needCount = lib_array::sumBykey($Gcombination, lib_def::Gneed);
-                    //过滤羁绊组合，需要人数!=空闲位置
-                    if(1 == $i && $needCount != $this->req->freePosition){
-                        //1羁绊情况下，需求个数不为空缺人数，跳出
-                        lib_number::addCount(__FUNCTION__.'_continue_i=1');
+                    $needCount = [
+                        //race
+                        0 => 0,
+                        //job
+                        1 => 0
+                    ];
+                    foreach($Gcombination as $key => $Gitem){
+                        unset($Gcombination[$key]);
+                        $Gcombination[$Gitem[lib_def::Gid]] = $Gitem;
+                        $needCount[intval($Gitem[lib_def::Gid] / 100)] += $Gitem[lib_def::Gneed];
+                    }
+                    //刀妹
+                    $daomei = array_key_exists(2, $Gcombination) && array_key_exists(5, $Gcombination);
+                    //卡特
+                    $kate = array_key_exists(7, $Gcombination) && array_key_exists(12, $Gcombination);
+                    $raceNum = $daomei + $kate;
+                    if($needCount[0] - $raceNum > $this->req->freePosition){
+                        lib_number::addCount(__FUNCTION__.'continue_race');
                         continue;
                     }
+                    //狼人
+                    $langren = array_key_exists(103, $jobArr) && array_key_exists(106, $jobArr);
+                    //肾
+                    $shen = array_key_exists(103, $jobArr) && array_key_exists(106, $jobArr);
+                    $jobNum = $langren + $shen;
+                    $jobNum = $daomei + $kate;
+                    if($needCount[1] - $jobNum > $this->req->freePosition){
+                        lib_number::addCount(__FUNCTION__.'continue_job');
+                        continue;
+                    }
+                    //过滤羁绊组合，需要人数!=空闲位置
+                    // if(1 == $i && $needCount != $this->req->freePosition){
+                    //     //1羁绊情况下，需求个数不为空缺人数，跳出
+                    //     lib_number::addCount(__FUNCTION__.'_continue_i=1');
+                    //     continue;
+                    // }
                     //过滤羁绊组合，需要人数<空闲位置
-                    if($needCount < $this->req->freePosition){
+                    $needCountAll = $needCount[0] + $needCount[1];
+                    if($needCountAll < $this->req->freePosition){
                         lib_number::addCount(__FUNCTION__.'_continue_needCount<freePosition');
                         continue;
                     }
@@ -168,7 +265,7 @@ class m_data_teamCalc{
                     }
 
                     //所需个数 != 空缺个数
-                    if($needCount - count($combinationArr) != $this->req->freePosition){
+                    if($needCountAll - count($combinationArr) != $this->req->freePosition){
                         lib_number::addCount(__FUNCTION__.'_continue_needCount not match');
                         continue;
                     }
@@ -183,11 +280,11 @@ class m_data_teamCalc{
                     //记录当前羁绊组合
                     $this->generateGcombination[] = $Gcombination;
                 }
-            }
+            }}
             if(self::G_RESULT_COUNT < count($this->generateGcombination)){
                 break;
             }
-            lib_log::debug('generateGcombination:', sprintf("i:%s,count:%s", $i, lib_number::getCount(__FUNCTION__.$i)));
+            // lib_log::debug('generateGcombination:', sprintf("i:%s,count:%s", $i, lib_number::getCount(__FUNCTION__.$i)));
         }
     }
 
@@ -220,7 +317,7 @@ class m_data_teamCalc{
         $combinationArr = [];
         //todo 这里不能随机算，9羁绊情况下遍历次数过多
         // foreach(lib_tools::choseIterator($Gcombination, 2) as $Gtwo){
-        foreach($races as $min)
+        foreach($races as $min){
             foreach($jobs as $max){
                 lib_number::addCount(__FUNCTION__);
                 // $min = min($Gtwo[0][lib_def::Gid], $Gtwo[1][lib_def::Gid]);
@@ -248,7 +345,7 @@ class m_data_teamCalc{
                     return false;
                 }
             }
-        // }
+        }
         lib_timer::stop(__FUNCTION__);
         return array_keys($combinationArr);
     }
@@ -320,6 +417,9 @@ class m_data_teamCalc{
                 // }
             }
         }
+        //重排key值
+        sort($this->canChoseGidList[0]);
+        sort($this->canChoseGidList[1]);
     }
 
     /**

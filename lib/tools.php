@@ -20,6 +20,7 @@ class lib_tools{
         yield self::genReturnArr($inArr, $positionArr);
         while(self::nextCombineArr($positionArr, $inArrLen)){
             yield self::genReturnArr($inArr, $positionArr);
+            // sleep(1);
         }
     }
     /**
@@ -55,21 +56,25 @@ class lib_tools{
     static private function nextCombineArr(&$positionArr, &$inArrLen){
         foreach($positionArr as $index => &$item){
             if($item[0] == $item[1] + 1){
+                //当前只有1位或者到了最后一位
+
                 //截止点
                 if(!isset($positionArr[$index + 1])){
                     return false;
                 }
-                //循环归零
-                for($i = 0; $i <= $index; $i++){
-                    $positionArr[$i][1] = 0;
+                //如果当前有多个值，循环归零
+                if(1 != $item[0]){
+                    for($i = 0; $i <= $index; $i++){
+                        $positionArr[$i][1] = 0;
+                    }
                 }
-                //向下进位
-                $positionArr[$index + 1][1]++;
-                //判断下一位状态
-                if($positionArr[$index + 1][0] == $positionArr[$index + 1][1] + 1){
-                    continue;
-                }
-                return true;
+                // //向下进位
+                // $positionArr[$index + 1][1]++;
+                // //判断下一位状态
+                // if($positionArr[$index + 1][0] == $positionArr[$index + 1][1] + 1){
+                //     continue;
+                // }
+                // return true;
             }else{
                 //自增1
                 $item[1]++;
