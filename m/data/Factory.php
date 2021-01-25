@@ -31,6 +31,10 @@ class m_data_Factory{
             case lib_def::equip:
                 self::$instence[$key][$id] = new m_object_equip($id);break;
         }
+        if(empty(self::$instence[$key][$id])){
+            unset(self::$instence[$key][$id]);
+            return false;
+        }
         return self::$instence[$key][$id];
     }
     /**
@@ -54,12 +58,14 @@ class m_data_Factory{
      */
     static function getArr(int $key, $id) : array{
         if(is_int($id) || (is_string($id) && is_numeric($id))){
-            return [$id => self::get($key, intval($id))];
+            if(self::get($key, intval($id)))
+                return [$id => self::get($key, intval($id))];
         }
         if(is_string($id)){
             $ret = [];
             foreach(explode(',', $id) as $idItem){
-                $ret[$idItem] = self::get($key, intval($idItem));
+                if(self::get($key, intval($idItem)))
+                    $ret[$idItem] = self::get($key, intval($idItem));
             }
             return $ret;
         }
@@ -70,12 +76,14 @@ class m_data_Factory{
      */
     static function getJobArr(int $key, $id) : array{
         if(is_int($id) || (is_string($id) && is_numeric($id))){
-            return [($id + 100) => self::get($key, intval($id))];
+            if(self::get($key, intval($id)))
+                return [($id + 100) => self::get($key, intval($id))];
         }
         if(is_string($id)){
             $ret = [];
             foreach(explode(',', $id) as $idItem){
-                $ret[($idItem+100)] = self::get($key, intval($idItem));
+                if(self::get($key, intval($idItem)))
+                    $ret[($idItem + 100)] = self::get($key, intval($idItem));
             }
             return $ret;
         }

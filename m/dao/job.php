@@ -8,7 +8,7 @@ class m_dao_job{
      *
      * @var string
      */
-    static private $staticKey = 'job';
+    static public $staticKey = 'job';
     /**
      * json[data]对象
      *

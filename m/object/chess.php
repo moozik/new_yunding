@@ -47,7 +47,10 @@ class m_object_chess{
     function __construct($chessObj)
     {
         if(is_numeric($chessObj)){
-            $chessObj = m_dao_chess::get($chessObj);
+            $chessObj = m_dao_chess::$data[$chessObj];
+        }
+        if(empty($chessObj)){
+            return false;
         }
         $this->price = $chessObj->price;
         $this->chessId = $chessObj->chessId;

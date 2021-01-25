@@ -8,7 +8,7 @@ class m_dao_race{
      *
      * @var string
      */
-    static private $staticKey = 'race';
+    static public $staticKey = 'race';
     /**
      * json[data]对象
      *

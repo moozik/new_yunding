@@ -35,6 +35,9 @@ class m_object_equip{
         if(is_numeric($equipObj)){
             $equipObj = m_dao_equip::get($equipObj);
         }
+        if(empty($equipObj)){
+            return false;
+        }
         $this->equipId = $equipObj->equipId;
         $this->formula = $equipObj->formula;
         $this->type = $equipObj->type;

@@ -10,10 +10,17 @@ class m_object_race extends m_object_groups{
         if(is_numeric($raceObj)){
             $raceObj = m_dao_race::$data[$raceObj];
         }
+        if(empty($raceObj)){
+            return false;
+        }
         $this->raceId = $raceObj->raceId;
         $this->GId = $raceObj->raceId;
         $this->name = $raceObj->name;
         $this->level = [];
+        if(empty($raceObj->level)){
+            //汕海绘卷null
+            $this->level[] = 1;
+        }else 
         foreach($raceObj->level as $count => $text){
             $this->level[] = $count;
         }

@@ -7,7 +7,7 @@ class m_data_teamCalc{
     /**
      * @var m_object_teamCalcReq
      */
-    private $req = null;
+    private $req;
 
     //入参羁绊列表 *只读 G->count
     //包括转职
@@ -33,7 +33,7 @@ class m_data_teamCalc{
     private $generateGcombination = [];
 
     //羁绊组合结果个数
-    const G_RESULT_COUNT = 20;
+    const G_RESULT_COUNT = 10;
 
     function __construct(){
         //初始化dao
@@ -88,9 +88,9 @@ class m_data_teamCalc{
         // return $this->canChoseGidList;
 
         /**
-        从可选羁绊中选出(1--n)个可选羁绊，n=队伍人数+1-已有羁绊，n为队伍人数可选得最大羁绊个数
-        n = $req->teamCount + 1 - count($this->inputGid2readyCount)
-         */
+        * 从可选羁绊中选出(1--n)个可选羁绊，n=队伍人数+1-已有羁绊，n为队伍人数可选得最大羁绊个数
+        * n = $req->teamCount + 1 - count($this->inputGid2readyCount)
+        */
         //组合可选羁绊组合
         $this->de_generateGcombination();
 
@@ -122,7 +122,7 @@ class m_data_teamCalc{
     function generateGcombination(){
         //最终阵容人数 - 已有羁绊个数 = 最大羁绊个数
         $n = $this->req->teamCount - count($this->inputGid2readyCount);
-        lib_log::debug(__FUNCTION__.'_n', $n);
+        // lib_log::debug(__FUNCTION__.'_n', $n);
         //race和job的数量差不超过2 也就是 abs(jobCount - raceCount) < 2
         $ret = [];
         for($raceCount = $n - 1; $raceCount >= 0; $raceCount--){
@@ -130,12 +130,12 @@ class m_data_teamCalc{
                 lib_number::addCount(__FUNCTION__.'_racejob');
                 //限制羁绊总数
                 if($raceCount + $jobCount > $n){
-                    // lib_number::addCount(__FUNCTION__.'_racejob_continue_1');
+                    lib_number::addCount(__FUNCTION__.'_racejob_continue_1');
                     continue;
                 }
                 //限制种族和职业羁绊数量的差值 越小越严格 覆盖越差 性能越好
                 if(abs($raceCount - $jobCount) > 1){
-                    // lib_number::addCount(__FUNCTION__.'_racejob_continue_2');
+                    lib_number::addCount(__FUNCTION__.'_racejob_continue_2');
                     continue;
                 }
                 if(0 === $raceCount && 0 === $jobCount){
@@ -145,8 +145,7 @@ class m_data_teamCalc{
                     'r' => $raceCount,
                     'j' => $jobCount,
                 ];
-                // lib_number::addCount(__FUNCTION__.'_racejob_result_2');
-                // lib_log::debug(__FUNCTION__.'_racejob_result_2', $raceCount.'_'.$jobCount);
+                lib_number::addCount(__FUNCTION__.'_racejob_result_2');
             }
         }
         // lib_log::debug('canChoseGidList',$this->canChoseGidList);
@@ -212,24 +211,24 @@ class m_data_teamCalc{
                         $needCount[intval($Gitem[lib_def::Gid] / 100)] += $Gitem[lib_def::Gneed];
                     }
                     //刀妹
-                    $daomei = array_key_exists(2, $Gcombination) && array_key_exists(5, $Gcombination);
+                    // $daomei = array_key_exists(2, $Gcombination) && array_key_exists(5, $Gcombination);
                     //卡特
-                    $kate = array_key_exists(7, $Gcombination) && array_key_exists(12, $Gcombination);
-                    $raceNum = $daomei + $kate;
-                    if($needCount[0] - $raceNum > $this->req->freePosition){
-                        lib_number::addCount(__FUNCTION__.'continue_race');
-                        continue;
-                    }
+                    // $kate = array_key_exists(7, $Gcombination) && array_key_exists(12, $Gcombination);
+                    // $raceNum = $daomei + $kate;
+                    // if($needCount[0] - $raceNum > $this->req->freePosition){
+                    //     lib_number::addCount(__FUNCTION__.'continue_race');
+                    //     continue;
+                    // }
                     //狼人
-                    $langren = array_key_exists(103, $jobArr) && array_key_exists(106, $jobArr);
+                    // $langren = array_key_exists(103, $jobArr) && array_key_exists(106, $jobArr);
                     //肾
-                    $shen = array_key_exists(103, $jobArr) && array_key_exists(106, $jobArr);
-                    $jobNum = $langren + $shen;
-                    $jobNum = $daomei + $kate;
-                    if($needCount[1] - $jobNum > $this->req->freePosition){
-                        lib_number::addCount(__FUNCTION__.'continue_job');
-                        continue;
-                    }
+                    // $shen = array_key_exists(103, $jobArr) && array_key_exists(106, $jobArr);
+                    // $jobNum = $langren + $shen;
+                    // $jobNum = $daomei + $kate;
+                    // if($needCount[1] - $jobNum > $this->req->freePosition){
+                    //     lib_number::addCount(__FUNCTION__.'continue_job');
+                    //     continue;
+                    // }
                     //过滤羁绊组合，需要人数!=空闲位置
                     // if(1 == $i && $needCount != $this->req->freePosition){
                     //     //1羁绊情况下，需求个数不为空缺人数，跳出
@@ -382,15 +381,16 @@ class m_data_teamCalc{
                 if(0 === $countIn){
                     continue;
                 }
-                //跳过当前既有羁绊的个数 比如传入3三国，便不再考虑三国*3
+                //跳过当前既有羁绊的个数 比如传入3三国，便不再考虑3三国，只考虑更高的级别
                 if($countIn <= $existCount){
                     continue;
                 }
-                //当前羁绊所需个数-已有个数 > 当前剩余位置
+                //当前羁绊所需个数-已有个数 > 当前剩余位置，说明位置不够
                 if(($countIn - $existCount) > $this->req->freePosition){
                     continue;
                 }
-                //可选羁绊个数 != 有效羁绊个数
+                //可选羁绊个数 != 有效羁绊个数，这里相当于羁绊的冗余，类似在5魔法师的基础上再加一个魔法师，虽然羁绊不变，但是多了一个享受双重技能的单位，可注释
+                //TODO
                 if($countIn != $countRet){
                     continue;
                 }
@@ -398,13 +398,19 @@ class m_data_teamCalc{
                 if($countIn > $this->freeGid2count[$Gid]){
                     continue;
                 }
+                // 0 为race
+                // 1 为job
                 if(!isset($this->canChoseGidList[intval($Gid/100)][$Gid])){
                     $this->canChoseGidList[intval($Gid/100)][$Gid] = [];
                 }
                 //可选羁绊
                 $this->canChoseGidList[intval($Gid/100)][$Gid][] = [
+                    // <100 race
+                    // >100 job
                     lib_def::Gid => $Gid,
+                    // 总数
                     lib_def::Gcount => $countIn,
+                    // 需要的个数
                     lib_def::Gneed => $countIn - $existCount,
                     //存储羁绊的稀有度 0123依次变高
                     lib_def::GOPlevel => lib_conf::GidOPLevel($Gid, $countIn)

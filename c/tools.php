@@ -21,7 +21,7 @@ class c_tools{
         $action = $_GET['a'];
         $action_list = [
             'log' => '参数日志',
-            'update' => '更新define',
+            'update' => '更新define,json',
             'check' => '检查cdn同步',
             'clean' => '清空缓存文件',
         ];
@@ -37,6 +37,11 @@ class c_tools{
         }
     }
     public function update(){
+        //强制更新json
+        m_dao_base::init(m_dao_race::$staticKey, true);
+        m_dao_base::init(m_dao_job::$staticKey, true);
+        m_dao_race::init();
+        m_dao_job::init();
         //更新js
         $fileContent = 
             '/*update time:' . date('YmdHis') . '*/' .
@@ -44,12 +49,27 @@ class c_tools{
             // 'var groupArr=' . SEN::encode(HERO::groupList()) . ';' .
             // 'var weaponArr=' . SEN::encode(HERO::weaponList()) . ';' .
             'var levelArr=' . lib_string::encode(lib_conf::LEVEL2COST) . ';' .
-            'var raceLevel=' . lib_string::encode(array_map(function($a){return array_slice($a,0,2);}, lib_conf::races)) . ';' .
-            'var jobLevel=' . lib_string::encode(array_map(function($a){return array_slice($a,0,2);}, lib_conf::jobs)) . ';';
+            'var GLevel=' . lib_string::encode($this->getGMapLevel()) . ';';
 
         file_put_contents(SEN::static_path('define'), $fileContent);
         echo 'update done.';
     }
+    public function getGMapLevel(){
+        $ret = [];
+        foreach(lib_conf::races as $Gid => $item){
+            $ret[$Gid] = [
+                $item[0],
+                m_dao_race::$GidMap[$Gid],
+            ];
+        }
+        foreach(lib_conf::jobs as $Gid => $item){
+            $ret[$Gid] = [
+                $item[0],
+                m_dao_job::$GidMap[$Gid],
+            ];
+        }
+        return $ret;
+    } 
     public function clean(){
         foreach (scandir(SEN::cache_dir()) as $filePath) {
             if(!in_array($filePath, ['.','..']))
@@ -59,7 +79,7 @@ class c_tools{
     }
     public function check(){
         foreach (SEN::STATIC_FILE as $fileName) {
-            $localFile = SEN::$rootDir .DIRECTORY_SEPARATOR. SEN::STATIC_DIR .DIRECTORY_SEPARATOR. $fileName;
+            $localFile = ROOT_DIR .DIRECTORY_SEPARATOR. SEN::STATIC_DIR .DIRECTORY_SEPARATOR. $fileName;
             $cdnUrl = SEN::CDN_URL .DIRECTORY_SEPARATOR. SEN::STATIC_DIR .DIRECTORY_SEPARATOR. $fileName;
             $localData = file_get_contents($localFile);
             $cdnData = file_get_contents($cdnUrl);
@@ -70,11 +90,11 @@ class c_tools{
             }
         }
     }
-    public function log(){
-        //查看log
-        header("Content-type: text/plain; charset=utf-8");
-        echo file_get_contents(SEN::log_file($_GET['f']));
-    }
+    // public function log(){
+    //     //查看log
+    //     header("Content-type: text/plain; charset=utf-8");
+    //     echo file_get_contents(SEN::log_file($_GET['f']));
+    // }
     /**
      * 生成lib_conf::hero_sort 的配置
      */

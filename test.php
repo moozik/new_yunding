@@ -2,6 +2,8 @@
 require_once 'sen.php';
 SEN::init();
 
+print_r([123,456]+[890,789,123]);
+exit;
 $inArr = [
     [[1],[2],[3]],
     [['a'],['b'],['c']]

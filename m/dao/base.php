@@ -1,11 +1,11 @@
 <?php
 class m_dao_base{
     
-    static function init($staticKey)
+    static function init($staticKey, $ifUpdate = false)
     {
         // $ret = [];
         $localPath = SEN::static_path($staticKey);
-        if(file_exists($localPath)){
+        if(!$ifUpdate && file_exists($localPath)){
             $res = file_get_contents($localPath);
             $dataObj = json_decode($res);
         }else{

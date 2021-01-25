@@ -13,6 +13,9 @@ class m_object_job extends m_object_groups{
             }
             $jobObj = m_dao_job::$data[$jobObj];
         }
+        if(empty($jobObj)){
+            return false;
+        }
         $this->jobId = $jobObj->jobId;
         $this->GId = $jobObj->jobId + 100;
         $this->name = $jobObj->name;

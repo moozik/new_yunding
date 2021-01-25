@@ -1,4 +1,7 @@
 var regNumber = /^\d+$/;
+window.DATA_race = {};
+window.DATA_job = {};
+window.DATA_Ggroup = {};
 $.getJSON({
     url: "//game.gtimg.cn/images/lol/act/img/tft/js/chess.js",
     async: false,
@@ -10,22 +13,20 @@ $.getJSON({
     url: "//game.gtimg.cn/images/lol/act/img/tft/js/race.js",
     async: false,
     success: function (ret) {
-        var retData = {};
         for(let i in ret.data){
-            retData[ret.data[i].raceId] = ret.data[i];
+            window.DATA_race[ret.data[i].raceId] = ret.data[i];
+            window.DATA_Ggroup[ret.data[i].raceId] = ret.data[i];
         }
-        window.DATA_race = retData;
     },
 });
 $.getJSON({
     url: "//game.gtimg.cn/images/lol/act/img/tft/js/job.js",
     async: false,
     success: function (ret) {
-        var retData = {};
         for(let i in ret.data){
-            retData[ret.data[i].jobId] = ret.data[i];
+            window.DATA_job[ret.data[i].jobId] = ret.data[i];
+            window.DATA_Ggroup[parseInt(ret.data[i].jobId) + 100] = ret.data[i];
         }
-        window.DATA_job = retData;
     },
 });
 $.getJSON({
@@ -83,6 +84,10 @@ var vm = new Vue({
                 }
                 
                 equip = DATA_equip.data[i];
+                //装备id不在阵容列表里，跳出
+                if(!DATA_race[equip.raceId] && !DATA_job[equip.jobId]){
+                    continue;
+                }
                 //转职类型
                 if(equip.jobId > 0){
                     job = DATA_job[equip.jobId].name;
@@ -114,9 +119,11 @@ var vm = new Vue({
         //当前选中英雄
         inChessList: [],
         //价值筛选
-        chessValue: { 1: true, 2: true, 3: true, 4: true, 5: true },
+        chessValue: { 1: true, 2: true, 3: true, 4: false, 5: false },
         //待计算个数
         teamCount: 9,
+        //循环层数
+        forCount: 3,
         //吃鸡阵容
         chickenArmy: [], //最后结果
         //官方推荐阵容
@@ -227,10 +234,24 @@ var vm = new Vue({
             this.weaponList.splice(index, 1);
         },
         //修改金额
-        // forCountBtn: function (forCount) {
-        //     this.forCount = forCount;
-        //     this.updateCost();
-        // },
+        forCountBtn: function (forCount) {
+            this.forCount = forCount;
+            this.updateCost();
+        },
+        //更新英雄价格区间
+        updateCost: function () {
+            var teamCount;
+            if (this.inChessList.length + this.forCount > 7) {
+                teamCount = 7;
+            } else {
+                teamCount = this.inChessList.length + this.forCount;
+            }
+            var ret = { 1: false, 2: false, 3: false, 4: false, 5: false };
+            for (let i in levelArr[teamCount]) {
+                ret[levelArr[teamCount][i]] = true;
+            }
+            this.chessValue = ret;
+        },
         //更新阵容数量 by 棋子选择
         // updateTeamCountByClickChess: function() {
         //     if(this.inChessList.length >= 6){
@@ -356,56 +377,6 @@ $(document).on("mouseenter", ".chessBtn", function () {
 //     } //end for i
 //     return result;
 // };
-//提前处理官方js
-// Object.keys(TFTLineup_V3_List).forEach((k) => {
-//     TFTLineup_V3_List[k].idStr = 'detail' + k;
-//     TFTLineup_V3_List[k].early_chesses = TFTLineup_V3_List[k].early_chesses.split(',');
-//     TFTLineup_V3_List[k].metaphase_chesses = TFTLineup_V3_List[k].metaphase_chesses.split(',');
-//     TFTLineup_V3_List[k].line_chess = TFTLineup_V3_List[k].line_chess.split(',');
-// });
-//匹配官方阵容
-/*function matchLOL() {
-    //匹配js中的阵容
-    var chessImgArr = new Array();
-    vm.inChessList.forEach((chess) => {
-        chessImgArr.push(chess.img);
-    });
-    var early_chesses, result;
-    Object.keys(TFTLineup_V3_List).forEach((k) => {
-        console.log(TFTLineup_V3_List[k]);
-
-        //early_chesses 匹配前期阵容
-        // if(chessImgArr.length <= 4){
-        //     result = Array.intersect(chessImgArr, TFTLineup_List[k].early_chesses);
-        //     if(result.length === 3){
-        //         vm.chickenArmyPlus.push(TFTLineup_List[k]);
-        //         return true;
-        //     }
-        // }
-        //匹配中期 metaphase_chesses 中期阵容
-        if (chessImgArr.length >= 4) {
-            result = Array.intersect(
-                chessImgArr,
-                TFTLineup_V3_List[k].metaphase_chesses
-            );
-            if (chessImgArr.length - result.length <= 1) {
-                vm.chickenArmyPlus.push(TFTLineup_V3_List[k]);
-                return true;
-            }
-        }
-        //匹配后期 line_chess 成型阵容
-        if (chessImgArr.length >= 4) {
-            result = Array.intersect(
-                chessImgArr,
-                TFTLineup_V3_List[k].line_chess
-            );
-            if (chessImgArr.length - result.length <= 2) {
-                vm.chickenArmyPlus.push(TFTLineup_V3_List[k]);
-                return true;
-            }
-        }
-    });
-}*/
 $("#runBtn").click(function () {
     //删除原有数据
     vm.chickenArmy.splice(0);
@@ -420,6 +391,7 @@ $("#runBtn").click(function () {
         theOne: (vm.theOneJob) != 0 ? vm.theOneJob : vm.theOneRace,
         //队伍成员个数
         teamCount: vm.teamCount,
+        forCount: vm.forCount,
         inChess: new Array(),
         banChess: new Array(),
         weapon: new Array(),
@@ -455,7 +427,46 @@ $("#runBtn").click(function () {
         },
     });
 });
-function displayPage(ret) {
+function displayPage(teamArrObj){
+    var chess = [];
+    var group = [];
+    teamArrObj.forEach((teamObj, index) => {
+        chess = [];
+        group = [];
+        //chess
+        teamObj.chess.forEach((chessId) => {
+            chess.push(vm.chessArr[chessId]);
+        });
+        //group
+        //todu
+        // console.log(window.DATA_Ggroup);
+        for(var key = 3; key >= 0; key--){
+            for(var GId in teamObj.group[key]){
+                group.push({
+                    name: window.DATA_Ggroup[GId].name,
+                    imagePath: window.DATA_Ggroup[GId].imagePath,
+                    gid: GId,
+                    id: (GId > 100) ? (GId - 100): GId,
+                    count: teamObj.group[key][GId],
+                    icoLevel: key + 1,
+                });
+            }
+        }
+        // teamObj.group.forEach((GId) => {
+        //     console.log(GId, window.DATA_Ggroup[GId]);
+        //     group.push(window.DATA_Ggroup[GId]);
+        // });
+        vm.chickenArmy.push({
+            chess: chess,
+            group: group,
+            score: teamObj.score,
+            tips: teamObj.tips,
+            op: teamObj.op,
+        });
+    });
+    console.log(vm.chickenArmy);
+}
+function displayPageOld(ret) {
     // console.log(ret);
     var chess = [];
     var group = [];

@@ -155,7 +155,7 @@ class lib_tools{
      * @param int $n
      * @return int
      */
-    static function m_chose_n($m, $n){
+    static function m_chose_n($m, $n) : int{
         return (self::fn($m) / (self::fn($n) * self::fn($m - $n)));
     }
 
@@ -164,7 +164,7 @@ class lib_tools{
      * @param int $n
      * @return void
      */
-    static function fn($n){
+    static function fn($n) : int{
         if($n == 0) return 1;
         $fn = 1;
         for($i = 1; $i <= $n; $i++){
@@ -188,7 +188,7 @@ class lib_tools{
      * @return array
      */
     static function getLevelMap($obj) : array{
-        lib_timer::start(__FUNCTION__);
+        // lib_timer::start(__FUNCTION__);
         if(isset($obj->raceId) && '9' == $obj->raceId){
             //忍者特殊处理
             return [0=>4, 1=>1, 2=>0, 3=>0, 4=>4];
@@ -203,12 +203,13 @@ class lib_tools{
         if(!array_key_exists(1, $ret)){
             $ret[1] = 0;
         }
-        for($i = 2; $i < $count; $i++){
+        // for($i = 2; $i < $count; $i++){
+        for($i = 2; $i < 12; $i++){
             if(!array_key_exists($i, $ret)){
                 $ret[$i] = $ret[$i - 1];
             }
         }
-        lib_timer::stop(__FUNCTION__);
+        // lib_timer::stop(__FUNCTION__);
         return $ret;
     }
 

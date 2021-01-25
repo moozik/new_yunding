@@ -10,18 +10,21 @@
     <!-- 引入 Bootstrap -->
     <link rel="stylesheet" href="https://cdn.staticfile.org/twitter-bootstrap/4.3.1/css/bootstrap.min.css">
     <script>
-        var _hmt = _hmt || [];
-        (function() {
-            var hm = document.createElement("script");
-            hm.src = "https://hm.baidu.com/hm.js?8aca806cf882e7c0a56ac614d0fc724e";
-            var s = document.getElementsByTagName("script")[0];
-            s.parentNode.insertBefore(hm, s);
-        })();
+        // var _hmt = _hmt || [];
+        // (function() {
+        //     var hm = document.createElement("script");
+        //     hm.src = "https://hm.baidu.com/hm.js?8aca806cf882e7c0a56ac614d0fc724e";
+        //     var s = document.getElementsByTagName("script")[0];
+        //     s.parentNode.insertBefore(hm, s);
+        // })();
     </script>
     <link rel="stylesheet" href="<?= SEN::static_url('css') ?>" charset="utf-8">
     <link rel="stylesheet" href="https://cdn.staticfile.org/font-awesome/4.7.0/css/font-awesome.css">
 </head>
-
+<!-- 
+https://lol.qq.com/client/v2/index.html#/
+https://lol.qq.com/act/a20200917tftset4/index.html
+ -->
 <body style="background-color: lightgray;">
     <div class="container" id="app" style="padding-top:10px;height:1500px;">
         <div class="row clearfix">
@@ -169,8 +172,14 @@
                 <button type="button" class="btn" v-bind:class="{'btn-primary':chessValue[4]}" v-on:click="valBtn(4)">4 <i class="fa fa-rmb"></i></button>
                 <button type="button" class="btn" v-bind:class="{'btn-primary':chessValue[5]}" v-on:click="valBtn(5)">5 <i class="fa fa-rmb"></i></button>
 
-                <span class="large-title">阵容棋子数</span>
-                <!-- <div class="btn-group btn-group-toggle" data-toggle="buttons">
+                <!-- <span class="large-title">阵容棋子数</span> -->
+
+                <span class="large-title">筛选英雄个数</span>
+
+                <div class="btn-group btn-group-toggle" data-toggle="buttons">
+                    <label class="btn btn-primary" v-on:click="forCountBtn(0)">
+                        <input type="radio" name="options" v-model="forCount" value="0"> 原样输出
+                    </label>
                     <label class="btn btn-primary" v-on:click="forCountBtn(1)">
                         <input type="radio" name="options" v-model="forCount" value="1"> 一个
                     </label>
@@ -183,59 +192,16 @@
                 </div>
                 <span> {{ forCount }}个</span>
 
-                <label for="formControlRange">阵容棋子数</label> -->
-                <input type="range" class="form-control-range" v-model="teamCount" max="9" min="0" step="1" v-on:mousemove="updateCostByTeamCount()">
-                <span> {{ teamCount }}个</span>
+                <!-- <input type="range" class="form-control-range" v-model="teamCount" max="9" min="0" step="1" v-on:mousemove="updateCostByTeamCount()">
+                <span> {{ teamCount }}个</span> -->
             </div>
 
             <div class="col-md-8 column">
-
-                <?php if (false) { ?>
-                    <span class="large-title" onclick="$('#armyDiv').toggle();" style="cursor: pointer;">官方推荐阵容(隐藏)</span>
-                    <div style="display: block;" id="armyDiv">
-                        <div v-for="(army,index) in chickenArmyPlus" class="armyPlus">
-                            <span onclick="$('#'+$(this).data('id')).toggle();" :data-id="army.idStr">{{army.line_name}}</span>
-                            <div style="display: none;" v-bind:id="army.idStr">
-                                <!--
-                            early_info 前期过渡
-                            enemy_info 克制分析
-                            equipment_info 装备分析
-                            location_info 站位分析
-                            -->
-                                <!--<h6>版本：{{army.edition}}</h6>-->
-                                <b>简介：</b>
-                                <p>{{army.characteristic}}</p>
-                                <b>前期：</b>
-                                <p>{{army.early_point}}</p>
-                                <div class="chess-list">
-                                    <div v-for="chessItem in army.early_chesses">
-                                        <img :src="chessImg(chessItem)" />
-                                    </div>
-                                </div>
-                                <b>中期：</b>
-                                <p>{{army.metaphase_point}}</p>
-                                <div class="chess-list">
-                                    <div v-for="chessItem in army.metaphase_chesses">
-                                        <img :src="chessImg(chessItem)" />
-                                    </div>
-                                </div>
-                                <b>后期阵容：</b>
-                            </div>
-                            <div class="chess-list">
-                                <div v-for="chessItem in army.line_chess">
-                                    <img :src="chessImg(chessItem)" />
-                                </div>
-                            </div>
-
-                        </div>
-                    </div>
-                <?php } ?>
-
                 <span class="large-title">最优阵容</span>
                 <div v-for="army in chickenArmy" class="traits">
                     <!--英雄列表-->
                     <div class="chess-list result">
-                        <div :title="chessItem.title" v-for="chessItem in army.chess" :class="'hi_'+chessItem.img">
+                        <div :title="chessItem.title" v-for="chessItem in army.chess" :class="'hi_'+chessItem.TFTID">
                         </div>
                     </div>
                     <div class="chess-list result">
@@ -244,8 +210,8 @@
                         <button v-if="army.tips" type="button" class="btn btn-success" disabled="disabled">{{army.tips}}</button>
                     </div>
                     <div class="result-jiban result">
-                        <div v-for="(item,index) in army.group" :class="item.classStr">
-                            <img :src="groupImg(item.id)" />
+                        <div v-for="(item,index) in army.group" :class="'grade' + item.icoLevel">
+                            <img :src="item.imagePath" />
                             <span>{{item.count}}{{item.name}}</span>
                         </div>
                     </div>
