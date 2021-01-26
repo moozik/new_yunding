@@ -358,25 +358,6 @@ $(document).on("mouseenter", ".chessBtn", function () {
     $("#pop1").html(template("ChampionPop2", ret));
     $("#pop1").css("display", "block");
 });
-//数组取交集
-// Array.intersect = function () {
-//     var result = new Array();
-//     var obj = {};
-//     for (var i = 0; i < arguments.length; i++) {
-//         for (var j = 0; j < arguments[i].length; j++) {
-//             var str = arguments[i][j];
-//             if (!obj[str]) {
-//                 obj[str] = 1;
-//             } else {
-//                 obj[str]++;
-//                 if (obj[str] == arguments.length) {
-//                     result.push(str);
-//                 }
-//             } //end else
-//         } //end for j
-//     } //end for i
-//     return result;
-// };
 $("#runBtn").click(function () {
     //删除原有数据
     vm.chickenArmy.splice(0);
@@ -438,8 +419,6 @@ function displayPage(teamArrObj){
             chess.push(vm.chessArr[chessId]);
         });
         //group
-        //todu
-        // console.log(window.DATA_Ggroup);
         for(var key = 3; key >= 0; key--){
             for(var GId in teamObj.group[key]){
                 group.push({
@@ -452,10 +431,6 @@ function displayPage(teamArrObj){
                 });
             }
         }
-        // teamObj.group.forEach((GId) => {
-        //     console.log(GId, window.DATA_Ggroup[GId]);
-        //     group.push(window.DATA_Ggroup[GId]);
-        // });
         vm.chickenArmy.push({
             chess: chess,
             group: group,
@@ -463,67 +438,5 @@ function displayPage(teamArrObj){
             tips: teamObj.tips,
             op: teamObj.op,
         });
-    });
-    console.log(vm.chickenArmy);
-}
-function displayPageOld(ret) {
-    // console.log(ret);
-    var chess = [];
-    var group = [];
-    var groupArr = vm.groupArr;
-    ret.forEach((item, index) => {
-        chess = [];
-        group = [];
-        //组合英雄对象
-        item[0].forEach((hId) => {
-            // console.log(hId);
-            chess.push({
-                name: chessArr[hId][0],
-                img: chessArr[hId][3],
-                title: chessArr[hId][7],
-            });
-        });
-        //组合羁绊对象 组合羁绊图片对象
-        //后端判定为顶级羁绊存在item[4]
-        $.each(item[4], function (groupId, count) {
-            //压入羁绊结果集
-            group.push({
-                //title: groupArr[groupId].name+':'+count,
-                name: groupArr[groupId].name,
-                id: groupId,
-                count: count,
-                classStr: "grade3 ", //+groupArr[groupId].timg
-            });
-        });
-        //中级羁绊item[6]
-        $.each(item[6], function (groupId, count) {
-            //压入羁绊结果集
-            group.push({
-                //title: groupArr[groupId].name+':'+count,
-                name: groupArr[groupId].name,
-                id: groupId,
-                count: count,
-                classStr: "grade2 ", //+groupArr[groupId].timg
-            });
-        });
-        //后端判定为普通羁绊存在item[2]
-        $.each(item[2], function (groupId, count) {
-            group.push({
-                //title: groupArr[groupId].name+':'+count,
-                name: groupArr[groupId].name,
-                id: groupId,
-                count: count,
-                classStr: "grade1 ", //+groupArr[groupId].timg
-            });
-        });
-        //压入结果集，展示结果
-        vm.chickenArmy.push({
-            chess: chess,
-            group: group,
-            score: item[5],
-            tips: item[8],
-            op: item[9],
-        });
-        // console.log(chess,group);
     });
 }
