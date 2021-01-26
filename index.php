@@ -1,16 +1,13 @@
 <?php
 declare(strict_types=1);
-
 require_once 'sen.php';
-// print_r($_SERVER);exit;
 SEN::init();
 $route = [
     'index',
     'teamCalc',
     'tools',
 ];
-// $action = $_SERVER['QUERY_STRING'];
-$action = $_SERVER['REDIRECT_PATH_INFO'];
+$action = $_SERVER['PATH_INFO'])??$_SERVER['REDIRECT_PATH_INFO'];
 if(empty($action)){
     $action = 'index';
 }
