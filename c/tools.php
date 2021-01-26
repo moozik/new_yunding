@@ -20,10 +20,10 @@ class c_tools{
     {
         $action = $_GET['a'];
         $action_list = [
-            'log' => '参数日志',
+            //'log' => '参数日志',
             'update' => '更新define,json',
-            'check' => '检查cdn同步',
-            'clean' => '清空缓存文件',
+            //'check' => '检查cdn同步',
+            //'clean' => '清空缓存文件',
         ];
 
         echo "<a href='" . SITE_URL . "'>返回</a> | ";
