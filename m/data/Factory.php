@@ -17,7 +17,7 @@ class m_data_Factory{
      * 返回对象
      * @return object
      */
-    static function get(int $key, int $id) : object{
+    static function get(int $key, int $id){
         if(array_key_exists($id, self::$instence[$key])){
             return self::$instence[$key][$id];
         }
@@ -41,7 +41,7 @@ class m_data_Factory{
      * Gid工厂
      * @return m_object_groups
      */
-    static function getGid(int $Gid) : object{
+    static function getGid(int $Gid) : m_object_groups{
         if($Gid > 100){
             $key = lib_def::job;
         }

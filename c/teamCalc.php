@@ -18,8 +18,9 @@ class c_teamCalc extends lib_controlerBase{
     /**
      * 主函数
      */
-    public function doWork(){
+    public function actionIndex(){
         $this->teamData->setInput($this->input);
         $this->result['data'] = $this->teamData->calc();
+        echo lib_string::encode($this->result);
     }
 }

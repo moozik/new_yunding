@@ -81,14 +81,33 @@ class SEN
         // }
     }
     /**
+     * 获取路由信息
+     *
+     * @return array
+     */
+    static function getRoute(){
+        if(!preg_match("/^\/([a-zA-Z0-9]+)\/?([a-zA-Z0-9]+)?/", $_SERVER['REQUEST_URI'], $matchs)){
+            return [
+                0 => 'c/index.php',
+                1 => 'c_index',
+                2 => 'actionIndex',
+            ];
+        }
+        if(empty($matchs[2])) {
+            $matchs[2] = 'Index';
+        }
+        return [
+            0 => 'c/' . $matchs[1] . '.php',
+            1 => 'c_' . $matchs[1],
+            2 => 'action'. $matchs[2],
+        ];
+    }
+    /**
      * 开发环境
      * @return bool
      */
     static function isDevelop(){
-        if(array_key_exists('SESSIONNAME', $_SERVER) && 'Console' === $_SERVER['SESSIONNAME']){
-            return true;
-        }
-        if(array_key_exists('HTTP_HOST', $_SERVER) && in_array($_SERVER['HTTP_HOST'],['localhost', '127.0.0.1'])){
+        if('moozik.cn' == $_SERVER['SERVER_NAME']){
             return true;
         }
         return false;

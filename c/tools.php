@@ -1,6 +1,6 @@
 <?php
 
-class c_tools{
+class c_tools extends lib_controlerBase{
     // private $route = [
     //     'chessSort'
     // ];
@@ -16,8 +16,7 @@ class c_tools{
         }
         m_dao_chess::init();
     }
-    public function execute()
-    {
+    public function actionIndex(){
         $action = $_GET['a'];
         $action_list = [
             //'log' => '参数日志',
@@ -48,8 +47,8 @@ class c_tools{
             // 'var heroArr=' . SEN::encode(HERO::heroList()) . ';' .
             // 'var groupArr=' . SEN::encode(HERO::groupList()) . ';' .
             // 'var weaponArr=' . SEN::encode(HERO::weaponList()) . ';' .
-            'var levelArr=' . lib_string::encode(lib_conf::LEVEL2COST) . ';' .
-            'var GLevel=' . lib_string::encode($this->getGMapLevel()) . ';';
+            'var levelArr=' . lib_string::encode(lib_conf::LEVEL2COST) . ';';
+            // 'var GLevel=' . lib_string::encode($this->getGMapLevel()) . ';';
 
         file_put_contents(SEN::static_path('define'), $fileContent);
         echo 'update done.';

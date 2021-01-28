@@ -2,22 +2,17 @@
 declare(strict_types=1);
 require_once 'sen.php';
 SEN::init();
-$route = [
-    'index',
-    'teamCalc',
-    'tools',
-];
-$action = $_SERVER['PATH_INFO'])??$_SERVER['REDIRECT_PATH_INFO'];
-if(empty($action)){
-    $action = 'index';
-}
-if(in_array($action, $route)){
-    $controlName = 'c_' . $action;
-    if(class_exists($controlName)){
+$routeInfo = SEN::getRoute();
+if(file_exists($routeInfo[0])){
+    if(class_exists($routeInfo[1])){
         try{
             //记录路由到的控制器
-            define('ROUTE_CONTROLER', $action);
-            $obj = new $controlName();
+            define('ROUTE_CONTROLER', $routeInfo[1]);
+            define('ROUTE_ACTION', $routeInfo[2]);
+            $className = $routeInfo[1];
+            lib_log::debug("ROUTE_CONTROLER", ROUTE_CONTROLER);
+            lib_log::debug("ROUTE_ACTION", ROUTE_ACTION);
+            $obj = new $className();
             $obj->execute();
         }catch(lib_fatalException $e){
             //致命异常
@@ -31,5 +26,5 @@ if(in_array($action, $route)){
         echo 'controler nofound.';
     }
 }else{
-    echo 'route nofound.';
+    echo 'file nofound.';
 }
