@@ -44,6 +44,18 @@ class m_object_teamCalcReq{
      */
     public $costList = [1,2,3,4,5];
     /**
+     * 可用棋子id数组
+     *
+     * @var array
+     */
+    public $freeChessArr = [];
+    /**
+     * 可用棋子id数组对象
+     *
+     * @var array
+     */
+    public $freeChessArrObj = [];
+    /**
      * 空闲位置个数
      */
     public $freePosition = 0;
@@ -56,9 +68,9 @@ class m_object_teamCalcReq{
         if(isset($input->forCount)){
             $this->forCount = intval($input->forCount);
         }
-        if(isset($input->teamCount)){
-            $this->teamCount = intval($input->teamCount);
-        }
+        // if(isset($input->teamCount)){
+        //     $this->teamCount = intval($input->teamCount);
+        // }
         if(isset($input->inChess)){
             $this->inChess = lib_tools::arrIntval($input->inChess);
         }
@@ -72,20 +84,47 @@ class m_object_teamCalcReq{
             $this->costList = lib_tools::arrIntval($input->costList);
         }
         //计算参数
-        $this->freePosition = $this->teamCount - count($this->inChess);
-        if($this->freePosition < 0){
-            throw new Exception("参数错误freePosition");
-        }
+        // $this->freePosition = $this->teamCount - count($this->inChess);
+        // if($this->freePosition < 0){
+        //     throw new Exception("参数错误freePosition");
+        // }
         //计算当前棋子
         foreach($this->inChess as $chessId){
             $this->inChessObj[] = m_data_Factory::get(lib_def::chess, $chessId);
         }
         lib_log::debug('$this->inChessObj', $this->inChessObj);
+        // lib_log::debug('$this->costList', $this->costList);exit;
+        if(empty($this->costList)){
+            throw new Exception("参数错误costList");
+        }
+        // $this->freeChessArr = $this->getFreeChess($this);
+        // $this->freeChessArrObj = $this->getFreeChess($this, true);
+        // lib_log::debug('m_object_teamCalcReq', serialize($this));
+    }
+
+    public function dealWeaponPre(){
+        //转职装备预处理
+        if(!empty($this->req->weapon)){
+            //处理转职装备
+            if(count($this->req->weapon) > lib_conf::IN_WEAPON_MAX){
+                //超过最大值的装备被删除
+                $this->req->weapon = array_slice($this->req->weapon, 0, lib_conf::IN_WEAPON_MAX);
+            }
+            //groupid2count映射
+            $weaponGroup2Count = [];
+            foreach($this->req->weapon as $Gid){
+                lib_number::addOrDefault($weaponGroup2Count[$Gid], 1);
+            }
+            $this->req->weapon = $weaponGroup2Count;
+        }
+    }
+
+    public function dealCostList(){
         //修正costList
         foreach($this->costList as $k => $costVal){
             if($costVal < 1 || $costVal > 5){
                 //非法数据
-                unset($costVal);
+                unset($this->costList[$k]);
                 continue;
             }
             if(!in_array($costVal, lib_conf::LEVEL2COST[$this->forCount + count($this->inChess)])){
@@ -93,13 +132,6 @@ class m_object_teamCalcReq{
                 unset($this->costList[$k]);
             }
         }
-        // lib_log::debug('$this->costList', $this->costList);exit;
-        if(empty($this->costList)){
-            throw new Exception("参数错误costList");
-        }
-        $this->freeChessArr = $this->getFreeChess($this);
-        $this->freeChessArrObj = $this->getFreeChess($this, true);
-        // lib_log::debug('m_object_teamCalcReq', serialize($this));
     }
 
     /**
@@ -107,27 +139,21 @@ class m_object_teamCalcReq{
      * @param m_object_teamCalcReq $req
      * @return array
      */
-    private function getFreeChess(m_object_teamCalcReq $req, $isObj = false){
-        $ret = [];
+    public function getFreeChess(){
+        $this->freeChessArr = [];
+        $this->freeChessArrObj = [];
         foreach(m_dao_chess::$data as $chess){
-            // print_r($chess);
             //inChess banChess
-            if(in_array($chess->chessId, $req->inChess)
-                || in_array($chess->chessId, $req->banChess)){
+            if(in_array($chess->chessId, $this->inChess)
+                || in_array($chess->chessId, $this->banChess)){
                 continue;
             }
             //costList
-            if(!in_array($chess->price, $req->costList)){
+            if(!in_array($chess->price, $this->costList)){
                 continue;
             }
-            if($isObj){
-                // $ret[$chess->chessId] = m_data_Factory::get(lib_def::chess, $chess->chessId);
-                $ret[] = m_data_Factory::get(lib_def::chess, $chess->chessId);
-            }else{
-                $ret[] = $chess->chessId;
-            }
+            $this->freeChessArr[] = $chess->chessId;
+            $this->freeChessArrObj[] = m_data_Factory::get(lib_def::chess, $chess->chessId);
         }
-        // lib_log::debug('getFreeChess', print_r($ret, true));
-        return $ret;
     }
 }

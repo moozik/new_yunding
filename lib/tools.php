@@ -162,9 +162,9 @@ class lib_tools{
     /**
      * 阶乘
      * @param int $n
-     * @return void
+     * @return float
      */
-    static function fn($n) : int{
+    static function fn($n){
         if($n == 0) return 1;
         $fn = 1;
         for($i = 1; $i <= $n; $i++){

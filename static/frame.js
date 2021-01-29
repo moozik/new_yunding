@@ -361,7 +361,7 @@ $(document).on("mouseenter", ".chessBtn", function () {
 $("#runBtn").click(function () {
     //删除原有数据
     vm.chickenArmy.splice(0);
-    vm.chickenArmyPlus.splice(0);
+    // vm.chickenArmyPlus.splice(0);
     vm.weaponListCache = vm.weaponList;
     //匹配官方js中的阵容，并压入vm.chickenArmyPlus结果集
     // matchLOL();
@@ -409,6 +409,8 @@ $("#runBtn").click(function () {
     });
 });
 function displayPage(teamArrObj){
+    //删除原有数据
+    vm.chickenArmy.splice(0);
     var chess = [];
     var group = [];
     teamArrObj.forEach((teamObj, index) => {
