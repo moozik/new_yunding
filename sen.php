@@ -123,7 +123,7 @@ class SEN
      * @return bool
      */
     static function isMe(){
-        if (in_array(self::getIp(), self::IPLIST) || SEN::PASSWORD == $_COOKIE['passwd']) {
+        if (in_array(self::getIp(), self::IPLIST) || (isset($_COOKIE['passwd']) && SEN::PASSWORD == $_COOKIE['passwd'])) {
             return true;
         } else {
             return false;

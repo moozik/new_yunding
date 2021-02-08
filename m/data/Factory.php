@@ -56,7 +56,7 @@ class m_data_Factory{
      * 返回数组
      * @return array
      */
-    static function getArr(int $key, $id) : array{
+    static function getRaceArr(int $key, $id) : array{
         if(is_int($id) || (is_string($id) && is_numeric($id))){
             if(self::get($key, intval($id)))
                 return [$id => self::get($key, intval($id))];
@@ -64,7 +64,7 @@ class m_data_Factory{
         if(is_string($id)){
             $ret = [];
             foreach(explode(',', $id) as $idItem){
-                if(self::get($key, intval($idItem)))
+                if(isset(m_dao_race::$data[$idItem]))
                     $ret[$idItem] = self::get($key, intval($idItem));
             }
             return $ret;
@@ -82,7 +82,7 @@ class m_data_Factory{
         if(is_string($id)){
             $ret = [];
             foreach(explode(',', $id) as $idItem){
-                if(self::get($key, intval($idItem)))
+                if(isset(m_dao_job::$data[$idItem]))
                     $ret[($idItem + 100)] = self::get($key, intval($idItem));
             }
             return $ret;
