@@ -6,6 +6,7 @@ class c_tools extends lib_controlerBase{
     // ];
     function __construct()
     {
+        parent::__construct();
         if (isset($_GET['login']) && SEN::PASSWORD === $_GET['login']) {
             setcookie("passwd", SEN::PASSWORD, time() + 86400);
         } else {

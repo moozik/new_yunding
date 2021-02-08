@@ -30,10 +30,9 @@ class m_data_teamCalcOld{
         m_dao_race::init();
         m_dao_job::init();
         m_dao_chess::init();
-        m_dao_equip::init();
+        // m_dao_equip::init();
         // self::$GidLevelMap = array_merge(m_dao_job::$GidMap, m_dao_race::$GidMap);
         self::$GidLevelMap = m_dao_job::$GidMap + m_dao_race::$GidMap;
-        $this->forCountFunc = 'forCountOld';
     }
 
     function forCountNew(){
@@ -77,7 +76,9 @@ class m_data_teamCalcOld{
     }
     function calc(){
         $retData = [];
-        // lib_log::debug('$this->req', $this->req);
+        // foreach($this->req->freeChessArrObj as $obj){
+        //     lib_log::debug('freeChessArrObj', $obj->chessId.$obj->name);
+        // }
         // return;
         //输出人数
         $this->retCount = count($this->req->inChess) + $this->req->forCount;
@@ -98,14 +99,14 @@ class m_data_teamCalcOld{
         // $this->forCountOld($teamList);
         // lib_log::debug('timer', lib_timer::getResult());
         // exit;
-        $forCountFunc = $this->forCountFunc;
         //存储队伍价格到数量的映射，用于快速筛选有价值的阵容
         $valueLog = [];
         
         //结果数组
         $teamList = [];
+        $retData = [];
         //筛选出羁绊价值最高的组合
-        foreach($this->{$forCountFunc}() as $teamListObj){
+        foreach($this->forCountOld() as $teamListObj){
             //天选之人
             if($this->req->theOne != 0){
                 $teamListObj->group[$this->req->theOne] = 1;
@@ -139,10 +140,8 @@ class m_data_teamCalcOld{
                     //当前羁绊不成形
                     continue;
                 }
-                
-                //顶级羁绊加入 K_GROUPTOP 删除原group中的数据
-                //mid级羁绊加入 K_GROUPMID
-                $opLevel = lib_conf::GidOPLevel($Gid, $count);
+                //计算羁绊等级,根据 $Gcount 有效个数
+                $opLevel = lib_conf::GidOPLevel($Gid, $Gcount);
                 $teamListObj->result->group[$opLevel][$Gid] = $count;
                 //(羁绊级别 + 1) * 羁绊个数 = 羁绊分数
                 $teamListObj->result->score += ($opLevel + 1) * $Gcount;
@@ -165,14 +164,20 @@ class m_data_teamCalcOld{
             $teamListObj->result->op = (string)round($teamListObj->result->score / $this->retCount,2);
 
             $teamList[] = $teamListObj;
-            if(count($teamList) >= $this->teamCaleLimit){
+            //分段计算,优化计算量大的case
+            if(count($teamList) >= 20000){
                 $retData = array_merge($retData, $this->calcValueTeam($valueLog, $teamList));
                 $teamList = [];
                 $valueLog = [];
-                echo "retData:". count($retData). "\n";
+                // echo "retData:". count($retData). "\n";
             }
         }
-        $retData = array_merge($retData, $this->calcValueTeam($valueLog, $teamList));
+        //lib_log::debug('$teamListObj',json_encode($teamListObj));
+        if(!empty($teamList)){
+            $retData = array_merge($retData, $this->calcValueTeam($valueLog, $teamList));
+        }
+        lib_log::debug('$retData',json_encode($retData));
+        $retData = array_slice(lib_array::sort($retData, 'score'), 0, lib_conf::SHOW_LIMIT);
         return $retData;
     }
 
@@ -182,6 +187,7 @@ class m_data_teamCalcOld{
      * @return void
      */
     function calcValueTeam(&$valueLog, &$teamList){
+        //根据key降序
         krsort($valueLog);
         //取头部阵容
         $teamCount = 0;
@@ -206,7 +212,7 @@ class m_data_teamCalcOld{
             }
         }
         //排序
-        $sortedTeamList = $this->array_sort($sortTeamList, 'score');
+        $sortedTeamList = lib_array::sort($sortTeamList, 'score');
         return array_slice($sortedTeamList, 0, lib_conf::SHOW_LIMIT);
     }
 
@@ -240,30 +246,7 @@ class m_data_teamCalcOld{
         }
         // lib_timer::stop(__FUNCTION__);
     }
-    /**
-     * 排序函数
-     *
-     * @param [array] $arr
-     * @param [mixed] $keys
-     * @param string $orderby
-     * @return array
-     */
-    function array_sort($arr, $keys, $orderby = 'desc'){
-        $keysvalue = $new_array = array();
-        foreach ($arr as $k => $v){
-            $keysvalue[$k] = $v[$keys];
-        }
-        if($orderby == 'asc'){
-            asort($keysvalue);
-        }else if($orderby == 'desc'){
-            arsort($keysvalue);
-        }
-        reset($keysvalue);
-        foreach ($keysvalue as $k => $v){
-            $new_array[] = $arr[$k];
-        }
-        return $new_array;
-    }
+
     /**
      * 计算英雄 天选 专职装备合计羁绊的 id=>count
      * @param &$ret

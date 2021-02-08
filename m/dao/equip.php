@@ -37,18 +37,19 @@ class m_dao_equip{
 
     static function init()
     {
+        if(!empty(self::$data)){
+            return;
+        }
         $retObj = m_dao_base::init(self::$staticKey);
         self::$version = $retObj->version;
         self::$season = $retObj->season;
         self::$time = $retObj->time;
 
-        $newData = [];
         foreach($retObj->data as $key => $objItem) {
             if (self::isValid($objItem->equipId)) {
-                $newData[$objItem->equipId] = $objItem;
+                self::$data[$objItem->equipId] = $objItem;
             }
         }
-        self::$data = $newData;
     }
     /**
      * @param int $id

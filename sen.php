@@ -108,9 +108,9 @@ class SEN
      */
     static function isDevelop(){
         if('moozik.cn' == $_SERVER['SERVER_NAME']){
-            return true;
+            return false;
         }
-        return false;
+        return true;
     }
 
     /**

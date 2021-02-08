@@ -361,6 +361,20 @@ img {
 .grade3{background:url(//game.gtimg.cn/images/lol/act/a20200917tftset4/spr-label-3.png) no-repeat;background-position:0 -35px;}
 .grade4{background:url(//game.gtimg.cn/images/lol/act/a20200917tftset4/spr-label-3.png) no-repeat;background-position:0 0;}
 
+.choose:before {
+    content: '';
+    width: 30px;
+    height: 36px;
+    background: url(//game.gtimg.cn/images/lol/act/a20200917tftset4/choosed.png) no-repeat;
+    background-size: 100% 100%;
+    position: absolute;
+    top: -2px;
+    left: -2px;
+    display: block;
+    filter: brightness(1.5);
+    transform: scale(0.96);
+}
+
 /*
 var data = '';
 chess.data.forEach((item, index) => {

@@ -171,9 +171,7 @@ https://lol.qq.com/act/a20200917tftset4/index.html
                 <button type="button" class="btn" v-bind:class="{'btn-primary':chessValue[3]}" v-on:click="valBtn(3)">3 <i class="fa fa-rmb"></i></button>
                 <button type="button" class="btn" v-bind:class="{'btn-primary':chessValue[4]}" v-on:click="valBtn(4)">4 <i class="fa fa-rmb"></i></button>
                 <button type="button" class="btn" v-bind:class="{'btn-primary':chessValue[5]}" v-on:click="valBtn(5)">5 <i class="fa fa-rmb"></i></button>
-
-                <!-- <span class="large-title">阵容棋子数</span> -->
-
+                
                 <span class="large-title">筛选英雄个数</span>
 
                 <div class="btn-group btn-group-toggle" data-toggle="buttons">
@@ -191,9 +189,11 @@ https://lol.qq.com/act/a20200917tftset4/index.html
                     </label>
                 </div>
                 <span> {{ forCount }}个</span>
-
-                <!-- <input type="range" class="form-control-range" v-model="teamCount" max="9" min="0" step="1" v-on:mousemove="updateCostByTeamCount()">
-                <span> {{ teamCount }}个</span> -->
+                <?php if(SEN::isDevelop()){?>
+                    <span class="large-title">阵容棋子数</span>
+                <input type="range" class="form-control-range" v-model="teamCount" max="9" min="-1" step="1" v-on:mousemove="updateCostByTeamCount()">
+                <span> {{ teamCount }}个</span>
+                <?php }?>
             </div>
 
             <div class="col-md-8 column">
@@ -201,7 +201,7 @@ https://lol.qq.com/act/a20200917tftset4/index.html
                 <div v-for="army in chickenArmy" class="traits">
                     <!--英雄列表-->
                     <div class="chess-list result">
-                        <div :title="chessItem.title" v-for="chessItem in army.chess" :class="'hi_'+chessItem.TFTID">
+                        <div :title="chessItem.description" v-for="chessItem in army.chess" :class="'hi_'+chessItem.TFTID">
                         </div>
                     </div>
                     <div class="chess-list result">
@@ -210,7 +210,7 @@ https://lol.qq.com/act/a20200917tftset4/index.html
                         <button v-if="army.tips" type="button" class="btn btn-success" disabled="disabled">{{army.tips}}</button>
                     </div>
                     <div class="result-jiban result">
-                        <div v-for="(item,index) in army.group" :class="'grade' + item.icoLevel">
+                        <div v-for="(item,index) in army.group" :class="item.classStr">
                             <img :src="item.imagePath" />
                             <span>{{item.count}}{{item.name}}</span>
                         </div>

@@ -473,5 +473,8 @@ class m_data_teamCalc{
     public function setInput($input){
         lib_log::trace('calcInput', print_r($input, true));
         $this->req = new m_object_teamCalcReq($input);
+        $this->req->dealCostList();
+        $this->req->dealWeaponPre();
+        $this->req->getFreeChess();
     }
 }

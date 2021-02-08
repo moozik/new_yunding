@@ -41,6 +41,9 @@ class m_dao_job{
     static public $GidMap = [];
     static function init()
     {
+        if(!empty(self::$data)){
+            return;
+        }
         $retObj = m_dao_base::init(self::$staticKey);
         self::$version = $retObj->version;
         self::$season = $retObj->season;

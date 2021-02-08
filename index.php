@@ -10,8 +10,8 @@ if(file_exists($routeInfo[0])){
             define('ROUTE_CONTROLER', $routeInfo[1]);
             define('ROUTE_ACTION', $routeInfo[2]);
             $className = $routeInfo[1];
-            lib_log::debug("ROUTE_CONTROLER", ROUTE_CONTROLER);
-            lib_log::debug("ROUTE_ACTION", ROUTE_ACTION);
+            // lib_log::debug("ROUTE_CONTROLER", ROUTE_CONTROLER);
+            // lib_log::debug("ROUTE_ACTION", ROUTE_ACTION);
             $obj = new $className();
             $obj->execute();
         }catch(lib_fatalException $e){

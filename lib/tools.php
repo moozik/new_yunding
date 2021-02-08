@@ -188,18 +188,16 @@ class lib_tools{
      * @return array
      */
     static function getLevelMap($obj) : array{
-        // lib_timer::start(__FUNCTION__);
         if(isset($obj->raceId) && '9' == $obj->raceId){
             //忍者特殊处理
-            return [0=>4, 1=>1, 2=>0, 3=>0, 4=>4];
+            return [0=>4, 1=>1, 2=>0, 3=>0, 4=>4, 5=>4];
         }
         $ret = [];
-        // var_dump($obj->level);exit;
         foreach(array_keys((array)$obj->level) as $count){
-            $ret[$count] = $count;
+            $ret[(int)$count] = (int)$count;
         }
         //默认顶级羁绊个数
-        $ret[0] = $count;
+        $ret[0] = (int)$count;
         if(!array_key_exists(1, $ret)){
             $ret[1] = 0;
         }
@@ -209,7 +207,6 @@ class lib_tools{
                 $ret[$i] = $ret[$i - 1];
             }
         }
-        // lib_timer::stop(__FUNCTION__);
         return $ret;
     }
 

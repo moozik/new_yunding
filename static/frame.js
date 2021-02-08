@@ -121,13 +121,13 @@ var vm = new Vue({
         //价值筛选
         chessValue: { 1: true, 2: true, 3: true, 4: false, 5: false },
         //待计算个数
-        teamCount: 9,
+        teamCount: -1,
         //循环层数
         forCount: 3,
         //吃鸡阵容
         chickenArmy: [], //最后结果
         //官方推荐阵容
-        chickenArmyPlus: [],
+        // chickenArmyPlus: [],
         //转职装备
         weaponList: [],
         //转职装备 临时存储
@@ -207,10 +207,10 @@ var vm = new Vue({
                 //添加
                 inChessList.push(chess);
             }
-            //刷新阵容数量
-            //this.updateTeamCountByClickChess();
             //刷新金额限制
-            //this.updateCost();
+            if(this.teamCount == -1){
+                this.updateCost();
+            }
         },
         //绑定英雄池右键
         banChess: function (chess) {
@@ -252,14 +252,6 @@ var vm = new Vue({
             }
             this.chessValue = ret;
         },
-        //更新阵容数量 by 棋子选择
-        // updateTeamCountByClickChess: function() {
-        //     if(this.inChessList.length >= 6){
-        //         this.teamCount = 9;
-        //     }else{
-        //         this.teamCount + 3;
-        //     }
-        // },
         //更新费用限制 by 阵容数量
         updateCostByTeamCount: function() {
             // var teamCount;
@@ -309,12 +301,16 @@ var vm = new Vue({
         },
         clearBtn: function () {
             this.inChessList.splice(0);
-            //this.chessBanList.splice(0);
+            this.chessBanList.splice(0);
             this.chickenArmy.splice(0);
-            this.chickenArmyPlus.splice(0);
-            this.groupChecked = 0;
-            this.forCount = 3;
+            // this.chickenArmyPlus.splice(0);
             this.weaponList.splice(0);
+            this.groupCheckedId = 0;
+            this.groupCheckedType = '';
+            this.forCount = 3;
+            this.teamCount = -1;
+            this.theOneJob = 0;
+            this.theOneRace = 0;
             this.chessValue = {
                 1: true,
                 2: true,
@@ -371,7 +367,7 @@ $("#runBtn").click(function () {
         //天选羁绊
         theOne: (vm.theOneJob) != 0 ? vm.theOneJob : vm.theOneRace,
         //队伍成员个数
-        teamCount: vm.teamCount,
+        teamCount: parseInt(vm.teamCount),
         forCount: vm.forCount,
         inChess: new Array(),
         banChess: new Array(),
@@ -413,6 +409,7 @@ function displayPage(teamArrObj){
     vm.chickenArmy.splice(0);
     var chess = [];
     var group = [];
+    var classStr = '';
     teamArrObj.forEach((teamObj, index) => {
         chess = [];
         group = [];
@@ -423,13 +420,17 @@ function displayPage(teamArrObj){
         //group
         for(var key = 3; key >= 0; key--){
             for(var GId in teamObj.group[key]){
+                classStr = 'grade' + (key + 1);
+                if(vm.theOneRace == GId || vm.theOneJob == GId){
+                    classStr += ' choose';
+                }
                 group.push({
                     name: window.DATA_Ggroup[GId].name,
                     imagePath: window.DATA_Ggroup[GId].imagePath,
                     gid: GId,
                     id: (GId > 100) ? (GId - 100): GId,
                     count: teamObj.group[key][GId],
-                    icoLevel: key + 1,
+                    classStr: classStr,
                 });
             }
         }

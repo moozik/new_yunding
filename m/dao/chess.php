@@ -37,16 +37,17 @@ class m_dao_chess{
 
     static function init()
     {
+        if(!empty(self::$data)){
+            return;
+        }
         $retObj = m_dao_base::init(self::$staticKey);
         self::$version = $retObj->version;
         self::$season = $retObj->season;
         self::$time = $retObj->time;
 
-        $newData = [];
         foreach($retObj->data as $key => $objItem) {
-            $newData[$objItem->chessId] = $objItem;
+            self::$data[$objItem->chessId] = $objItem;
         }
-        self::$data = $newData;
     }
     /**
      * @param int $id

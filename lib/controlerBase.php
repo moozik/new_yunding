@@ -13,16 +13,7 @@ abstract class lib_controlerBase{
      */
     public $result = [];
 
-    public function __construct()
-    {
-        $this->init();
-    }
-
-    /**
-     * 子类初始化
-     */
-    protected function init(){
-        return;
+    public function __construct(){
     }
 
     /**
@@ -33,6 +24,16 @@ abstract class lib_controlerBase{
         return true;
     }
 
+    /**
+     * 异常处理
+     *
+     * @return void
+     */
+    protected function exceptionWork(Exception $e){
+        $this->result['msg'] = $e->getMessage();
+        echo lib_string::encode($this->result);
+        return;
+    }
     /**
      * 子类主流程
      */
@@ -58,7 +59,7 @@ abstract class lib_controlerBase{
         }catch(lib_fatalException $e){
             throw $e;
         }catch(Exception $e){
-            $this->result['msg'] = $e->getMessage();
+            $this->exceptionWork($e);
             lib_log::fatal('lib_controlerBase', $e->getMessage());
         }
     }

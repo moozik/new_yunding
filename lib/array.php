@@ -17,4 +17,29 @@ class lib_array{
             $arr = [$val];
         }
     }
+
+    /**
+     * 排序函数
+     *
+     * @param [array] $arr
+     * @param [mixed] $keys
+     * @param string $orderby
+     * @return array
+     */
+    static function sort($arr, $keys, $orderby = 'desc'){
+        $keysvalue = $new_array = array();
+        foreach ($arr as $k => $v){
+            $keysvalue[$k] = $v[$keys];
+        }
+        if($orderby == 'asc'){
+            asort($keysvalue);
+        }else if($orderby == 'desc'){
+            arsort($keysvalue);
+        }
+        reset($keysvalue);
+        foreach ($keysvalue as $k => $v){
+            $new_array[] = $arr[$k];
+        }
+        return $new_array;
+    }
 }

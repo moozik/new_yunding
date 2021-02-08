@@ -59,6 +59,6 @@ class m_object_chess{
         $this->raceIds = m_data_Factory::getArr(lib_def::race, $chessObj->raceIds);
         $this->jobIds = m_data_Factory::getJobArr(lib_def::job, $chessObj->jobIds);
         $this->Gids = $this->raceIds + $this->jobIds;
-        $this->equipIds = m_data_Factory::getArr(lib_def::equip, $chessObj->recEquip);
+        // $this->equipIds = m_data_Factory::getArr(lib_def::equip, $chessObj->recEquip);
     }
 }
