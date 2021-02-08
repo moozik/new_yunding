@@ -204,16 +204,16 @@ https://lol.qq.com/act/a20200917tftset4/index.html
                         <div :title="chessItem.description" v-for="chessItem in army.chess" :class="'hi_'+chessItem.TFTID">
                         </div>
                     </div>
-                    <div class="chess-list result">
-                        <button type="button" class="btn btn-secondary" disabled="disabled">分数:{{army.score}}</button>
-                        <button type="button" class="btn btn-info" disabled="disabled">强度:{{army.op}}</button>
-                        <button v-if="army.tips" type="button" class="btn btn-success" disabled="disabled">{{army.tips}}</button>
-                    </div>
                     <div class="result-jiban result">
                         <div v-for="(item,index) in army.group" :class="item.classStr">
                             <img :src="item.imagePath" />
                             <span>{{item.count}}{{item.name}}</span>
                         </div>
+                    </div>
+                    <div class="chess-list result">
+                        <!-- <!-- <button type="button" class="btn btn-secondary" disabled="disabled">分数:{{army.score}}</button> -->
+                        <button type="button" class="btn btn-info" disabled="disabled">强度:{{army.op}}</button> -->
+                        <button v-if="army.tips" type="button" class="btn btn-success" disabled="disabled">{{army.tips}}</button>
                     </div>
 
                 </div>
