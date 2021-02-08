@@ -86,7 +86,12 @@ class SEN
      * @return array
      */
     static function getRoute(){
-        if(!preg_match("/^\/([a-zA-Z0-9]+)\/?([a-zA-Z0-9]+)?/", $_SERVER['REQUEST_URI'], $matchs)){
+        if('/index.php' === $_SERVER['SCRIPT_NAME']){
+            $pathStr = $_SERVER['REQUEST_URI'];
+        }else{
+            $pathStr = substr($_SERVER['REQUEST_URI'], strlen($_SERVER['SCRIPT_NAME']) - strlen('/index.php'));
+        }
+        if(!preg_match("/^\/([a-zA-Z0-9]+)\/?([a-zA-Z0-9]+)?/", $pathStr, $matchs)){
             return [
                 0 => 'c/index.php',
                 1 => 'c_index',
