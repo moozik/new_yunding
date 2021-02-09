@@ -18,7 +18,7 @@ class c_tools extends lib_controlerBase{
         m_dao_chess::init();
     }
     public function actionIndex(){
-        $action = $_GET['a'];
+        $action = $_GET['a'] ?? '';
         $action_list = [
             //'log' => '参数日志',
             'update' => '更新define,json',
@@ -34,6 +34,7 @@ class c_tools extends lib_controlerBase{
 
         if(array_key_exists($action, $action_list)){
             $this->{$action}();
+            echo 'done.';
         }
     }
     public function update(){
@@ -52,7 +53,6 @@ class c_tools extends lib_controlerBase{
             // 'var GLevel=' . lib_string::encode($this->getGMapLevel()) . ';';
 
         file_put_contents(SEN::static_path('define'), $fileContent);
-        echo 'update done.';
     }
     public function getGMapLevel(){
         $ret = [];

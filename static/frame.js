@@ -14,6 +14,7 @@ $.getJSON({
     async: false,
     success: function (ret) {
         for(let i in ret.data){
+            ret.data[i].Ggroup = parseInt(ret.data[i].raceId);
             window.DATA_race[ret.data[i].raceId] = ret.data[i];
             window.DATA_Ggroup[ret.data[i].raceId] = ret.data[i];
         }
@@ -24,6 +25,7 @@ $.getJSON({
     async: false,
     success: function (ret) {
         for(let i in ret.data){
+            ret.data[i].Ggroup = ret.data[i].jobId + 100;
             window.DATA_job[ret.data[i].jobId] = ret.data[i];
             window.DATA_Ggroup[parseInt(ret.data[i].jobId) + 100] = ret.data[i];
         }
@@ -60,8 +62,7 @@ var vm = new Vue({
                 //描述
                 chess.description = '名称：' + chess.fullName + "\n职业：" + chess.races + ' ' + chess.jobs + "\n价格：" + chess.price + "\n技能：" + chess.skillIntroduce + proStatus;
                 chess.jobIds = chess.jobIds.split(',');
-                
-
+                chess.raceIds = chess.raceIds.split(',');
                 ret[DATA_chess.data[i].chessId] = chess;
             }
             return ret;
@@ -102,9 +103,6 @@ var vm = new Vue({
             }
             return ret;
         }(),
-        //级别到英雄价格关系
-        // level2cost: levelArr,
-        //==以下为动态
 
         //当前选中羁绊
         groupCheckedId: 0,
@@ -151,7 +149,7 @@ var vm = new Vue({
                 }
             }
             if(this.groupCheckedType == 'race'){
-                if(this.groupCheckedId != chess.raceIds){
+                if(-1 == chess.raceIds.indexOf(this.groupCheckedId)){
                     return false;
                 }
             }
