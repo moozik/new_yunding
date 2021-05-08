@@ -58,19 +58,6 @@ https://lol.qq.com/act/a20200917tftset4/index.html
         </div>
         <div class="row clearfix">
             <div class="col-md-4 column" style="height:410px;">
-            <!-- <div class="type">
-                <span class="group_span" style="float: left;">
-                    <img src="https://game.gtimg.cn/images/lol/act/img/tft/origins/3101.png" class="group_span_img">
-                </span>
-                <p>星之守护者</p>
-                <p>【星之守护】在施放技能时会为其他【星之守护】提供法力值。（在他们当中传播）
-                </p>
-            </div>
-            <div class="content">
-                <p><span>3</span><span>共提供15法力值</span></p>
-                <p><span>6</span><span>共提供25法力值</span></p>
-                <p><span>6</span><span>共提供45法力值</span></p>
-            </div> -->
                 <div class="synergies-box">
 
                 </div>
@@ -151,7 +138,12 @@ https://lol.qq.com/act/a20200917tftset4/index.html
                 <span class="large-title">转职装备</span>
                 <p style="font-size:14px;">装备可以重复选择，点击左侧'已选装备'可以取消选择。</p>
                 <div class="chess-list">
-                    <div :title="weapon.title" v-for="(weapon,index) in equipArr" v-on:click.left="clickWeapon(weapon)">
+                    <div :title="weapon.title" v-for="(weapon,index) in equipArr" v-if="weapon.TFTID > 174 && weapon.raceId" v-on:click.left="clickWeapon(weapon)">
+                        <img :src="weapon.imagePath" />
+                    </div>
+                </div>
+                <div class="chess-list">
+                    <div :title="weapon.title" v-for="(weapon,index) in equipArr" v-if="weapon.TFTID > 174 && weapon.jobId" v-on:click.left="clickWeapon(weapon)">
                         <img :src="weapon.imagePath" />
                     </div>
                 </div>
@@ -211,7 +203,7 @@ https://lol.qq.com/act/a20200917tftset4/index.html
                         </div>
                     </div>
                     <div class="chess-list result">
-                        <!-- <!-- <button type="button" class="btn btn-secondary" disabled="disabled">分数:{{army.score}}</button> -->
+                        <!-- <button type="button" class="btn btn-secondary" disabled="disabled">分数:{{army.score}}</button> -->
                         <button type="button" class="btn btn-info" disabled="disabled">强度:{{army.op}}</button> -->
                         <button v-if="army.tips" type="button" class="btn btn-success" disabled="disabled">{{army.tips}}</button>
                     </div>
@@ -245,7 +237,7 @@ https://lol.qq.com/act/a20200917tftset4/index.html
             <div class="hi_{{TFTID}}" style="background-size: cover;"></div>
             <p><span>{{title}} {{displayName}}<span class="glyphicon glyphicon-sort-by-order-alt"></span></span><span>{{races}},{{jobs}}</span><span>{{price}}金币</span></p>
         </div>
-        {{if equip}}
+        <!-- {{if equip}}
         <div class="recommend">
             <p class="title">推荐装备</p>
             <div class="champions">
@@ -254,7 +246,7 @@ https://lol.qq.com/act/a20200917tftset4/index.html
                 {{/each}}
             </div>
         </div>
-        {{/if}}
+        {{/if}} -->
         <div class="skill">
             <p class="title">技能</p>
             <div class="info">

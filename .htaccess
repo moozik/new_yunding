@@ -1,6 +1,6 @@
 RewriteEngine On
 
-RewriteBase /yunding
+RewriteBase /new_yunding
 
 RewriteCond %{REQUEST_FILENAME} !-f
 RewriteCond %{REQUEST_FILENAME} !-d
