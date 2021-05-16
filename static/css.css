@@ -66,6 +66,7 @@ img {
 .synergies-box {
     border: 1px solid #6f7584;
     background-color: #232937;
+    height: 100%;
 }
 .synergies-box .type {
     position: relative;
@@ -131,6 +132,7 @@ img {
 /*英雄简介*/
 .pop1 {
     background-color: #232937;
+    height: 100%;
 }
 .pop1 .details {
     width: 100%;

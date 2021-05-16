@@ -58,7 +58,7 @@ https://lol.qq.com/act/a20200917tftset4/index.html
         </div>
         <div class="row clearfix">
             <div class="col-md-4 column" style="height:410px;">
-                <div class="synergies-box">
+                <div id="synergies-box">
 
                 </div>
                 <div class="clearfix pop pop1" id="pop1">
@@ -138,12 +138,12 @@ https://lol.qq.com/act/a20200917tftset4/index.html
                 <span class="large-title">转职装备</span>
                 <p style="font-size:14px;">装备可以重复选择，点击左侧'已选装备'可以取消选择。</p>
                 <div class="chess-list">
-                    <div :title="weapon.title" v-for="(weapon,index) in equipArr" v-if="weapon.TFTID > 174 && weapon.raceId" v-on:click.left="clickWeapon(weapon)">
+                    <div :title="weapon.title" v-for="(weapon,index) in equipArr" v-if="weapon.TFTID > 174 && weapon.raceId != 0" v-on:click.left="clickWeapon(weapon)">
                         <img :src="weapon.imagePath" />
                     </div>
                 </div>
                 <div class="chess-list">
-                    <div :title="weapon.title" v-for="(weapon,index) in equipArr" v-if="weapon.TFTID > 174 && weapon.jobId" v-on:click.left="clickWeapon(weapon)">
+                    <div :title="weapon.title" v-for="(weapon,index) in equipArr" v-if="weapon.TFTID > 174 && weapon.jobId != 0" v-on:click.left="clickWeapon(weapon)">
                         <img :src="weapon.imagePath" />
                     </div>
                 </div>
