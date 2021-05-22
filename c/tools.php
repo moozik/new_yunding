@@ -37,10 +37,12 @@ class c_tools extends lib_controlerBase{
             echo 'done.';
         }
     }
-    public function update(){
+    static public function update(){
         //强制更新json
-        m_dao_base::init(m_dao_race::$staticKey, true);
-        m_dao_base::init(m_dao_job::$staticKey, true);
+        m_dao_base::init(m_dao_chess::STATIC_KEY, true);
+        m_dao_base::init(m_dao_equip::STATIC_KEY, true);
+        m_dao_base::init(m_dao_race::STATIC_KEY, true);
+        m_dao_base::init(m_dao_job::STATIC_KEY, true);
         m_dao_race::init();
         m_dao_job::init();
         //更新js

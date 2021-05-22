@@ -12,7 +12,7 @@ class lib_conf{
     /**
      * 支持的装备个数
      */
-    const IN_WEAPON_MAX = 5;
+    // const IN_WEAPON_MAX = 5;
     /**
      * 支持的最多人数 count($inHero)的最大值为
      */

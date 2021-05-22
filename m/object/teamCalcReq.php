@@ -110,10 +110,10 @@ class m_object_teamCalcReq{
         //转职装备预处理
         if(!empty($this->weapon)){
             //处理转职装备
-            if(count($this->weapon) > lib_conf::IN_WEAPON_MAX){
-                //超过最大值的装备被删除
-                $this->weapon = array_slice($this->weapon, 0, lib_conf::IN_WEAPON_MAX);
-            }
+            // if(count($this->weapon) > lib_conf::IN_WEAPON_MAX){
+            //     //超过最大值的装备被删除
+            //     $this->weapon = array_slice($this->weapon, 0, lib_conf::IN_WEAPON_MAX);
+            // }
             //groupid2count映射
             $weaponGroup2Count = [];
             foreach($this->weapon as $Gid){

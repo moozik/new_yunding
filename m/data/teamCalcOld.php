@@ -33,6 +33,7 @@ class m_data_teamCalcOld{
         // m_dao_equip::init();
         // self::$GidLevelMap = array_merge(m_dao_job::$GidMap, m_dao_race::$GidMap);
         self::$GidLevelMap = m_dao_job::$GidMap + m_dao_race::$GidMap;
+        // lib_log::debug('GidLevelMap', self::$GidLevelMap);
     }
 
     function forCountNew(){

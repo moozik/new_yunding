@@ -9,15 +9,6 @@
     <meta data-n-head="true" data-hid="charset" charset="utf-8">
     <!-- 引入 Bootstrap -->
     <link rel="stylesheet" href="https://cdn.staticfile.org/twitter-bootstrap/4.3.1/css/bootstrap.min.css">
-    <script>
-        // var _hmt = _hmt || [];
-        // (function() {
-        //     var hm = document.createElement("script");
-        //     hm.src = "https://hm.baidu.com/hm.js?8aca806cf882e7c0a56ac614d0fc724e";
-        //     var s = document.getElementsByTagName("script")[0];
-        //     s.parentNode.insertBefore(hm, s);
-        // })();
-    </script>
     <link rel="stylesheet" href="<?= SEN::static_url('css') ?>" charset="utf-8">
     <link rel="stylesheet" href="https://cdn.staticfile.org/font-awesome/4.7.0/css/font-awesome.css">
 </head>
@@ -237,16 +228,16 @@ https://lol.qq.com/act/a20200917tftset4/index.html
             <div class="hi_{{TFTID}}" style="background-size: cover;"></div>
             <p><span>{{title}} {{displayName}}<span class="glyphicon glyphicon-sort-by-order-alt"></span></span><span>{{races}},{{jobs}}</span><span>{{price}}金币</span></p>
         </div>
-        <!-- {{if equip}}
+        {{if equip}}
         <div class="recommend">
             <p class="title">推荐装备</p>
             <div class="champions">
                 {{each equip as value index}}
-                <img src="//game.gtimg.cn/images/lol/act/img/tft/equip/{{value}}.png" alt="" />
+                <img src="{{value}}" />
                 {{/each}}
             </div>
         </div>
-        {{/if}} -->
+        {{/if}}
         <div class="skill">
             <p class="title">技能</p>
             <div class="info">

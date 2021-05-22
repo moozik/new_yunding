@@ -8,7 +8,7 @@ class m_dao_chess{
      *
      * @var string
      */
-    static private $staticKey = 'chess';
+    const STATIC_KEY = 'chess';
     /**
      * json[data]对象
      *
@@ -40,7 +40,7 @@ class m_dao_chess{
         if(!empty(self::$data)){
             return;
         }
-        $retObj = m_dao_base::init(self::$staticKey);
+        $retObj = m_dao_base::init(self::STATIC_KEY);
         self::$version = $retObj->version;
         self::$season = $retObj->season;
         self::$time = $retObj->time;

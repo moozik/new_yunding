@@ -1,12 +1,26 @@
-var regNumber = /^\d+$/;
+//最大武器个数
+const WEAPON_MAX = 10;
+//最大输入队伍成员数
+const IN_HERO_MAX = 10;
 window.DATA_race = {};
 window.DATA_job = {};
 window.DATA_Ggroup = {};
+window.equipId2equip = {};
 $.getJSON({
     url: "//game.gtimg.cn/images/lol/act/img/tft/js/chess.js",
     async: false,
     success: function (ret) {
         window.DATA_chess = ret;
+        $.ajax({
+            type: "POST",
+            url: "index/CheckVersion",
+            contentType: "application/json;charset=utf-8",
+            data:JSON.stringify(ret),
+            dataType: "json",
+            success:function (message) {
+                console.log(message);
+            }
+        });
     },
 });
 $.getJSON({
@@ -36,6 +50,11 @@ $.getJSON({
     async: false,
     success: function (ret) {
         window.DATA_equip = ret;
+        for(let i in ret.data){
+            if(ret.data[i].equipId < 500)
+                continue;
+            window.equipId2equip[ret.data[i].equipId] = ret.data[i];
+        }
     },
 });
 var vm = new Vue({
@@ -200,7 +219,7 @@ var vm = new Vue({
                 //英雄不存在，添加
 
                 //10个英雄上限
-                if (inChessList.length === 10) return;
+                if (inChessList.length === IN_HERO_MAX) return;
 
                 //添加
                 inChessList.push(chess);
@@ -223,7 +242,7 @@ var vm = new Vue({
         },
         //绑定转职装备
         clickWeapon: function (weapon) {
-            if (this.weaponList.length < 10) {
+            if (this.weaponList.length < WEAPON_MAX) {
                 this.weaponList.push(weapon);
             }
         },
@@ -330,23 +349,23 @@ $(document).on("mouseenter", ".groupBtn", function () {
     } else {
         var data = vm.jobArr[id];
     }
-    $(".synergies-box").html(template("jobPopTemp", data));
-    $(".synergies-box").css("display", "block");
+    console.log(data);
+    console.log(template("jobPopTemp", data));
+    $("#synergies-box").html(template("jobPopTemp", data));
+    $("#synergies-box").css("display", "block");
 });
 /**
  * 鼠标移入英雄图标
  */
 $(document).on("mouseenter", ".chessBtn", function () {
-    $(".synergies-box").css("display", "none");
+    $("#synergies-box").css("display", "none");
     var chess = DATA_chess.data;
     var ret = vm.chessArr[$(this).attr("data-chessId")];
     ret.equip = [];
     if (typeof ret.recEquip != "undefined") {
         var tmp = ret.recEquip.split(",");
-        tmp.forEach((item, index) => {
-            if(item < 1000){
-                ret.equip.push(item);
-            }
+        tmp.forEach((equipId, index) => {
+            ret.equip.push(window.equipId2equip[equipId].imagePath);
         });
     }
     $("#pop1").html(template("ChampionPop2", ret));

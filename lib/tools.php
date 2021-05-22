@@ -188,10 +188,6 @@ class lib_tools{
      * @return array
      */
     static function getLevelMap($obj) : array{
-        if(isset($obj->raceId) && '9' == $obj->raceId){
-            //忍者特殊处理
-            return [0=>4, 1=>1, 2=>0, 3=>0, 4=>4, 5=>4];
-        }
         $ret = [];
         foreach(array_keys((array)$obj->level) as $count){
             $ret[(int)$count] = (int)$count;

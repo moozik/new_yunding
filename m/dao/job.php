@@ -8,7 +8,7 @@ class m_dao_job{
      *
      * @var string
      */
-    static public $staticKey = 'job';
+    const STATIC_KEY = 'job';
     /**
      * json[data]对象
      *
@@ -44,7 +44,7 @@ class m_dao_job{
         if(!empty(self::$data)){
             return;
         }
-        $retObj = m_dao_base::init(self::$staticKey);
+        $retObj = m_dao_base::init(self::STATIC_KEY);
         self::$version = $retObj->version;
         self::$season = $retObj->season;
         self::$time = $retObj->time;

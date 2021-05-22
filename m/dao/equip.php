@@ -8,7 +8,7 @@ class m_dao_equip{
      *
      * @var string
      */
-    static private $staticKey = 'equip';
+    const STATIC_KEY = 'equip';
     /**
      * json[data]对象
      *
@@ -40,7 +40,7 @@ class m_dao_equip{
         if(!empty(self::$data)){
             return;
         }
-        $retObj = m_dao_base::init(self::$staticKey);
+        $retObj = m_dao_base::init(self::STATIC_KEY);
         self::$version = $retObj->version;
         self::$season = $retObj->season;
         self::$time = $retObj->time;
