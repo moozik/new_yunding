@@ -121,7 +121,7 @@ https://lol.qq.com/act/a20200917tftset4/index.html
                 <span class="large-title">英雄池</span>
                 <p style="font-size:14px;">左键添加到'已选阵容'，右键添加到'禁用英雄'。再次点击可以取消选择或取消禁用。</p>
                 <div style="min-height:270px">
-                    <div class="chess-list" v-for="price in 5">
+                    <div class="chess-list" v-for="price in 6">
                         <div :title="chess.description" v-for="chess in chessArr" v-if="checkGroupChess(chess, price)" v-on:click.left="clickChess(chess)" @contextmenu.prevent="banChess(chess)" :data-chessId="chess.chessId" class="chessBtn" :class="'hi_'+chess.TFTID">
                         </div>
                     </div>
