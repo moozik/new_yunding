@@ -349,8 +349,6 @@ $(document).on("mouseenter", ".groupBtn", function () {
     } else {
         var data = vm.jobArr[id];
     }
-    console.log(data);
-    console.log(template("jobPopTemp", data));
     $("#synergies-box").html(template("jobPopTemp", data));
     $("#synergies-box").css("display", "block");
 });

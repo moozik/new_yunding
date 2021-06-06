@@ -49,10 +49,9 @@ https://lol.qq.com/act/a20200917tftset4/index.html
         </div>
         <div class="row clearfix">
             <div class="col-md-4 column" style="height:410px;">
-                <div id="synergies-box">
-
+                <div id="synergies-box" style="display: none;">
                 </div>
-                <div class="clearfix pop pop1" id="pop1">
+                <div class="clearfix pop pop1" id="pop1" style="display: none;">
                 </div>
             </div>
 
