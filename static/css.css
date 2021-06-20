@@ -62,13 +62,14 @@ img {
 .chess-list div {
     background-size: cover;
 }
-/*详情面板*/
-#synergies-box {
+
+/*羁绊详情面板*/
+#group-box {
     border: 1px solid #6f7584;
     background-color: #232937;
     height: 100%;
 }
-#synergies-box .type {
+#group-box .type {
     position: relative;
     height: auto;
     min-height: 88px;
@@ -76,7 +77,7 @@ img {
     border-bottom: 1px solid #383d4b;
 }
 /*羁绊图标*/
-#synergies-box .type:before {
+#group-box .type:before {
     content: "";
     position: absolute;
     top: 15px;
@@ -86,24 +87,24 @@ img {
     height: 20px;
     background-position-y: -20px;
 }
-#synergies-box .type p:nth-child(2) {
+#group-box .type p:nth-child(2) {
     line-height: 30px;
     text-indent: 22px;
     font-size: 16px;
     color: #deb762;
     margin-bottom: 1px;
 }
-#synergies-box .type p:nth-child(3) {
+#group-box .type p:nth-child(3) {
     font-size: 12px;
     color: #acb0ba;
 }
-#synergies-box .content {
+#group-box .content {
     padding: 10px 18px;
 }
-#synergies-box .content p {
+#group-box .content p {
     margin-bottom: 1px;
 }
-#synergies-box .content span:nth-child(1) {
+#group-box .content span:nth-child(1) {
     vertical-align: top;
     display: inline-block;
     width: 22px;
@@ -117,10 +118,10 @@ img {
     font-size: 12px;
     color: #acb0ba;
 }
-#synergies-box .content span {
+#group-box .content span {
     margin: 1px 0;
 }
-#synergies-box .content span:nth-child(2) {
+#group-box .content span:nth-child(2) {
     vertical-align: top;
     display: inline-block;
     width: 270px;
@@ -129,29 +130,31 @@ img {
     font-size: 12px;
     color: #acb0ba;
 }
+
 /*英雄简介*/
-.pop1 {
+#hero-box {
+    border: 1px solid #6f7584;
     background-color: #232937;
     height: 100%;
 }
-.pop1 .details {
+#hero-box .details {
     width: 100%;
     padding-top: 10px;
 }
-.pop1 .details div {
+#hero-box .details div {
     vertical-align: top;
     display: inline-block;
     width: 58px;
     height: 58px;
     margin: 0px 10px 0px 15px;
 }
-.pop1 .details p {
+#hero-box .details p {
     vertical-align: top;
     display: inline-block;
     width: 180px;
     height: 58px;
 }
-.pop1 .details p span:nth-child(1) {
+#hero-box .details p span:nth-child(1) {
     display: block;
     width: 100%;
     height: 34px;
@@ -163,7 +166,7 @@ img {
     text-overflow: ellipsis;
     white-space: nowrap;
 }
-.pop1 .details p span:nth-child(2) {
+#hero-box .details p span:nth-child(2) {
     display: block;
     width: 100%;
     height: 30px;
@@ -175,7 +178,7 @@ img {
     text-overflow: ellipsis;
     white-space: nowrap;
 }
-.pop1 .details p span:nth-child(3) {
+#hero-box .details p span:nth-child(3) {
     display: block;
     width: 100%;
     height: 24px;
@@ -186,7 +189,7 @@ img {
     text-overflow: ellipsis;
     white-space: nowrap;
 }
-.pop1 .title {
+#hero-box .title {
     position: relative;
     width: 100%;
     height: 30px;
@@ -196,7 +199,7 @@ img {
     font-size: 16px;
     color: #deb762;
 }
-.pop1 .title:after {
+#hero-box .title:after {
     content: "";
     position: absolute;
     bottom: -4px;
@@ -205,11 +208,11 @@ img {
     height: 9px;
     background: url(//game.gtimg.cn/images/lol/guides/tft/cut2.png) no-repeat;
 }
-.pop1 .recommend .champions {
+#hero-box .recommend .champions {
     margin-left: 15px;
     font-size: 0;
 }
-.pop1 .recommend img {
+.weaponBox {
     vertical-align: top;
     display: inline-block;
     width: 34px;
@@ -218,23 +221,23 @@ img {
     margin: 5px 15px 5px 0;
     border: 1px solid #826a2a;
 }
-.pop1 .skill .info {
+#hero-box .skill .info {
     margin: 0px 0 0px 15px;
 }
-.pop1 .skill .info img {
+#hero-box .skill .info img {
     vertical-align: top;
     display: inline-block;
     width: 44px;
     height: 44px;
     margin-right: 10px;
 }
-.pop1 .skill .name {
+#hero-box .skill .name {
     vertical-align: top;
     display: inline-block;
     width: 260px;
     height: 23px;
 }
-.pop1 .skill .name span:nth-child(1) {
+#hero-box .skill .name span:nth-child(1) {
     display: block;
     width: 100%;
     height: 24px;
@@ -245,7 +248,7 @@ img {
     text-overflow: ellipsis;
     white-space: nowrap;
 }
-.pop1 .skill .name span:nth-child(2) {
+#hero-box .skill .name span:nth-child(2) {
     display: block;
     width: 100%;
     height: 20px;
@@ -256,7 +259,7 @@ img {
     text-overflow: ellipsis;
     white-space: nowrap;
 }
-.pop1 .skill .description {
+#hero-box .skill .description {
     display: block;
     width: 100%;
     margin-top: 10px;
@@ -265,6 +268,34 @@ img {
     font-size: 12px;
     color: #acb0ba;
 }
+
+/*装备简介*/
+#weapon-box {
+    border: 1px solid #6f7584;
+    background-color: #232937;
+    height: 100%;
+    padding: 10px;
+}
+#weapon-box .title {
+    position: relative;
+    width: 100%;
+    height: 30px;
+    line-height: 15px;
+    text-indent: 15px;
+    font-weight: bold;
+    font-size: 16px;
+    color: #deb762;
+}
+#weapon-box .title:after {
+    content: "";
+    position: absolute;
+    bottom: -4px;
+    right: 0px;
+    width: 330px;
+    height: 9px;
+    background: url(//game.gtimg.cn/images/lol/guides/tft/cut2.png) no-repeat;
+}
+
 .clearfix:after {
     visibility: hidden;
     display: block;
@@ -363,7 +394,7 @@ img {
 .grade3{background:url(//game.gtimg.cn/images/lol/act/a20200917tftset4/spr-label-3.png) no-repeat;background-position:0 -35px;}
 .grade4{background:url(//game.gtimg.cn/images/lol/act/a20200917tftset4/spr-label-3.png) no-repeat;background-position:0 0;}
 
-.choose:before {
+/* .choose:before {
     content: '';
     width: 30px;
     height: 36px;
@@ -375,7 +406,7 @@ img {
     display: block;
     filter: brightness(1.5);
     transform: scale(0.96);
-}
+} */
 
 /*
 var data = '';

@@ -25,7 +25,6 @@ https://lol.qq.com/act/a20200917tftset4/index.html
                     <h5 class="version">赛季：{{season}}</h5>
                     <h5 class="version">版本：{{version}}</h5>
                     <h5 class="version">更新时间：{{time}}</h5>
-
                     <p>
                         使用方法：1.在英雄池选择棋子 2.（可选）禁用英雄，转职装备，调整价格，调整计算个数 3. 点击计算
                     </p>
@@ -39,7 +38,6 @@ https://lol.qq.com/act/a20200917tftset4/index.html
                 <a href="https://lol.qq.com/tft/#/equipment" target="_blank"><button type="button" class="btn btn-primary btn-lg"><i class="fa fa-book"></i> 装备合成表</button></a>
                 <a href="https://lol.qq.com/tft/#/index" target="_blank"><button type="button" class="btn btn-primary btn-lg"><i class="fa fa-qq"></i> 官方阵容推荐</button></a>
                 <!-- <a href="/yunding/niceTeam.php"><button type="button" class="btn btn-primary btn-lg">推荐阵容</button></a> -->
-
                 <?php
                 if (IS_MANAGER) {
                     echo '<a href="./tools"><button type="button" class="btn btn-warning btn-lg">管理</button></a>';
@@ -49,9 +47,11 @@ https://lol.qq.com/act/a20200917tftset4/index.html
         </div>
         <div class="row clearfix">
             <div class="col-md-4 column" style="height:410px;">
-                <div id="synergies-box" style="display: none;">
+                <div id="group-box" style="display: none;">
                 </div>
-                <div class="clearfix pop pop1" id="pop1" style="display: none;">
+                <div id="hero-box" style="display: none;">
+                </div>
+                <div id="weapon-box" style="display: none;">
                 </div>
             </div>
 
@@ -103,7 +103,7 @@ https://lol.qq.com/act/a20200917tftset4/index.html
                     </div>
                 </div>
 
-                <span class="large-title" style="color:darkcyan;">天选之人(羁绊+1)</span>
+                <!-- <span class="large-title" style="color:darkcyan;">天选之人(羁绊+1)</span>
                 <span>特质:</span>
                 <select v-model="theOneRace" class="form-control" v-on:change="theOneJob = 0">
                     <option value="0">-</option>
@@ -113,7 +113,7 @@ https://lol.qq.com/act/a20200917tftset4/index.html
                 <select v-model="theOneJob" class="form-control" v-on:change="theOneRace = 0">
                     <option value="0">-</option>
                     <option v-for="(group,index) in jobArr" :value="parseInt(group.jobId) + 100">{{group.name}}</option>
-                </select>
+                </select> -->
             </div>
 
             <div class="col-md-8 column">
@@ -128,12 +128,12 @@ https://lol.qq.com/act/a20200917tftset4/index.html
                 <span class="large-title">转职装备</span>
                 <p style="font-size:14px;">装备可以重复选择，点击左侧'已选装备'可以取消选择。</p>
                 <div class="chess-list">
-                    <div :title="weapon.title" v-for="(weapon,index) in equipArr" v-if="weapon.TFTID > 174 && weapon.raceId != 0" v-on:click.left="clickWeapon(weapon)">
+                    <div class="weaponBtn" :title="weapon.title" :data-weaponId="weapon.equipId" v-for="(weapon,index) in equipArr" v-if="weapon.raceId != 0 && checkGroupWeapon(weapon)" v-on:click.left="clickWeapon(weapon)">
                         <img :src="weapon.imagePath" />
                     </div>
                 </div>
                 <div class="chess-list">
-                    <div :title="weapon.title" v-for="(weapon,index) in equipArr" v-if="weapon.TFTID > 174 && weapon.jobId != 0" v-on:click.left="clickWeapon(weapon)">
+                    <div class="weaponBtn" :title="weapon.title" :data-weaponId="weapon.equipId" v-for="(weapon,index) in equipArr" v-if="weapon.jobId != 0 && checkGroupWeapon(weapon)" v-on:click.left="clickWeapon(weapon)">
                         <img :src="weapon.imagePath" />
                     </div>
                 </div>
@@ -207,7 +207,7 @@ https://lol.qq.com/act/a20200917tftset4/index.html
     <!--app-->
 
     <!-- 阵容特质详情模板 -->
-    <script id="jobPopTemp" type="text/html">
+    <script id="groupTemp" type="text/html">
         <div class="type">
             <span class="group_span" style="float: left;">
                 <img src="{{imagePath}}" class="group_span_img">
@@ -217,12 +217,12 @@ https://lol.qq.com/act/a20200917tftset4/index.html
         </div>
         <div class="content">
             {{each level as v i}}
-            <p><span>{{i}}</span><span>{{v}}</span></p>
+            <p style="margin-top:10px;"><span>{{i}}</span><span>{{v}}</span></p>
             {{/each}}
         </div>
     </script>
     <!-- 英雄详情模板 -->
-    <script id="ChampionPop2" type="text/html">
+    <script id="heroTemp" type="text/html">
         <div class="details">
             <div class="hi_{{TFTID}}" style="background-size: cover;"></div>
             <p><span>{{title}} {{displayName}}<span class="glyphicon glyphicon-sort-by-order-alt"></span></span><span>{{races}},{{jobs}}</span><span>{{price}}金币</span></p>
@@ -232,7 +232,7 @@ https://lol.qq.com/act/a20200917tftset4/index.html
             <p class="title">推荐装备</p>
             <div class="champions">
                 {{each equip as value index}}
-                <img src="{{value}}" />
+                <img class="weaponBox" src="{{value}}" />
                 {{/each}}
             </div>
         </div>
@@ -249,6 +249,17 @@ https://lol.qq.com/act/a20200917tftset4/index.html
             </div>
         </div>
     </script>
+    <!-- 转职装备详情模板 -->
+    <script id="weaponTemp" type="text/html">
+        <p class="title">装备名称</p>
+            <p style="color:#fff;">{{name}}</p>
+        <p class="title">装备配方</p>
+            <div class="champions">
+                {{each formulaArr as value index}}
+                <img class="weaponBox" src="{{value.imagePath}}" title="{{value.name}}" />
+                {{/each}}
+            </div>
+    </script>
     <!-- jQuery (Bootstrap 的 JavaScript 插件需要引入 jQuery) -->
     <script src="https://cdn.staticfile.org/jquery/3.2.1/jquery.min.js"></script>
     <!-- 包括所有已编译的插件 -->
@@ -258,32 +269,9 @@ https://lol.qq.com/act/a20200917tftset4/index.html
     <!-- <script src="https://cdn.staticfile.org/vue-resource/1.5.1/vue-resource.min.js"></script> -->
     <!--模板框架-->
     <script src="//ossweb-img.qq.com/images/js/ArtTemplate.js"></script>
-    <!-- <script src="https://lol.qq.com/act/AutoCMS/publish/LOLAct/TFTlinelist/TFTlinelist.js"></script> -->
-    <!--阵容推荐-->
-    <!--<script src="//lol.qq.com/act/AutoCMS/publish/LOLAct/TFTLineup_V3/TFTLineup_V3.js"></script>-->
-    <!--所有英雄列表-->
-    <!--<script src="http://game.gtimg.cn/images/lol/act/img/js/chessList/chess_list.js"></script>-->
-    <!--元素效果-->
-    <!--<script src="//lol.qq.com/act/AutoCMS/publish/LOLAct/TFTrace/TFTrace.js"></script>-->
-    <!--职业效果-->
-    <!--<script src="//lol.qq.com/act/AutoCMS/publish/LOLAct/TFTjob/TFTjob.js"></script>-->
-    <!--英雄-->
-    <!--<script src="//lol.qq.com/act/AutoCMS/publish/LOLAct/TFTChessesData_V3/TFTChessesData_V3.js"></script>-->
-    <!--<script src="//lol.qq.com/act/AutoCMS/publish/LOLAct/TFTChessesData/TFTChessesData.js"></script>-->
-
-    <!--装备-->
-    <!--<script src="//lol.qq.com/act/AutoCMS/publish/LOLAct/TFTequipment_V3/TFTequipment_V3.js"></script>-->
     <!--配置-->
     <script src="<?= SEN::static_url('define') ?>"></script>
     <!--vue-->
     <script src="<?= SEN::static_url('frame') ?>"></script>
-    <script>
-        // $.getJSON({
-        //     url: '/yunding/default.json',
-        //     success: function(ret) {
-        //         displayPage(ret['data']);
-        //     },
-        // });
-    </script>
 </body>
 </html>

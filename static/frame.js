@@ -92,7 +92,7 @@ var vm = new Vue({
             var equip,job,proStatus;
             for (let i in DATA_equip.data) {
                 //排除老版本装备
-                if(DATA_equip.data[i].equipId < 400){
+                if(DATA_equip.data[i].equipId < 500){
                     continue;
                 }
                 //只要转职装备
@@ -116,7 +116,11 @@ var vm = new Vue({
                 }
                 //是否增强
                 proStatus = ('无' == equip.proStatus) ? '' : ("\n版本改动：" + equip.proStatus);
-                equip.title = '名称：' + equip.name + "\n职业：" + job + "\n关键字：" + equip.keywords + proStatus;
+                var formula = '';
+                equip.formula.split(',').forEach((e,i) => {
+                    formula += window.equipId2equip[e].name + ' ';
+                });
+                equip.title = '名称：' + equip.name + "\n职业：" + job + "\n配方：" + formula + proStatus;
                 
                 ret[DATA_equip.data[i].equipId] = equip;
             }
@@ -125,10 +129,10 @@ var vm = new Vue({
 
         //当前选中羁绊
         groupCheckedId: 0,
-        groupCheckedType: 'job or race',
+        groupCheckedType: '',
 
-        theOneRace: 0,
-        theOneJob: 0,
+        // theOneRace: 0,
+        // theOneJob: 0,
         //当前羁绊组合
         groupList: [],
         //被ban英雄
@@ -157,7 +161,6 @@ var vm = new Vue({
             if(chess.price != price){
                 return false;
             }
-
             //未筛选羁绊
             if (this.groupCheckedId == 0) {
                 return true;
@@ -174,10 +177,34 @@ var vm = new Vue({
             }
             return true;
         },
+        //判断指定羁绊是否展示
+        checkGroupWeapon: function (weapon) {
+            //屏蔽掉老版本
+            if(weapon.equipId < 500){
+                return false;
+            }
+            //屏蔽非转职装备
+            if(weapon.raceId == '0' && weapon.jobId == '0'){
+                return false;
+            }
+            if(this.groupCheckedType == ''){
+                return true;
+            }else{
+                if(this.groupCheckedType == 'job'){
+                    if(weapon.jobId == this.groupCheckedId){
+                        return true;
+                    }
+                }
+                if(this.groupCheckedType == 'race'){
+                    if(weapon.raceId == this.groupCheckedId){
+                        return true;
+                    }
+                }
+                return false;
+            }
+        },
         //判断羁绊筛选按钮是否亮起
         isGroupHover: function (group) {
-            //groupCheckedType
-            //groupCheckedId
             if (group.raceId && group.raceId == this.groupCheckedId && 'race' == this.groupCheckedType) {
                 return "on";
             }
@@ -326,8 +353,8 @@ var vm = new Vue({
             this.groupCheckedType = '';
             this.forCount = 3;
             this.teamCount = -1;
-            this.theOneJob = 0;
-            this.theOneRace = 0;
+            // this.theOneJob = 0;
+            // this.theOneRace = 0;
             this.chessValue = {
                 1: true,
                 2: true,
@@ -342,21 +369,21 @@ var vm = new Vue({
  * 鼠标移入羁绊按钮
  */
 $(document).on("mouseenter", ".groupBtn", function () {
-    $("#pop1").css("display", "none");
+    $("#app > div:nth-child(2) > div:nth-child(1) > div").css("display", "none");
     var id = $(this).attr("data-raceId") || $(this).attr("data-jobId");
     if ($(this).attr("data-raceId")) {
         var data = vm.raceArr[id];
     } else {
         var data = vm.jobArr[id];
     }
-    $("#synergies-box").html(template("jobPopTemp", data));
-    $("#synergies-box").css("display", "block");
+    $("#group-box").html(template("groupTemp", data));
+    $("#group-box").css("display", "block");
 });
 /**
  * 鼠标移入英雄图标
  */
 $(document).on("mouseenter", ".chessBtn", function () {
-    $("#synergies-box").css("display", "none");
+    $("#app > div:nth-child(2) > div:nth-child(1) > div").css("display", "none");
     var chess = DATA_chess.data;
     var ret = vm.chessArr[$(this).attr("data-chessId")];
     ret.equip = [];
@@ -366,8 +393,22 @@ $(document).on("mouseenter", ".chessBtn", function () {
             ret.equip.push(window.equipId2equip[equipId].imagePath);
         });
     }
-    $("#pop1").html(template("ChampionPop2", ret));
-    $("#pop1").css("display", "block");
+    $("#hero-box").html(template("heroTemp", ret));
+    $("#hero-box").css("display", "block");
+});
+/**
+ * 鼠标移入武器图标
+ */
+$(document).on("mouseenter", ".weaponBtn", function () {
+    $("#app > div:nth-child(2) > div:nth-child(1) > div").css("display", "none");
+    var weaponObj = window.equipId2equip[this.dataset.weaponid];
+    weaponObj.formulaArr = [];
+    weaponObj.formula.split(',').forEach((e,i) => {
+        weaponObj.formulaArr.push(window.equipId2equip[e]);
+    });
+    console.log(weaponObj);
+    $("#weapon-box").html(template("weaponTemp", weaponObj));
+    $("#weapon-box").css("display", "block");
 });
 $("#runBtn").click(function () {
     //删除原有数据
@@ -380,7 +421,7 @@ $("#runBtn").click(function () {
     //拼接数据
     var getData = {
         //天选羁绊
-        theOne: (vm.theOneJob) != 0 ? vm.theOneJob : vm.theOneRace,
+        // theOne: (vm.theOneJob) != 0 ? vm.theOneJob : vm.theOneRace,
         //队伍成员个数
         teamCount: parseInt(vm.teamCount),
         forCount: vm.forCount,
@@ -436,9 +477,9 @@ function displayPage(teamArrObj){
         for(var key = 3; key >= 0; key--){
             for(var GId in teamObj.group[key]){
                 classStr = 'grade' + (key + 1);
-                if(vm.theOneRace == GId || vm.theOneJob == GId){
-                    classStr += ' choose';
-                }
+                // if(vm.theOneRace == GId || vm.theOneJob == GId){
+                //     classStr += ' choose';
+                // }
                 group.push({
                     name: window.DATA_Ggroup[GId].name,
                     imagePath: window.DATA_Ggroup[GId].imagePath,
