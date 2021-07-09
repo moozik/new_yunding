@@ -66,9 +66,9 @@ class m_object_teamCalcReq{
         m_dao_chess::init();
         //{"theOne":0,"teamCount":9,"forCount":3,"inChess":[],"banChess":[],"weapon":[],"costList":[1,2,3,4,5]}
         // 原样参数
-        if(isset($input->theOne)){
-            $this->theOne = intval($input->theOne);
-        }
+        // if(isset($input->theOne)){
+        //     $this->theOne = intval($input->theOne);
+        // }
         if(isset($input->forCount)){
             $this->forCount = intval($input->forCount);
         }

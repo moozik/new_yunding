@@ -236,6 +236,7 @@ var vm = new Vue({
         },
         //绑定英雄池左键
         clickChess: function (chess) {
+            console.log(chess);
             inChessList = this.inChessList;
             //clickChess
             ret = this.chessInArray(chess, inChessList);
@@ -406,7 +407,6 @@ $(document).on("mouseenter", ".weaponBtn", function () {
     weaponObj.formula.split(',').forEach((e,i) => {
         weaponObj.formulaArr.push(window.equipId2equip[e]);
     });
-    console.log(weaponObj);
     $("#weapon-box").html(template("weaponTemp", weaponObj));
     $("#weapon-box").css("display", "block");
 });

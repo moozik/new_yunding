@@ -443,9 +443,9 @@ class m_data_teamCalc{
                 lib_number::addOrDefault($this->inputGid2count[$Gid], 1);
             }
         }
-        if(0 !== $this->req->theOne){
-            lib_number::addOrDefault($this->inputGid2count[$this->req->theOne], 1);
-        }
+        // if(0 !== $this->req->theOne){
+        //     lib_number::addOrDefault($this->inputGid2count[$this->req->theOne], 1);
+        // }
         foreach($this->req->weapon as $Gid){
             lib_number::addCount(__FUNCTION__);
             lib_number::addOrDefault($this->inputGid2count[$Gid], 1);

@@ -46,7 +46,7 @@ https://lol.qq.com/act/a20200917tftset4/index.html
             </div>
         </div>
         <div class="row clearfix">
-            <div class="col-md-4 column" style="height:410px;">
+            <div class="col-md-4 column" style="height:340px;">
                 <div id="group-box" style="display: none;">
                 </div>
                 <div id="hero-box" style="display: none;">
@@ -81,7 +81,7 @@ https://lol.qq.com/act/a20200917tftset4/index.html
                 <span class="large-title">已选阵容</span><span>(英雄池左键添加，再次点击取消)</span>
                 <div class="lineTwo" style="min-height: 50px;">
                     <div class="chess-list">
-                        <div :title="chess.description" v-for="chess in inChessList" v-on:click="clickChess(chess)" :class="'hi_'+chess.TFTID">
+                        <div :title="chess.description" v-for="chess in inChessList" v-on:click="clickChess(chess)" class="chess" :class="'hi_'+chess.TFTID">
                         </div>
                     </div>
                 </div>
@@ -89,7 +89,7 @@ https://lol.qq.com/act/a20200917tftset4/index.html
                 <span class="large-title">禁用英雄</span><span>(英雄池右键添加，再次点击取消)</span>
                 <div class="lineTwo" style="min-height: 50px;">
                     <div class="chess-list">
-                        <div :title="chess.description" v-for="chess in chessBanList" v-on:click="banChess(chess)" :class="'hi_'+chess.TFTID">
+                        <div :title="chess.description" v-for="chess in chessBanList" v-on:click="banChess(chess)" class="chess" :class="'hi_'+chess.TFTID">
                         </div>
                     </div>
                 </div>
@@ -117,23 +117,28 @@ https://lol.qq.com/act/a20200917tftset4/index.html
             </div>
 
             <div class="col-md-8 column">
-                <span class="large-title">英雄池</span>
-                <p style="font-size:14px;">左键添加到'已选阵容'，右键添加到'禁用英雄'。再次点击可以取消选择或取消禁用。</p>
+                <span class="large-title" title="左键添加到'已选阵容'，右键添加到'禁用英雄'。再次点击可以取消选择或取消禁用。">英雄池</span>
+                <!-- <p style="font-size:14px;">左键添加到'已选阵容'，右键添加到'禁用英雄'。再次点击可以取消选择或取消禁用。</p> -->
                 <div style="min-height:270px">
-                    <div class="chess-list" v-for="price in 6">
-                        <div :title="chess.description" v-for="chess in chessArr" v-if="checkGroupChess(chess, price)" v-on:click.left="clickChess(chess)" @contextmenu.prevent="banChess(chess)" :data-chessId="chess.chessId" class="chessBtn" :class="'hi_'+chess.TFTID">
+                    <div class="chess-list" v-for="price in 6" :class="'cost_' + price">
+                        <!-- <div :title="chess.description" v-for="chess in chessArr" v-if="checkGroupChess(chess, price)" v-on:click.left="clickChess(chess)" @contextmenu.prevent="banChess(chess)" :data-chessId="chess.chessId" class="chessBtn" :class="['hi_'+chess.TFTID,'price_' + price]">
+                        </div> -->
+                        <div v-for="chess in chessArr" v-if="checkGroupChess(chess, price)" :title="chess.description" class="chess_head">
+                            <div class="chess chessBtn" :class="'hi_'+chess.TFTID" v-on:click.left="clickChess(chess)" @contextmenu.prevent="banChess(chess)" :data-chessId="chess.chessId" >
+                            </div>
+                            <div class="cost_tag">{{price}}</div>
                         </div>
                     </div>
                 </div>
-                <span class="large-title">转职装备</span>
-                <p style="font-size:14px;">装备可以重复选择，点击左侧'已选装备'可以取消选择。</p>
+                <span class="large-title" title="装备可以重复选择，点击左侧'已选装备'可以取消选择。">转职装备</span>
+                <!-- <p style="font-size:14px;">装备可以重复选择，点击左侧'已选装备'可以取消选择。</p> -->
                 <div class="chess-list">
-                    <div class="weaponBtn" :title="weapon.title" :data-weaponId="weapon.equipId" v-for="(weapon,index) in equipArr" v-if="weapon.raceId != 0 && checkGroupWeapon(weapon)" v-on:click.left="clickWeapon(weapon)">
+                    <div class="weaponBtn weapon" :title="weapon.title" :data-weaponId="weapon.equipId" v-for="(weapon,index) in equipArr" v-if="weapon.raceId != 0 && checkGroupWeapon(weapon)" v-on:click.left="clickWeapon(weapon)">
                         <img :src="weapon.imagePath" />
                     </div>
                 </div>
                 <div class="chess-list">
-                    <div class="weaponBtn" :title="weapon.title" :data-weaponId="weapon.equipId" v-for="(weapon,index) in equipArr" v-if="weapon.jobId != 0 && checkGroupWeapon(weapon)" v-on:click.left="clickWeapon(weapon)">
+                    <div class="weaponBtn weapon" :title="weapon.title" :data-weaponId="weapon.equipId" v-for="(weapon,index) in equipArr" v-if="weapon.jobId != 0 && checkGroupWeapon(weapon)" v-on:click.left="clickWeapon(weapon)">
                         <img :src="weapon.imagePath" />
                     </div>
                 </div>
@@ -183,7 +188,7 @@ https://lol.qq.com/act/a20200917tftset4/index.html
                 <div v-for="army in chickenArmy" class="traits">
                     <!--英雄列表-->
                     <div class="chess-list result">
-                        <div :title="chessItem.description" v-for="chessItem in army.chess" :class="'hi_'+chessItem.TFTID">
+                        <div :title="chessItem.description" v-for="chessItem in army.chess" :class="'hi_'+chessItem.TFTID" class="chess">
                         </div>
                     </div>
                     <div class="result-jiban result">
@@ -217,7 +222,7 @@ https://lol.qq.com/act/a20200917tftset4/index.html
         </div>
         <div class="content">
             {{each level as v i}}
-            <p style="margin-top:10px;"><span>{{i}}</span><span>{{v}}</span></p>
+            <p style="margin-top:0px;"><span>{{i}}</span><span>{{v}}</span></p>
             {{/each}}
         </div>
     </script>
@@ -242,10 +247,10 @@ https://lol.qq.com/act/a20200917tftset4/index.html
             <div class="info">
                 <img src="{{skillImage}}" alt="" />
                 <div class="name">
-                    <span>{{skillName}}</span>
+                    <span title="{{skillIntroduce}}">{{skillName}}</span>
                     <!-- <span>{{skillType}}</span> -->
                 </div>
-                <p class="description">{{skillIntroduce}}</p>
+                <!-- <p class="description">{{skillIntroduce}}</p> -->
             </div>
         </div>
     </script>

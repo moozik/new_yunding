@@ -109,12 +109,12 @@ class m_data_teamCalcOld{
         //筛选出羁绊价值最高的组合
         foreach($this->forCountOld() as $teamListObj){
             //天选之人
-            if($this->req->theOne != 0){
-                $teamListObj->group[$this->req->theOne] = 1;
-            }
+            // if($this->req->theOne != 0){
+            //     $teamListObj->group[$this->req->theOne] = 1;
+            // }
             
             //给当前羁绊计数
-            foreach($teamListObj->chessArrObj as $k => $chessObj){
+            foreach($teamListObj->chessArrObj as $chessObj){
                 //棋子价值
                 $teamListObj->idVal += $chessObj->price;
                 //给当前英雄的所有羁绊计数
@@ -141,9 +141,16 @@ class m_data_teamCalcOld{
                     //当前羁绊不成形
                     continue;
                 }
+                //神王特殊羁绊，两个神王不能生效
+                if($Gid == 113 && $count == 2){
+                    continue;
+                }
                 //计算羁绊等级,根据 $Gcount 有效个数
                 $opLevel = lib_conf::GidOPLevel($Gid, $Gcount);
-                $teamListObj->result->group[$opLevel][$Gid] = $count;
+                if('' === $opLevel || null === $opLevel){
+                    lib_log::debug('GidOPLevel',[$teamListObj->chessArrObj,$Gid, $Gcount,$opLevel]);
+                }
+                $teamListObj->result->group[$opLevel][$Gid] = $Gcount;
                 //(羁绊级别 + 1) * 羁绊个数 = 羁绊分数
                 $teamListObj->result->score += ($opLevel + 1) * $Gcount;
             }
@@ -263,9 +270,9 @@ class m_data_teamCalcOld{
                 lib_number::addOrDefault($this->inputGid2count[$Gid], 1);
             }
         }
-        if(0 !== $this->req->theOne){
-            lib_number::addOrDefault($this->inputGid2count[$this->req->theOne], 1);
-        }
+        // if(0 !== $this->req->theOne){
+        //     lib_number::addOrDefault($this->inputGid2count[$this->req->theOne], 1);
+        // }
         foreach($this->req->weapon as $Gid){
             lib_number::addCount(__FUNCTION__);
             lib_number::addOrDefault($this->inputGid2count[$Gid], 1);

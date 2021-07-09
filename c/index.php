@@ -20,11 +20,7 @@ class c_index extends lib_controlerBase{
         $inputChess = file_get_contents('php://input');
         $inputChessObj = json_decode($inputChess);
         m_dao_chess::init();
-        // echo $inputChessObj->time;
-        // echo m_dao_chess::$time;
-        // return;
         if($inputChessObj->time != m_dao_chess::$time){
-            // $obj = new c_tools();
             c_tools::update();
             echo 'updateDone.';
         }
