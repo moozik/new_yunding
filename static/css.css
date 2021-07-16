@@ -375,7 +375,7 @@ img {
 /*羁绊筛选按钮*/
 .btn-choose {
     cursor: pointer;
-    background-color: wheat;
+    background-color: white;
     border-radius: 16%;
     width: 58px;
     height: 58px;
@@ -383,7 +383,10 @@ img {
     margin: 0 5px;
 }
 .btn-choose.on {
-    background-color: floralwhite;
+    background-color: transparent;
+    border: 1px;
+    border-color: azure;
+    border-style: inset;
 }
 .btn-choose i {
     width: 58px;
@@ -394,7 +397,7 @@ img {
     margin: 5px 0px 0px 14px;
 }
 .btn-choose span.group_name {
-    /* margin-top: 13px; */
+    margin-top: -3px;
     font-size: 12px;
     display: block;
     text-align: center;

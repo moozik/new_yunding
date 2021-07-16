@@ -97,7 +97,7 @@ https://lol.qq.com/act/a20200917tftset4/index.html
                 <span class="large-title">已选装备</span><span>(将计算转职装备，再次点击取消)</span>
                 <div class="lineTwo" style="min-height: 50px;">
                     <div class="chess-list">
-                        <div :title="weapon.title" v-for="(weapon,index) in weaponList" v-on:click="delWeapon(index)">
+                        <div class="weapon" :title="weapon.title" v-for="(weapon,index) in weaponList" v-on:click="delWeapon(index)">
                             <img :src="weapon.imagePath" />
                         </div>
                     </div>
