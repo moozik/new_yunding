@@ -26,13 +26,7 @@ https://lol.qq.com/act/a20200917tftset4/index.html
                     <h5 class="version">版本：{{version}}</h5>
                     <h5 class="version">更新时间：{{time}}</h5>
                     <p>
-                        使用方法：1.在英雄池选择棋子
-                    </p>
-                    <p>
-                        2.禁用不想选用的英雄，选择当前转职装备，调整目标价格，调整计算个数
-                    </p>
-                    <p>
-                        3. 点击计算
+                        使用方法：1.在英雄池选择棋子 2.禁用不想选用的英雄，选择当前转职装备，调整目标价格，调整计算个数 3. 点击计算
                     </p>
                     <p>
                         <span style="color:red;">建议pc端浏览器使用</span> <a href="https://moozik.cn/archives/807/">给我建议</a>
@@ -83,7 +77,7 @@ https://lol.qq.com/act/a20200917tftset4/index.html
                     <div class="chess-list">
                         <!-- 选用英雄列表 -->
                         <div v-for="chess in inChessList" class="chess_head" :class="'price_' + chess.price" v-on:click.left="clickChess(chess)">
-                            <div class="chess chessBtn" :class="'hi_'+chess.TFTID" :data-chessId="chess.chessId" :title="chess.description">
+                            <div class="chess" :class="'hi_'+chess.TFTID" :data-chessId="chess.chessId" :title="chess.description">
                             </div>
                             <div class="cost_tag">{{chess.price}}</div>
                         </div>
@@ -95,7 +89,7 @@ https://lol.qq.com/act/a20200917tftset4/index.html
                     <div class="chess-list">
                         <!-- 禁用英雄列表 -->
                         <div v-for="chess in chessBanList" class="chess_head" :class="'price_' + chess.price" v-on:click.left="clickChess(chess)">
-                            <div class="chess chessBtn" :class="'hi_'+chess.TFTID" :data-chessId="chess.chessId" :title="chess.description">
+                            <div class="chess" :class="'hi_'+chess.TFTID" :data-chessId="chess.chessId" :title="chess.description">
                             </div>
                             <div class="cost_tag">{{chess.price}}</div>
                         </div>
@@ -160,10 +154,10 @@ https://lol.qq.com/act/a20200917tftset4/index.html
                 <!-- <p style="font-size:14px;">左键添加到'已选阵容'，右键添加到'禁用英雄'。再次点击可以取消选择或取消禁用。</p> -->
                 <div style="min-height:270px">
                     <div class="chess-list" v-for="price in 6">
-                        <!-- <div :title="chess.description" v-for="chess in chessArr" v-if="checkGroupChess(chess, price)" v-on:click.left="clickChess(chess)" @contextmenu.prevent="banChess(chess)" :data-chessId="chess.chessId" class="chessBtn" :class="['hi_'+chess.TFTID,'price_' + price]">
+                        <!-- <div :title="chess.description" v-for="chess in chessArr" v-if="checkGroupChess(chess, price)" v-on:click.left="clickChess(chess)" @contextmenu.prevent="banChess(chess)" :data-chessId="chess.chessId" class=" :class="['hi_'+chess.TFTID,'price_' + price]">
                         </div> -->
                         <div v-for="chess in chessArr" v-if="checkGroupChess(chess, price)" class="chess_head" :class="'price_' + chess.price" v-on:click.left="clickChess(chess)" @contextmenu.prevent="banChess(chess)">
-                            <div class="chess chessBtn" :class="'hi_'+chess.TFTID" :data-chessId="chess.chessId" :title="chess.description">
+                            <div class="chess" :class="'hi_'+chess.TFTID" :data-chessId="chess.chessId" :title="chess.description">
                             </div>
                             <div class="cost_tag">{{chess.price}}</div>
                         </div>
@@ -191,25 +185,22 @@ https://lol.qq.com/act/a20200917tftset4/index.html
         <div class="row clearfix">
             <div class="col-md-12 column">
                 <span class="large-title">最优阵容</span>
-                <div v-for="army in chickenArmy" class="traits">
+                <div v-for="army in chickenArmy" class="team_group">
                     <!--英雄列表-->
-                    <div class="chess-list result">
-                        <!-- <div :title="chessItem.description" v-for="chessItem in army.chess" :class="'hi_'+chessItem.TFTID" class="chess">
-                        </div> -->
-
+                    <div class="chess-list" style="min-width: 570px;">>
                         <div v-for="chess in army.chess" class="chess_head" :class="'price_' + chess.price">
-                            <div class="chess chessBtn" :class="'hi_'+chess.TFTID" :data-chessId="chess.chessId" :title="chess.description">
+                            <div class="chess" :class="'hi_'+chess.TFTID" :data-chessId="chess.chessId" :title="chess.description">
                             </div>
                             <div class="cost_tag">{{chess.price}}</div>
                         </div>
                     </div>
-                    <div class="result-jiban result">
+                    <div class="result-jiban" style="min-width: 570px;">
                         <div v-for="(item,index) in army.group" :class="item.classStr">
                             <img :src="item.imagePath" />
                             <span>{{item.count}}{{item.name}}</span>
                         </div>
                     </div>
-                    <div class="chess-list result">
+                    <div class="chess-list" style="min-width: 570px;">
                         <!-- <button type="button" class="btn btn-secondary" disabled="disabled">分数:{{army.score}}</button> -->
                         <button type="button" class="btn btn-info" disabled="disabled">强度:{{army.op}}</button> -->
                         <button v-if="army.tips" type="button" class="btn btn-success" disabled="disabled">{{army.tips}}</button>

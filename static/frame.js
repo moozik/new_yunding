@@ -382,7 +382,7 @@ $(document).on("mouseenter", ".groupBtn", function () {
 /**
  * 鼠标移入英雄图标
  */
-$(document).on("mouseenter", ".chessBtn", function () {
+$(document).on("mouseenter", ".chess", function () {
     $("#app > div:nth-child(2) > div:nth-child(1) > div").css("display", "none");
     var chess = DATA_chess.data;
     var ret = vm.chessArr[$(this).attr("data-chessId")];
