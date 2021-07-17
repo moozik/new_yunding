@@ -36,6 +36,13 @@ class m_data_teamCalcOld{
         // lib_log::debug('GidLevelMap', self::$GidLevelMap);
     }
 
+    function debugData(){
+        $debugData = [
+            'req' => $this->req,
+        ];
+        return $debugData;
+    }
+
     function forCountNew(){
         // lib_timer::start(__FUNCTION__);
         if(0 === $this->req->forCount){
@@ -75,21 +82,13 @@ class m_data_teamCalcOld{
         
         // lib_timer::stop(__FUNCTION__);
     }
+    /**
+     * 计算阵容
+     */
     function calc(){
         $retData = [];
-        // foreach($this->req->freeChessArrObj as $obj){
-        //     lib_log::debug('freeChessArrObj', $obj->chessId.$obj->name);
-        // }
-        // return;
         //输出人数
         $this->retCount = count($this->req->inChess) + $this->req->forCount;
-
-
-        
-        // lib_log::debug('$teamList[0]', $teamList[0]);
-        // lib_log::debug('$teamList[0]', $teamList[0]->getArr());
-        // exit;
-
         /**
          *     [forCountNew] => 0.60750102996826
          *     [forCountOld] => 0.12744784355164
@@ -125,7 +124,6 @@ class m_data_teamCalcOld{
             //处理转职装备 $teamListObj->weapon
             $this->dealWeapon($teamListObj);
             // lib_log::debug('teamListObj', $teamListObj);
-            // exit; no error
             //遍历羁绊计算羁绊个数
             foreach($teamListObj->group as $Gid => $count){
                 //形成羁绊的有效英雄个数 类似3剧毒和4剧毒中，3个是有效的 $groupValue=3 $count=4

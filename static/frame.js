@@ -79,7 +79,7 @@ var vm = new Vue({
                 //是否增强
                 proStatus = ('无' == chess.proStatus) ? '' : ("\n版本改动：" + chess.proStatus);
                 //描述
-                chess.description = '名称：' + chess.fullName + "\n职业：" + chess.races + ' ' + chess.jobs + "\n价格：" + chess.price + "\n技能：" + chess.skillIntroduce + proStatus;
+                chess.description = '名称：' + chess.fullName + "\n职业：" + chess.races + ' ' + chess.jobs + "\n\n技能：" + chess.skillIntroduce + proStatus;
                 chess.jobIds = chess.jobIds.split(',');
                 chess.raceIds = chess.raceIds.split(',');
                 ret[DATA_chess.data[i].chessId] = chess;
@@ -236,7 +236,6 @@ var vm = new Vue({
         },
         //绑定英雄池左键
         clickChess: function (chess) {
-            console.log(chess);
             inChessList = this.inChessList;
             //clickChess
             ret = this.chessInArray(chess, inChessList);
@@ -298,22 +297,22 @@ var vm = new Vue({
             this.chessValue = ret;
         },
         //更新费用限制 by 阵容数量
-        updateCostByTeamCount: function() {
-            // var teamCount;
-            // if (this.inChessList.length + this.forCount > 7) {
-            //     teamCount = 7;
-            // } else {
-            //     teamCount = this.inChessList.length + this.forCount;
-            // }
-            // for(let i in this.chessValue){
-            //     this.chessValue[i] = false;
-            // }
-            var ret = { 1: false, 2: false, 3: false, 4: false, 5: false };
-            for (let i in levelArr[this.teamCount]) {
-                ret[levelArr[this.teamCount][i]] = true;
-            }
-            this.chessValue = ret;
-        },
+        // updateCostByTeamCount: function() {
+        //     // var teamCount;
+        //     // if (this.inChessList.length + this.forCount > 7) {
+        //     //     teamCount = 7;
+        //     // } else {
+        //     //     teamCount = this.inChessList.length + this.forCount;
+        //     // }
+        //     // for(let i in this.chessValue){
+        //     //     this.chessValue[i] = false;
+        //     // }
+        //     var ret = { 1: false, 2: false, 3: false, 4: false, 5: false };
+        //     for (let i in levelArr[this.teamCount]) {
+        //         ret[levelArr[this.teamCount][i]] = true;
+        //     }
+        //     this.chessValue = ret;
+        // },
         saveNiceTeam: function (chessList, index) {
             chessList.weapon = this.weaponListCache;
             chessList.teamname = $('.teamname'+index).val();

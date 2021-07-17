@@ -25,6 +25,7 @@ class c_teamCalc extends lib_controlerBase{
         }
         $this->teamData->setInput($this->input);
         $this->result['data'] = $this->teamData->calc();
+        $this->result['debug'] = $this->teamData->debugData();
         echo lib_string::encode($this->result);
     }
 }

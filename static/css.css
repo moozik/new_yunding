@@ -3,41 +3,41 @@
     padding: 0;
 }
 /* 英雄边框颜色 */
-.cost_1 .chessBtn{
+.price_1 .chessBtn{
     border: 2px solid #999;
 }
-.cost_2 .chessBtn{
+.price_2 .chessBtn{
     border: 2px solid #5fcc29;
 }
-.cost_3 .chessBtn{
+.price_3 .chessBtn{
     border: 2px solid #297acc
 }
-.cost_4 .chessBtn{
+.price_4 .chessBtn{
     border: 2px solid #cc29cc
 }
-.cost_5 .chessBtn{
+.price_5 .chessBtn{
     border: 2px solid #cca329
 }
-.cost_6 .chessBtn{
+.price_6 .chessBtn{
     border: 2px solid #c1a25f
 }
 /* 价格边框颜色 */
-.cost_1 .cost_tag{
+.price_1 .cost_tag{
     background-color: #999;
 }
-.cost_2 .cost_tag{
+.price_2 .cost_tag{
     background-color: #5fcc29;
 }
-.cost_3 .cost_tag{
+.price_3 .cost_tag{
     background-color: #297acc;
 }
-.cost_4 .cost_tag{
+.price_4 .cost_tag{
     background-color: #cc29cc;
 }
-.cost_5 .cost_tag{
+.price_5 .cost_tag{
     background-color: #cca329;
 }
-.cost_6 .cost_tag{
+.price_6 .cost_tag{
     background-color: #c1a25f;
 }
 .cost_tag{

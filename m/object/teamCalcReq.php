@@ -6,7 +6,7 @@ class m_object_teamCalcReq{
     /**
      * 天选之人
      */
-    public $theOne = 0;
+    // public $theOne = 0;
     /**
      * 循环层数
      */
@@ -72,12 +72,21 @@ class m_object_teamCalcReq{
         if(isset($input->forCount)){
             $this->forCount = intval($input->forCount);
         }
-        if(isset($input->teamCount)){
-            $this->teamCount = intval($input->teamCount);
-        }
         if(isset($input->inChess)){
             $this->inChess = lib_tools::arrIntval($input->inChess);
         }
+        //当teamCount=-1 代表用forCount计算
+        if(isset($input->teamCount) && $input->teamCount > 0){
+            $this->teamCount = intval($input->teamCount);
+        }else{
+            $this->teamCount = $input->forCount + count($input->inChess);
+        }
+
+        if($this->teamCount > 10){
+            $this->forCount = 0;
+            $this->teamCount = 10;
+        }
+
         if(isset($input->banChess)){
             $this->banChess = lib_tools::arrIntval($input->banChess);
         }
@@ -88,14 +97,15 @@ class m_object_teamCalcReq{
             $this->costList = lib_tools::arrIntval($input->costList);
         }
         //计算参数
-        if($this->teamCount < 0){
-            $this->freePosition = $this->forCount;
-        }else{
-            $this->freePosition = $this->teamCount - count($this->inChess);
-        }
-        if($this->freePosition < 0){
-            throw new Exception("参数错误freePosition");
-        }
+        // if($this->teamCount < 0){
+        //     $this->freePosition = $this->forCount;
+        // }else{
+        //     $this->freePosition = $this->teamCount - count($this->inChess);
+        // }
+
+        // if($this->freePosition < 0){
+        //     throw new Exception("freePosition");
+        // }
         //计算当前棋子
         foreach($this->inChess as $chessId){
             $this->inChessObj[] = m_data_Factory::get(lib_def::chess, $chessId);
@@ -124,6 +134,9 @@ class m_object_teamCalcReq{
         }
     }
 
+    /**
+     * 计算当前队伍人数所属级别对应的英雄价格
+     */
     public function dealCostList(){
         //修正costList
         foreach($this->costList as $k => $costVal){
@@ -132,7 +145,8 @@ class m_object_teamCalcReq{
                 unset($this->costList[$k]);
                 continue;
             }
-            if(!in_array($costVal, lib_conf::LEVEL2COST[$this->forCount + count($this->inChess)])){
+            if(isset(lib_conf::LEVEL2COST[$this->teamCount]))
+            if(!in_array($costVal, lib_conf::LEVEL2COST[$this->teamCount])){
                 //删除对应级别刷不出来的英雄价格
                 unset($this->costList[$k]);
             }

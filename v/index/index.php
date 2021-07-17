@@ -26,23 +26,23 @@ https://lol.qq.com/act/a20200917tftset4/index.html
                     <h5 class="version">版本：{{version}}</h5>
                     <h5 class="version">更新时间：{{time}}</h5>
                     <p>
-                        使用方法：1.在英雄池选择棋子 2.（可选）禁用英雄，转职装备，调整价格，调整计算个数 3. 点击计算
+                        使用方法：1.在英雄池选择棋子
+                    </p>
+                    <p>
+                        2.禁用不想选用的英雄，选择当前转职装备，调整目标价格，调整计算个数
+                    </p>
+                    <p>
+                        3. 点击计算
                     </p>
                     <p>
                         <span style="color:red;">建议pc端浏览器使用</span> <a href="https://moozik.cn/archives/807/">给我建议</a>
                     </p>
-                </div>
-            </div>
-            <div class="col-md-12 column">
 
-                <a href="https://lol.qq.com/tft/#/equipment" target="_blank"><button type="button" class="btn btn-primary btn-lg"><i class="fa fa-book"></i> 装备合成表</button></a>
-                <a href="https://lol.qq.com/tft/#/index" target="_blank"><button type="button" class="btn btn-primary btn-lg"><i class="fa fa-qq"></i> 官方阵容推荐</button></a>
-                <!-- <a href="/yunding/niceTeam.php"><button type="button" class="btn btn-primary btn-lg">推荐阵容</button></a> -->
-                <?php
-                if (IS_MANAGER) {
-                    echo '<a href="./tools"><button type="button" class="btn btn-warning btn-lg">管理</button></a>';
-                }
-                ?>
+                    <!-- http://www.fontawesome.com.cn/faicons/ -->
+                    <a href="https://lol.qq.com/tft/#/equipment" target="_blank"><button type="button" class="btn btn-primary btn-lg"><i class="fa fa-book"></i> 装备合成表</button></a>
+                    <a href="https://lol.qq.com/tft/#/index" target="_blank"><button type="button" class="btn btn-primary btn-lg"><i class="fa fa-qq"></i> 官方阵容推荐</button></a>
+                    <a href="https://lol.qq.com/tft/#/overview" target="_blank"><button type="button" class="btn btn-primary btn-lg"><i class="fa fa-eye"></i> 版本资料</button></a>
+                </div>
             </div>
         </div>
         <div class="row clearfix">
@@ -78,10 +78,14 @@ https://lol.qq.com/act/a20200917tftset4/index.html
         </div>
         <div class="row clearfix">
             <div class="col-md-4 column">
-                <span class="large-title">已选阵容</span><span>(英雄池左键添加，再次点击取消)</span>
+                <span class="large-title">已选英雄</span><span>(英雄池左键添加，再次点击取消)</span>
                 <div class="lineTwo" style="min-height: 50px;">
                     <div class="chess-list">
-                        <div :title="chess.description" v-for="chess in inChessList" v-on:click="clickChess(chess)" class="chess" :class="'hi_'+chess.TFTID">
+                        <!-- 选用英雄列表 -->
+                        <div v-for="chess in inChessList" class="chess_head" :class="'price_' + chess.price" v-on:click.left="clickChess(chess)">
+                            <div class="chess chessBtn" :class="'hi_'+chess.TFTID" :data-chessId="chess.chessId" :title="chess.description">
+                            </div>
+                            <div class="cost_tag">{{chess.price}}</div>
                         </div>
                     </div>
                 </div>
@@ -89,7 +93,11 @@ https://lol.qq.com/act/a20200917tftset4/index.html
                 <span class="large-title">禁用英雄</span><span>(英雄池右键添加，再次点击取消)</span>
                 <div class="lineTwo" style="min-height: 50px;">
                     <div class="chess-list">
-                        <div :title="chess.description" v-for="chess in chessBanList" v-on:click="banChess(chess)" class="chess" :class="'hi_'+chess.TFTID">
+                        <!-- 禁用英雄列表 -->
+                        <div v-for="chess in chessBanList" class="chess_head" :class="'price_' + chess.price" v-on:click.left="clickChess(chess)">
+                            <div class="chess chessBtn" :class="'hi_'+chess.TFTID" :data-chessId="chess.chessId" :title="chess.description">
+                            </div>
+                            <div class="cost_tag">{{chess.price}}</div>
                         </div>
                     </div>
                 </div>
@@ -102,6 +110,37 @@ https://lol.qq.com/act/a20200917tftset4/index.html
                         </div>
                     </div>
                 </div>
+
+                <span class="large-title">可选价格</span>
+                <div class="btn-group btn-group-toggle" data-toggle="buttons"></div>
+                <button type="button" class="btn" v-bind:class="{'btn-primary':chessValue[1]}" v-on:click="valBtn(1)">1 <i class="fa fa-rmb"></i></button>
+                <button type="button" class="btn" v-bind:class="{'btn-primary':chessValue[2]}" v-on:click="valBtn(2)">2 <i class="fa fa-rmb"></i></button>
+                <button type="button" class="btn" v-bind:class="{'btn-primary':chessValue[3]}" v-on:click="valBtn(3)">3 <i class="fa fa-rmb"></i></button>
+                <button type="button" class="btn" v-bind:class="{'btn-primary':chessValue[4]}" v-on:click="valBtn(4)">4 <i class="fa fa-rmb"></i></button>
+                <button type="button" class="btn" v-bind:class="{'btn-primary':chessValue[5]}" v-on:click="valBtn(5)">5 <i class="fa fa-rmb"></i></button>
+                
+                <span class="large-title">计算英雄个数</span>
+
+                <div class="btn-group btn-group-toggle" data-toggle="buttons">
+                    <label class="btn btn-primary" v-on:click="forCountBtn(0)">
+                        <input type="radio" name="options" v-model="forCount" value="0"> 原样输出
+                    </label>
+                    <label class="btn btn-primary" v-on:click="forCountBtn(1)">
+                        <input type="radio" name="options" v-model="forCount" value="1"> 一个
+                    </label>
+                    <label class="btn btn-primary" v-on:click="forCountBtn(2)">
+                        <input type="radio" name="options" v-model="forCount" value="2"> 两个
+                    </label>
+                    <label class="btn btn-primary active" v-on:click="forCountBtn(3)">
+                        <input type="radio" name="options" v-model="forCount" value="3" checked> 三个
+                    </label>
+                </div>
+                <span> {{ forCount }}个</span>
+                <?php if(SEN::isDevelop()){?>
+                    <span class="large-title">阵容棋子数</span>
+                <input type="range" class="form-control-range" v-model="teamCount" max="9" min="-1" step="1" v-on:mousemove="updateCostByTeamCount()">
+                <span> {{ teamCount }}个</span>
+                <?php }?>
 
                 <!-- <span class="large-title" style="color:darkcyan;">天选之人(羁绊+1)</span>
                 <span>特质:</span>
@@ -120,13 +159,13 @@ https://lol.qq.com/act/a20200917tftset4/index.html
                 <span class="large-title" title="左键添加到'已选阵容'，右键添加到'禁用英雄'。再次点击可以取消选择或取消禁用。">英雄池</span>
                 <!-- <p style="font-size:14px;">左键添加到'已选阵容'，右键添加到'禁用英雄'。再次点击可以取消选择或取消禁用。</p> -->
                 <div style="min-height:270px">
-                    <div class="chess-list" v-for="price in 6" :class="'cost_' + price">
+                    <div class="chess-list" v-for="price in 6">
                         <!-- <div :title="chess.description" v-for="chess in chessArr" v-if="checkGroupChess(chess, price)" v-on:click.left="clickChess(chess)" @contextmenu.prevent="banChess(chess)" :data-chessId="chess.chessId" class="chessBtn" :class="['hi_'+chess.TFTID,'price_' + price]">
                         </div> -->
-                        <div v-for="chess in chessArr" v-if="checkGroupChess(chess, price)" :title="chess.description" class="chess_head">
-                            <div class="chess chessBtn" :class="'hi_'+chess.TFTID" v-on:click.left="clickChess(chess)" @contextmenu.prevent="banChess(chess)" :data-chessId="chess.chessId" >
+                        <div v-for="chess in chessArr" v-if="checkGroupChess(chess, price)" class="chess_head" :class="'price_' + chess.price" v-on:click.left="clickChess(chess)" @contextmenu.prevent="banChess(chess)">
+                            <div class="chess chessBtn" :class="'hi_'+chess.TFTID" :data-chessId="chess.chessId" :title="chess.description">
                             </div>
-                            <div class="cost_tag">{{price}}</div>
+                            <div class="cost_tag">{{chess.price}}</div>
                         </div>
                     </div>
                 </div>
@@ -150,45 +189,18 @@ https://lol.qq.com/act/a20200917tftset4/index.html
         </div>
 
         <div class="row clearfix">
-            <div class="col-md-4 column">
-                <span class="large-title">筛选价格</span>
-                <div class="btn-group btn-group-toggle" data-toggle="buttons"></div>
-                <button type="button" class="btn" v-bind:class="{'btn-primary':chessValue[1]}" v-on:click="valBtn(1)">1 <i class="fa fa-rmb"></i></button>
-                <button type="button" class="btn" v-bind:class="{'btn-primary':chessValue[2]}" v-on:click="valBtn(2)">2 <i class="fa fa-rmb"></i></button>
-                <button type="button" class="btn" v-bind:class="{'btn-primary':chessValue[3]}" v-on:click="valBtn(3)">3 <i class="fa fa-rmb"></i></button>
-                <button type="button" class="btn" v-bind:class="{'btn-primary':chessValue[4]}" v-on:click="valBtn(4)">4 <i class="fa fa-rmb"></i></button>
-                <button type="button" class="btn" v-bind:class="{'btn-primary':chessValue[5]}" v-on:click="valBtn(5)">5 <i class="fa fa-rmb"></i></button>
-                
-                <span class="large-title">筛选英雄个数</span>
-
-                <div class="btn-group btn-group-toggle" data-toggle="buttons">
-                    <label class="btn btn-primary" v-on:click="forCountBtn(0)">
-                        <input type="radio" name="options" v-model="forCount" value="0"> 原样输出
-                    </label>
-                    <label class="btn btn-primary" v-on:click="forCountBtn(1)">
-                        <input type="radio" name="options" v-model="forCount" value="1"> 一个
-                    </label>
-                    <label class="btn btn-primary" v-on:click="forCountBtn(2)">
-                        <input type="radio" name="options" v-model="forCount" value="2"> 两个
-                    </label>
-                    <label class="btn btn-primary active" v-on:click="forCountBtn(3)">
-                        <input type="radio" name="options" v-model="forCount" value="3" checked> 三个
-                    </label>
-                </div>
-                <span> {{ forCount }}个</span>
-                <?php if(SEN::isDevelop()){?>
-                    <span class="large-title">阵容棋子数</span>
-                <input type="range" class="form-control-range" v-model="teamCount" max="9" min="-1" step="1" v-on:mousemove="updateCostByTeamCount()">
-                <span> {{ teamCount }}个</span>
-                <?php }?>
-            </div>
-
-            <div class="col-md-8 column">
+            <div class="col-md-12 column">
                 <span class="large-title">最优阵容</span>
                 <div v-for="army in chickenArmy" class="traits">
                     <!--英雄列表-->
                     <div class="chess-list result">
-                        <div :title="chessItem.description" v-for="chessItem in army.chess" :class="'hi_'+chessItem.TFTID" class="chess">
+                        <!-- <div :title="chessItem.description" v-for="chessItem in army.chess" :class="'hi_'+chessItem.TFTID" class="chess">
+                        </div> -->
+
+                        <div v-for="chess in army.chess" class="chess_head" :class="'price_' + chess.price">
+                            <div class="chess chessBtn" :class="'hi_'+chess.TFTID" :data-chessId="chess.chessId" :title="chess.description">
+                            </div>
+                            <div class="cost_tag">{{chess.price}}</div>
                         </div>
                     </div>
                     <div class="result-jiban result">
@@ -230,7 +242,7 @@ https://lol.qq.com/act/a20200917tftset4/index.html
     <script id="heroTemp" type="text/html">
         <div class="details">
             <div class="hi_{{TFTID}}" style="background-size: cover;"></div>
-            <p><span>{{title}} {{displayName}}<span class="glyphicon glyphicon-sort-by-order-alt"></span></span><span>{{races}},{{jobs}}</span><span>{{price}}金币</span></p>
+            <p><span>{{title}} {{displayName}}<span class="glyphicon glyphicon-sort-by-order-alt"></span></span><span>{{races}},{{jobs}}</span></p>
         </div>
         {{if equip}}
         <div class="recommend">
