@@ -9,7 +9,7 @@
     <meta data-n-head="true" data-hid="charset" charset="utf-8">
     <!-- 引入 Bootstrap -->
     <link rel="stylesheet" href="https://cdn.staticfile.org/twitter-bootstrap/4.3.1/css/bootstrap.min.css">
-    <link rel="stylesheet" href="<?= SEN::static_url('css') ?>" charset="utf-8">
+    <link rel="stylesheet" href="<?php echo SEN::static_url('css').'?t='.$timeStamp ?>" charset="utf-8">
     <link rel="stylesheet" href="https://cdn.staticfile.org/font-awesome/4.7.0/css/font-awesome.css">
 </head>
 <!-- 
@@ -278,8 +278,8 @@ https://lol.qq.com/act/a20200917tftset4/index.html
     <!--模板框架-->
     <script src="//ossweb-img.qq.com/images/js/ArtTemplate.js"></script>
     <!--配置-->
-    <script src="<?= SEN::static_url('define') ?>"></script>
+    <script src="<?php echo SEN::static_url('define').'?t='.$timeStamp ?>"></script>
     <!--vue-->
-    <script src="<?= SEN::static_url('frame') ?>"></script>
+    <script src="<?php echo SEN::static_url('frame').'?t='.$timeStamp ?>"></script>
 </body>
 </html>

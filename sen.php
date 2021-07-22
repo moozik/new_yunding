@@ -141,7 +141,8 @@ class SEN
      * 展示视图
      * @param $name 视图名称
      */
-    static function display_page($name){
+    static function display_page($name, $param = []){
+        extract($param);
         $res = debug_backtrace();
         preg_match("/_([^_]+)$/", $res[1]['class'], $res);
         require_once implode(DIRECTORY_SEPARATOR, [ROOT_DIR , 'v' , $res[1], $name . '.php']);

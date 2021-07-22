@@ -10,7 +10,10 @@ class c_index extends lib_controlerBase{
             $obj = new c_tools();
             $obj->update();
         }
-        SEN::display_page('index');
+        m_dao_race::init();
+        SEN::display_page('index', [
+            'timeStamp' => strtotime(m_dao_race::$time)
+        ]);
     }
 
     /**
