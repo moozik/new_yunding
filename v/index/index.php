@@ -166,12 +166,12 @@ https://lol.qq.com/act/a20200917tftset4/index.html
                 <span class="large-title" title="装备可以重复选择，点击左侧'已选装备'可以取消选择。">转职装备</span>
                 <!-- <p style="font-size:14px;">装备可以重复选择，点击左侧'已选装备'可以取消选择。</p> -->
                 <div class="chess-list">
-                    <div class="weaponBtn weapon" :title="weapon.title" :data-weaponId="weapon.equipId" v-for="(weapon,index) in equipArr" v-if="weapon.raceId != 0 && checkGroupWeapon(weapon)" v-on:click.left="clickWeapon(weapon)">
+                    <div class="weaponBtn weapon" :title="weapon.title" :data-weaponId="weapon.equipId" v-for="(weapon,index) in equipArr" v-if="weapon.raceId != null && weapon.raceId != 0 && checkGroupWeapon(weapon)" v-on:click.left="clickWeapon(weapon)">
                         <img :src="weapon.imagePath" />
                     </div>
                 </div>
                 <div class="chess-list">
-                    <div class="weaponBtn weapon" :title="weapon.title" :data-weaponId="weapon.equipId" v-for="(weapon,index) in equipArr" v-if="weapon.jobId != 0 && checkGroupWeapon(weapon)" v-on:click.left="clickWeapon(weapon)">
+                    <div class="weaponBtn weapon" :title="weapon.title" :data-weaponId="weapon.equipId" v-for="(weapon,index) in equipArr" v-if="weapon.jobId != null && weapon.jobId != 0 && checkGroupWeapon(weapon)" v-on:click.left="clickWeapon(weapon)">
                         <img :src="weapon.imagePath" />
                     </div>
                 </div>

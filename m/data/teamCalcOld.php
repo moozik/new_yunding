@@ -150,7 +150,7 @@ class m_data_teamCalcOld{
                 }
                 $teamListObj->result->group[$opLevel][$Gid] = $Gcount;
                 //(羁绊级别 + 1) * 羁绊个数 = 羁绊分数
-                $teamListObj->result->score += ($opLevel + 1) * $Gcount;
+                $teamListObj->result->score += $opLevel * $Gcount;
             }
             if(!empty($teamListObj->tips[1])){
                 $teamListObj->tips[1] = '即将成型:' . trim($teamListObj->tips[1], ',') .';';

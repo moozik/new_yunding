@@ -90,20 +90,23 @@ var vm = new Vue({
         equipArr: function(){
             var ret = {};
             var equip,job,proStatus;
+            // Set5.5转职纹章id列表，配置在https://lol.qq.com/tft/js/main.js?v=20210722
+            var transJobEquipIdList = [533, 563, 575, 593, 599, 605, 609, 610, 611, 612, 613, 614, 615, 616, 617, 618, 619, 620, 621, 622, 623, 624];
             for (let i in DATA_equip.data) {
+                equip = DATA_equip.data[i];
                 //排除老版本装备
-                if(DATA_equip.data[i].equipId < 500){
+                if(equip.equipId < 500){
+                    continue;
+                }
+                if(transJobEquipIdList.indexOf(+equip.equipId) == -1){
                     continue;
                 }
                 //只要转职装备
-                if(
-                    (DATA_equip.data[i].jobId == '0' || DATA_equip.data[i].jobId == null) &&
-                    (DATA_equip.data[i].raceId == '0' || DATA_equip.data[i].raceId == null)
-                ){
+                if((equip.jobId == '0' || equip.jobId == null) &&
+                    (equip.raceId == '0' || equip.raceId == null)){
                     continue;
                 }
-                
-                equip = DATA_equip.data[i];
+                equip.title = '名称：' + equip.name;
                 //装备id不在阵容列表里，跳出
                 if(!DATA_race[equip.raceId] && !DATA_job[equip.jobId]){
                     continue;
@@ -114,15 +117,20 @@ var vm = new Vue({
                 }else{
                     job = DATA_race[equip.raceId].name;
                 }
+                equip.title += "\n职业：" + job;
+                //装备配方
+                if(equip.formula != ""){
+                    var formula = '';
+                    equip.formula.split(',').forEach((e,i) => {
+                        formula += window.equipId2equip[e].name + ' ';
+                    });
+                    equip.title += "\n配方：" + formula + proStatus;
+                }
                 //是否增强
-                proStatus = ('无' == equip.proStatus) ? '' : ("\n版本改动：" + equip.proStatus);
-                var formula = '';
-                equip.formula.split(',').forEach((e,i) => {
-                    formula += window.equipId2equip[e].name + ' ';
-                });
-                equip.title = '名称：' + equip.name + "\n职业：" + job + "\n配方：" + formula + proStatus;
-                
-                ret[DATA_equip.data[i].equipId] = equip;
+                proStatus = ('无' == equip.proStatus) ? '' : ( equip.proStatus);
+                equip.title += "\n版本改动：" + proStatus;
+
+                ret[equip.equipId] = equip;
             }
             return ret;
         }(),
@@ -297,22 +305,22 @@ var vm = new Vue({
             this.chessValue = ret;
         },
         //更新费用限制 by 阵容数量
-        // updateCostByTeamCount: function() {
-        //     // var teamCount;
-        //     // if (this.inChessList.length + this.forCount > 7) {
-        //     //     teamCount = 7;
-        //     // } else {
-        //     //     teamCount = this.inChessList.length + this.forCount;
-        //     // }
-        //     // for(let i in this.chessValue){
-        //     //     this.chessValue[i] = false;
-        //     // }
-        //     var ret = { 1: false, 2: false, 3: false, 4: false, 5: false };
-        //     for (let i in levelArr[this.teamCount]) {
-        //         ret[levelArr[this.teamCount][i]] = true;
-        //     }
-        //     this.chessValue = ret;
-        // },
+        updateCostByTeamCount: function() {
+            // var teamCount;
+            // if (this.inChessList.length + this.forCount > 7) {
+            //     teamCount = 7;
+            // } else {
+            //     teamCount = this.inChessList.length + this.forCount;
+            // }
+            // for(let i in this.chessValue){
+            //     this.chessValue[i] = false;
+            // }
+            var ret = { 1: false, 2: false, 3: false, 4: false, 5: false };
+            for (let i in levelArr[this.teamCount]) {
+                ret[levelArr[this.teamCount][i]] = true;
+            }
+            this.chessValue = ret;
+        },
         saveNiceTeam: function (chessList, index) {
             chessList.weapon = this.weaponListCache;
             chessList.teamname = $('.teamname'+index).val();
@@ -403,9 +411,11 @@ $(document).on("mouseenter", ".weaponBtn", function () {
     $("#app > div:nth-child(2) > div:nth-child(1) > div").css("display", "none");
     var weaponObj = window.equipId2equip[this.dataset.weaponid];
     weaponObj.formulaArr = [];
-    weaponObj.formula.split(',').forEach((e,i) => {
-        weaponObj.formulaArr.push(window.equipId2equip[e]);
-    });
+    if(weaponObj.formula != ""){
+        weaponObj.formula.split(',').forEach((e,i) => {
+            weaponObj.formulaArr.push(window.equipId2equip[e]);
+        });
+    }
     $("#weapon-box").html(template("weaponTemp", weaponObj));
     $("#weapon-box").css("display", "block");
 });
@@ -438,7 +448,6 @@ $("#runBtn").click(function () {
     vm.weaponList.forEach((e) => {
         getData.weapon.push((e.jobId) != '0' ? (parseInt(e.jobId) + 100) : parseInt(e.raceId));
     });
-    // console.log(vm.chessValue);
     for (var i in vm.chessValue) {
         if (vm.chessValue[i]) {
             getData.costList.push(parseInt(i));
@@ -473,9 +482,9 @@ function displayPage(teamArrObj){
             chess.push(vm.chessArr[chessId]);
         });
         //group
-        for(var key = 3; key >= 0; key--){
+        for(var key = 4; key >= 1; key--){
             for(var GId in teamObj.group[key]){
-                classStr = 'grade' + (key + 1);
+                classStr = 'grade' + key;
                 // if(vm.theOneRace == GId || vm.theOneJob == GId){
                 //     classStr += ' choose';
                 // }
