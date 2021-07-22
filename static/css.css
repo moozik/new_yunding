@@ -103,6 +103,11 @@ img {width: 100%;height: 100%;}
     margin-top: 5px;
     padding-bottom: 5px;
     border-bottom: 2px dashed #fff;
+    border-radius: 20px;
+    padding: 8px;
+}
+.team_group:hover {
+    background-color: white;
 }
 /*羁绊详情面板*/
 #group-box {
