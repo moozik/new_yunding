@@ -1,30 +1,31 @@
 <?php
-class lib_timer{
+
+class lib_timer {
     static $data = [];
     static $result = [];
 
-    static function start($key){
-        if(isset(self::$data[$key])){
+    static function start($key) {
+        if (isset(self::$data[$key])) {
             return false;
         }
         self::$data[$key] = microtime(true);
     }
 
-    static function stop($key){
+    static function stop($key) {
         $now = microtime(true);
         $time = $now - self::$data[$key];
         unset(self::$data[$key]);
-        if(array_key_exists($key, self::$result)){
+        if (array_key_exists($key, self::$result)) {
             self::$result[$key] += $time;
-        }else{
+        } else {
             self::$result[$key] = $time;
         }
         return $time;
     }
 
-    static function getResult(){
-        foreach(self::$result as $key => &$time){
-            if($time < 0.0001){
+    static function getResult() {
+        foreach (self::$result as $key => &$time) {
+            if ($time < 0.0001) {
                 self::$result[$key] = 0.0001;
             }
         }

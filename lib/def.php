@@ -1,5 +1,6 @@
 <?php
-class lib_def{
+
+class lib_def {
     //用于工厂字段
     const chess = 1;
     const job = 2;

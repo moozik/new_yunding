@@ -1,6 +1,6 @@
 <?php
 
-class m_data_teamCalcOld{
+class m_data_teamCalcOld {
     /**
      * @var m_object_teamCalcReq
      */
@@ -11,84 +11,76 @@ class m_data_teamCalcOld{
      * @var integer
      */
     public $teamCaleLimit = 20000;
-    //入参羁绊列表 *只读 G->count
-    //包括转职
-    private $inputGid2count = [];
-
-    //当前可用棋子对应的可用羁绊数量
-    private $freeGid2count = [];
     /**
      * job race 羁绊个数对应关系数组
      */
     static public $GidLevelMap = [];
 
-    //羁绊组合结果个数
-    const G_RESULT_COUNT = 10;
-
-    function __construct(){
+    function __construct() {
         //初始化dao
         m_dao_race::init();
         m_dao_job::init();
         m_dao_chess::init();
         // m_dao_equip::init();
-        // self::$GidLevelMap = array_merge(m_dao_job::$GidMap, m_dao_race::$GidMap);
         self::$GidLevelMap = m_dao_job::$GidMap + m_dao_race::$GidMap;
         // lib_log::debug('GidLevelMap', self::$GidLevelMap);
     }
 
-    function debugData(){
-        $debugData = [
+    function debugData() {
+        return [
             'req' => $this->req,
         ];
-        return $debugData;
     }
 
-    function forCountNew(){
+    function forCountNew(): Generator {
         // lib_timer::start(__FUNCTION__);
-        if(0 === $this->req->forCount){
+        if (0 === $this->req->forCount) {
             yield new m_data_teamList($this->req->inChess);
-        }else{
-            foreach(lib_tools::choseIterator($this->req->freeChessArrObj, $this->req->forCount) as $chessArrObj){
+        } else {
+            foreach (lib_tools::choseIterator($this->req->freeChessArrObj, $this->req->forCount) as $chessArrObj) {
                 yield new m_data_teamList(array_merge($this->req->inChessObj, $chessArrObj));
             }
         }
         // lib_timer::stop(__FUNCTION__);
     }
-    function forCountOld(){
+
+    function forCountOld() {
         // lib_timer::start(__FUNCTION__);
         // $teamList = [];
-        if($this->req->forCount === 0){
-            yield new m_data_teamList($this->req->inChessObj);
+        if ($this->req->forCount === 0) {
+            yield ($this->req->inChessObj);
             return;
         }
 
-        foreach($this->req->freeChessArrObj as $k1 => $chessObj_1){
-            if($this->req->forCount == 1){
-                yield new m_data_teamList(array_merge($this->req->inChessObj, [$chessObj_1]));
+        foreach ($this->req->freeChessArrObj as $k1 => $chessObj_1) {
+            if ($this->req->forCount == 1) {
+                yield (array_merge($this->req->inChessObj, [$chessObj_1]));
                 continue;
             }
-            foreach($this->req->freeChessArrObj as $k2 => $chessObj_2){
-                if($k2 <= $k1)continue;
-                if($this->req->forCount == 2){
-                    yield new m_data_teamList(array_merge($this->req->inChessObj, [$chessObj_1, $chessObj_2]));
+            foreach ($this->req->freeChessArrObj as $k2 => $chessObj_2) {
+                if ($k2 <= $k1) {
                     continue;
                 }
-                foreach($this->req->freeChessArrObj as $k3 => $chessObj_3){
-                    if($k3 <= $k2)continue;
-                    yield new m_data_teamList(array_merge($this->req->inChessObj, [$chessObj_1, $chessObj_2, $chessObj_3]));
+                if ($this->req->forCount == 2) {
+                    yield (array_merge($this->req->inChessObj, [$chessObj_1, $chessObj_2]));
+                    continue;
+                }
+                foreach ($this->req->freeChessArrObj as $k3 => $chessObj_3) {
+                    if ($k3 <= $k2) {
+                        continue;
+                    }
+                    yield (array_merge($this->req->inChessObj, [$chessObj_1, $chessObj_2, $chessObj_3]));
                 }
             }
         }
-        
+
         // lib_timer::stop(__FUNCTION__);
     }
+
     /**
      * 计算阵容
      */
-    function calc(){
-        $retData = [];
-        //输出人数
-        $this->retCount = count($this->req->inChess) + $this->req->forCount;
+    function calc() {
         /**
          *     [forCountNew] => 0.60750102996826
          *     [forCountOld] => 0.12744784355164
@@ -101,118 +93,122 @@ class m_data_teamCalcOld{
         // exit;
         //存储队伍价格到数量的映射，用于快速筛选有价值的阵容
         $valueLog = [];
-        
+
         //结果数组
         $teamList = [];
         $retData = [];
         //筛选出羁绊价值最高的组合
-        foreach($this->forCountOld() as $teamListObj){
+        foreach ($this->forCountOld() as $teamListParam) {
+            // $nameList = [];
+            // foreach($teamListParam as $i){
+            //     $nameList[] = $i->name;
+            // }
+            // lib_log::debug('$teamListParam', $nameList);
+
+            $teamListObj = new m_data_teamList($teamListParam);
             //天选之人
             // if($this->req->theOne != 0){
             //     $teamListObj->group[$this->req->theOne] = 1;
             // }
-            
+
             //给当前羁绊计数
-            foreach($teamListObj->chessArrObj as $chessObj){
+            foreach ($teamListObj->chessArrObj as $chessObj) {
                 //棋子价值
                 $teamListObj->idVal += $chessObj->price;
                 //给当前英雄的所有羁绊计数
-                foreach($chessObj->Gids as $Gid => $groupObj){
+                foreach ($chessObj->Gids as $Gid => $groupObj) {
                     lib_number::addOrDefault($teamListObj->group[$Gid], 1);
                 }
             }
             //处理转职装备 $teamListObj->weapon
             $this->dealWeapon($teamListObj);
-            // lib_log::debug('teamListObj', $teamListObj);
             //遍历羁绊计算羁绊个数
-            foreach($teamListObj->group as $Gid => $count){
+            foreach ($teamListObj->group as $Gid => $count) {
                 //形成羁绊的有效英雄个数 类似3剧毒和4剧毒中，3个是有效的 $groupValue=3 $count=4
                 $Glevel = &self::$GidLevelMap[$Gid];
                 $Gcount = $Glevel[$count];
                 //如果没有形成羁绊，那么删除当前阵营
-                if(0 == $Gcount){
+                if (0 == $Gcount) {
                     unset($teamListObj->group[$Gid]);
-                    if(0 != $Glevel[$count + 1]){
+                    if (0 != $Glevel[$count + 1]) {
                         //如果数量+1buff不为0，则加入tips
-                        $teamListObj->tips[1] .= '['.($count + 1) . m_data_Factory::getGid($Gid)->name . '],';
+                        $teamListObj->tips[1] .= '[' . ($count + 1) . m_data_Factory::getGid($Gid)->name . '],';
                     }
                     //当前羁绊不成形
                     continue;
                 }
                 //神王特殊羁绊，两个神王不能生效
-                if($Gid == 113 && $count == 2){
+                if ($Gid == 113 && $count == 2) {
                     continue;
                 }
                 //计算羁绊等级,根据 $Gcount 有效个数
                 $opLevel = lib_conf::GidOPLevel($Gid, $Gcount);
-                if('' === $opLevel || null === $opLevel){
-                    lib_log::debug('GidOPLevel',[$teamListObj->chessArrObj,$Gid, $Gcount,$opLevel]);
-                }
-                $teamListObj->result->group[$opLevel][$Gid] = $Gcount;
+//                if ('' === $opLevel || null === $opLevel) {
+//                    lib_log::debug('GidOPLevel', [$teamListObj->chessArrObj, $Gid, $Gcount, $opLevel]);
+//                }
+                $teamListObj->resultGroup[$opLevel][$Gid] = $Gcount;
                 //(羁绊级别 + 1) * 羁绊个数 = 羁绊分数
-                $teamListObj->result->score += $opLevel * $Gcount;
+                $teamListObj->score += $opLevel * $Gcount;
             }
-            if(!empty($teamListObj->tips[1])){
-                $teamListObj->tips[1] = '即将成型:' . trim($teamListObj->tips[1], ',') .';';
+            if (!empty($teamListObj->tips[1])) {
+                $teamListObj->tips[1] = '即将成型:' . trim($teamListObj->tips[1], ',') . ';';
             }
 
             //如果普通羁绊和顶级羁绊都为空 那么跳出 20191109修复bug：之判断了普通羁绊没判断顶级羁绊
-            if(empty($teamListObj->result->group)){
-                //unset($teamList[$k]);
+            if (empty($teamListObj->resultGroup)) {
+                //释放
+                unset($teamListObj);
                 continue;
             }
-            
-            //阵容价值=棋子价值+羁绊价值
-            $teamListObj->result->score += $teamListObj->idVal;
-            
-            lib_number::addOrDefault($valueLog[$teamListObj->result->score], 1);
-            $teamListObj->result->tips = implode('', $teamListObj->tips);
-            $teamListObj->result->op = (string)round($teamListObj->result->score / $this->retCount,2);
 
+            //阵容价值=棋子价值+羁绊价值
+            $teamListObj->score += $teamListObj->idVal;
+
+            lib_number::addOrDefault($valueLog[$teamListObj->score], 1);
+            $teamListObj->tips = implode('', $teamListObj->tips);
             $teamList[] = $teamListObj;
             //分段计算,优化计算量大的case
-            if(count($teamList) >= 20000){
-                $retData = array_merge($retData, $this->calcValueTeam($valueLog, $teamList));
-                $teamList = [];
-                $valueLog = [];
-                // echo "retData:". count($retData). "\n";
-            }
+             if (count($teamList) >= 20000) {
+//                lib_log::debug('$teamList.count',count($teamList));
+                 $retData = array_merge($retData, $this->calcValueTeam($valueLog, $teamList));
+                 $teamList = [];
+                 $valueLog = [];
+             }
         }
-        //lib_log::debug('$teamListObj',json_encode($teamListObj));
-        if(!empty($teamList)){
+        if (!empty($teamList)) {
             $retData = array_merge($retData, $this->calcValueTeam($valueLog, $teamList));
         }
-        lib_log::debug('$retData',json_encode($retData));
-        $retData = array_slice(lib_array::sort($retData, 'score'), 0, lib_conf::SHOW_LIMIT);
-        return $retData;
+        return array_slice(lib_array::sort($retData, 'score'), 0, lib_conf::SHOW_LIMIT);
     }
 
     /**
      * 根据$valueLog计算阵容
      *
-     * @return void
+     * @param $valueLog
+     * @param $teamList []m_data_teamList
+     * @return array
      */
-    function calcValueTeam(&$valueLog, &$teamList){
+    function calcValueTeam(&$valueLog, &$teamList) {
         //根据key降序
         krsort($valueLog);
         //取头部阵容
         $teamCount = 0;
         $divLine = 0;
-        foreach($valueLog as $val => $num){
+        foreach ($valueLog as $val => $num) {
             $teamCount += $num;
             //若总和大于预定数量则跳出
-            if($teamCount >= lib_conf::SHOW_LIMIT){
+            if ($teamCount >= lib_conf::SHOW_LIMIT) {
                 $divLine = $val;
                 break;
             }
         }
-        lib_log::debug('divLine', $divLine);
+//        lib_log::debug('divLine', $divLine);
         //取待排序阵容
         $sortTeamList = [];
-        foreach($teamList as $teamListObj){
-            if($teamListObj->result->score >= $divLine){
-                foreach($teamListObj->chessArrObj as $chessObj){
-                    $teamListObj->result->chess[] = $chessObj->chessId;
+        foreach ($teamList as $teamListObj) {
+            if ($teamListObj->score >= $divLine) {
+                foreach ($teamListObj->chessArrObj as $chessObj) {
+                    $teamListObj->resultChess[] = $chessObj->chessId;
                 }
                 $sortTeamList[] = $teamListObj->getArr();
             }
@@ -226,19 +222,19 @@ class m_data_teamCalcOld{
      * 处理转职装备
      * 剔除不合法装备，修正可用装备数量，添加提醒
      */
-    function dealWeapon($teamListObj){
+    function dealWeapon($teamListObj) {
         // lib_timer::start(__FUNCTION__);
-        if(empty($this->req->weapon)){
+        if (empty($this->req->weapon)) {
             return;
         }
         //遍历转职装备 并计算能用到的最大装备数量到 $teamListObj->weapon[$Gid]
-        foreach($this->req->weapon as $Gid => $count){
-            if(isset($teamListObj->group[$Gid])){
-                $teamListObj->weapon[$Gid] = $this->retCount - $teamListObj->group[$Gid];
-            }else{
-                $teamListObj->weapon[$Gid] = $this->retCount;
+        foreach ($this->req->weapon as $Gid => $count) {
+            if (isset($teamListObj->group[$Gid])) {
+                $teamListObj->weapon[$Gid] = $this->req->teamChessCount - $teamListObj->group[$Gid];
+            } else {
+                $teamListObj->weapon[$Gid] = $this->req->teamChessCount;
             }
-            if($teamListObj->weapon[$Gid] < $count){
+            if ($teamListObj->weapon[$Gid] < $count) {
                 //装备过多，可用装备等于可装备人数
                 $count = $teamListObj->weapon[$Gid];
                 //获取羁绊名字
@@ -247,54 +243,16 @@ class m_data_teamCalcOld{
             //羁绊数量经过转职装备修正
             lib_number::addOrDefault($teamListObj->group[$Gid], $count);
         }
-        if(!empty($teamListObj->tips[0])){
-            $teamListObj->tips[0] = '剩余装备:' . trim($teamListObj->tips[0],',').';';
+        if (!empty($teamListObj->tips[0])) {
+            $teamListObj->tips[0] = '剩余装备:' . trim($teamListObj->tips[0], ',') . ';';
         }
         // lib_timer::stop(__FUNCTION__);
     }
 
     /**
-     * 计算英雄 天选 专职装备合计羁绊的 id=>count
-     * @param &$ret
-     * @param $chessArr 可用棋子
-     * @param $theOne 当前天选
-     * @param $weaponArr 当前转职装备
-     */
-    function getGid2count(){
-        $this->inputGid2count = [];
-        foreach($this->req->inChess as $chessId){
-            foreach(m_data_Factory::get(lib_def::chess, $chessId)->Gids as $Gid => $Gitem){
-                lib_number::addCount(__FUNCTION__);
-                lib_number::addOrDefault($this->inputGid2count[$Gid], 1);
-            }
-        }
-        // if(0 !== $this->req->theOne){
-        //     lib_number::addOrDefault($this->inputGid2count[$this->req->theOne], 1);
-        // }
-        foreach($this->req->weapon as $Gid){
-            lib_number::addCount(__FUNCTION__);
-            lib_number::addOrDefault($this->inputGid2count[$Gid], 1);
-        }
-    }
-
-    /**
-     * 根据可用英雄获取可用羁绊个数
-     * @param m_object_teamCalcReq $req
-     */
-    function getFreeGbyfreeChess(){
-        $this->freeGid2count = [];
-        foreach($this->req->chessArr as $chessId){
-            foreach(m_data_Factory::get(lib_def::chess, $chessId)->Gids as $Gid => $Gitem){
-                lib_number::addCount(__FUNCTION__);
-                lib_number::addOrDefault($this->freeGid2count[$Gid], 1);
-            }
-        }
-    }
-
-    /**
      * 设置参数
      */
-    public function setInput($input){
+    public function setInput($input) {
         lib_log::trace('calcInput', print_r($input, true));
         $this->req = new m_object_teamCalcReq($input);
         $this->req->dealCostList();

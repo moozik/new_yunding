@@ -1,8 +1,9 @@
 <?php
+
 /**
  * 装备
  */
-class m_dao_equip{
+class m_dao_equip {
     /**
      * 数据key
      *
@@ -35,9 +36,8 @@ class m_dao_equip{
      */
     static public $time;
 
-    static function init()
-    {
-        if(!empty(self::$data)){
+    static function init() {
+        if (!empty(self::$data)) {
             return;
         }
         $retObj = m_dao_base::init(self::STATIC_KEY);
@@ -45,26 +45,26 @@ class m_dao_equip{
         self::$season = $retObj->season;
         self::$time = $retObj->time;
 
-        foreach($retObj->data as $key => $objItem) {
+        foreach ($retObj->data as $key => $objItem) {
             if (self::isValid($objItem->equipId)) {
                 self::$data[$objItem->equipId] = $objItem;
             }
         }
     }
+
     /**
-     * @param int $id
+     * @param $equipId
      * @return array
      */
-    static public function get($equipId)
-    {
+    static public function get($equipId) {
         return self::$data[$equipId];
     }
+
     /**
      * 判断id是否合法
      */
-    static public function isValid($id)
-    {
-        if($id >= 301){
+    static public function isValid($id) {
+        if ($id >= 301) {
             return true;
         }
         return false;

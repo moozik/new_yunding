@@ -1,19 +1,20 @@
 <?php
-class lib_array{
+
+class lib_array {
     /**
      * @param array $arr
-     * @return int $sum
+     * @return $sum
      */
-    static function sumBykey($arr, $key){
-        return array_sum(array_map(function($i) use ($key){
+    static function sumBykey($arr, $key) {
+        return array_sum(array_map(function ($i) use ($key) {
             return $i[$key];
-        },$arr));
+        }, $arr));
     }
 
-    static function append(&$arr, $val){
-        if(is_array($arr)){
+    static function append(&$arr, $val) {
+        if (is_array($arr)) {
             $arr[] = $val;
-        }else{
+        } else {
             $arr = [$val];
         }
     }
@@ -23,21 +24,23 @@ class lib_array{
      *
      * @param [array] $arr
      * @param [mixed] $keys
-     * @param string $orderby
+     * @param $orderby
      * @return array
      */
-    static function sort($arr, $keys, $orderby = 'desc'){
-        $keysvalue = $new_array = array();
-        foreach ($arr as $k => $v){
-            $keysvalue[$k] = $v[$keys];
+    static function sort($arr, $keys, $orderby = 'desc') {
+        $keysValue = $new_array = [];
+        foreach ($arr as $k => $v) {
+            $keysValue[$k] = $v[$keys];
         }
-        if($orderby == 'asc'){
-            asort($keysvalue);
-        }else if($orderby == 'desc'){
-            arsort($keysvalue);
+        if ($orderby == 'asc') {
+            asort($keysValue);
+        } else {
+            if ($orderby == 'desc') {
+                arsort($keysValue);
+            }
         }
-        reset($keysvalue);
-        foreach ($keysvalue as $k => $v){
+        reset($keysValue);
+        foreach ($keysValue as $k => $v) {
             $new_array[] = $arr[$k];
         }
         return $new_array;

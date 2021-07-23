@@ -1,11 +1,19 @@
 <?php
-class c_teamCalc extends lib_controlerBase{
+
+class c_teamCalc extends lib_controlerBase {
+
+    /**
+     * @var object 入参
+     */
+    protected $input;
+
     /**
      * 入参校验
      * @return void
+     * @throws Exception
      */
-    function inputCheck(){
-        if(empty($this->arrInput['data'])){
+    function inputCheck()  {
+        if (empty($this->arrInput['data'])) {
             throw new Exception('param data empty.');
         }
         $this->input = json_decode($this->arrInput['data']);
@@ -14,18 +22,19 @@ class c_teamCalc extends lib_controlerBase{
     /**
      * 主函数
      */
-    public function actionIndex(){
-        lib_log::trace('calcInput', $this->arrInput['data']);
-        if($this->input->teamCount != -1){
+    public function actionIndex() {
+        lib_log::trace('actionIndex.calcInput', $this->arrInput['data']);
+        if ($this->input->teamCount != -1) {
             //新版本
-            $this->teamData = new m_data_teamCalc();
-        }else{
+            $teamData = new m_data_teamCalc();
+        } else {
             //老版本
-            $this->teamData = new m_data_teamCalcOld();
+            $teamData = new m_data_teamCalcOld();
         }
-        $this->teamData->setInput($this->input);
-        $this->result['data'] = $this->teamData->calc();
-        $this->result['debug'] = $this->teamData->debugData();
+        $teamData->setInput($this->input);
+        $this->result['data'] = $teamData->calc();
+        $this->result['debug'] = $teamData->debugData();
+//        lib_log::trace('actionIndex.result', json_encode($this->result));
         echo lib_string::encode($this->result);
     }
 }

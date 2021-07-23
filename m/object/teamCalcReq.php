@@ -1,8 +1,9 @@
 <?php
+
 /**
  * 请求入参
  */
-class m_object_teamCalcReq{
+class m_object_teamCalcReq {
     /**
      * 天选之人
      */
@@ -14,9 +15,9 @@ class m_object_teamCalcReq{
     /**
      * 输出队伍人数
      */
-    public $teamCount = 9;
+    public $teamChessCount = 9;
     /**
-     * 输入棋子 chessid
+     * 输入棋子 chess
      */
     public $inChess = [];
     /**
@@ -42,7 +43,7 @@ class m_object_teamCalcReq{
     /**
      * 棋子价格限制
      */
-    public $costList = [1,2,3,4,5];
+    public $costList = [1, 2, 3, 4, 5];
     /**
      * 可用棋子id数组
      *
@@ -59,41 +60,41 @@ class m_object_teamCalcReq{
      * 空闲位置个数
      */
     public $freePosition = 0;
-    function __construct($input){
+
+    function __construct($input) {
         //初始化数据源
         m_dao_race::init();
         m_dao_job::init();
         m_dao_chess::init();
-        //{"theOne":0,"teamCount":9,"forCount":3,"inChess":[],"banChess":[],"weapon":[],"costList":[1,2,3,4,5]}
         // 原样参数
         // if(isset($input->theOne)){
         //     $this->theOne = intval($input->theOne);
         // }
-        if(isset($input->forCount)){
+        if (isset($input->forCount)) {
             $this->forCount = intval($input->forCount);
         }
-        if(isset($input->inChess)){
+        if (isset($input->inChess)) {
             $this->inChess = lib_tools::arrIntval($input->inChess);
         }
         //当teamCount=-1 代表用forCount计算
-        if(isset($input->teamCount) && $input->teamCount > 0){
-            $this->teamCount = intval($input->teamCount);
-        }else{
-            $this->teamCount = $input->forCount + count($input->inChess);
+        if (isset($input->teamCount) && $input->teamCount > 0) {
+            $this->teamChessCount = intval($input->teamCount);
+        } else {
+            $this->teamChessCount = $input->forCount + count($input->inChess);
         }
 
-        if($this->teamCount > 10){
+        if ($this->teamChessCount > 10) {
             $this->forCount = 0;
-            $this->teamCount = 10;
+            $this->teamChessCount = 10;
         }
 
-        if(isset($input->banChess)){
+        if (isset($input->banChess)) {
             $this->banChess = lib_tools::arrIntval($input->banChess);
         }
-        if(isset($input->weapon)){
+        if (isset($input->weapon)) {
             $this->weapon = lib_tools::arrIntval($input->weapon);
         }
-        if(isset($input->costList)){
+        if (isset($input->costList)) {
             $this->costList = lib_tools::arrIntval($input->costList);
         }
         //计算参数
@@ -107,18 +108,18 @@ class m_object_teamCalcReq{
         //     throw new Exception("freePosition");
         // }
         //计算当前棋子
-        foreach($this->inChess as $chessId){
+        foreach ($this->inChess as $chessId) {
             $this->inChessObj[] = m_data_Factory::get(lib_def::chess, $chessId);
         }
         // lib_log::debug('$this->costList', $this->costList);exit;
-        if(empty($this->costList)){
+        if (empty($this->costList)) {
             throw new Exception("参数错误costList");
         }
     }
 
-    public function dealWeaponPre(){
+    public function dealWeaponPre() {
         //转职装备预处理
-        if(!empty($this->weapon)){
+        if (!empty($this->weapon)) {
             //处理转职装备
             // if(count($this->weapon) > lib_conf::IN_WEAPON_MAX){
             //     //超过最大值的装备被删除
@@ -126,7 +127,7 @@ class m_object_teamCalcReq{
             // }
             //groupid2count映射
             $weaponGroup2Count = [];
-            foreach($this->weapon as $Gid){
+            foreach ($this->weapon as $Gid) {
                 lib_number::addOrDefault($weaponGroup2Count[$Gid], 1);
             }
             $this->weapon = $weaponGroup2Count;
@@ -137,38 +138,38 @@ class m_object_teamCalcReq{
     /**
      * 计算当前队伍人数所属级别对应的英雄价格
      */
-    public function dealCostList(){
+    public function dealCostList() {
         //修正costList
-        foreach($this->costList as $k => $costVal){
-            if($costVal < 1 || $costVal > 5){
+        foreach ($this->costList as $k => $costVal) {
+            if ($costVal < 1 || $costVal > 5) {
                 //非法数据
                 unset($this->costList[$k]);
                 continue;
             }
-            if(isset(lib_conf::LEVEL2COST[$this->teamCount]))
-            if(!in_array($costVal, lib_conf::LEVEL2COST[$this->teamCount])){
-                //删除对应级别刷不出来的英雄价格
-                unset($this->costList[$k]);
+            if (isset(lib_conf::LEVEL2COST[$this->teamChessCount])) {
+                if (!in_array($costVal, lib_conf::LEVEL2COST[$this->teamChessCount])) {
+                    //删除对应级别刷不出来的英雄价格
+                    unset($this->costList[$k]);
+                }
             }
         }
     }
 
     /**
      * 获取可用英雄列表
-     * @param m_object_teamCalcReq $req
      * @return array
      */
-    public function getFreeChess(){
+    public function getFreeChess() {
         $this->freeChessArr = [];
         $this->freeChessArrObj = [];
-        foreach(m_dao_chess::$data as $chess){
+        foreach (m_dao_chess::$data as $chess) {
             //inChess banChess
-            if(in_array($chess->chessId, $this->inChess)
-                || in_array($chess->chessId, $this->banChess)){
+            if (in_array($chess->chessId, $this->inChess)
+                || in_array($chess->chessId, $this->banChess)) {
                 continue;
             }
             //costList
-            if(!in_array($chess->price, $this->costList)){
+            if (!in_array($chess->price, $this->costList)) {
                 continue;
             }
             $this->freeChessArr[] = $chess->chessId;

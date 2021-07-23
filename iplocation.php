@@ -93,7 +93,7 @@ class iplocation
      * 返回压缩后可进行比较的IP地址
      *
      * @access private
-     * @param string $ip
+     * @param $ip
      * @return string
      */
     private function packip($ip)
@@ -107,7 +107,7 @@ class iplocation
      * 返回读取的字符串
      *
      * @access private
-     * @param string $data
+     * @param $data
      * @return string
      */
     private function getstring($data = "")
@@ -149,7 +149,7 @@ class iplocation
      * 根据所给 IP 地址或域名返回所在地区信息
      *
      * @access public
-     * @param string $ip
+     * @param $ip
      * @return array
      */
     public function getlocation($ip = null)

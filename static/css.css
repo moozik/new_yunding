@@ -101,7 +101,6 @@ img {width: 100%;height: 100%;}
 }
 .team_group {
     margin-top: 5px;
-    padding-bottom: 5px;
     border-bottom: 2px dashed #fff;
     border-radius: 20px;
     padding: 8px;
@@ -424,10 +423,18 @@ img {width: 100%;height: 100%;}
 }
 
 /* .traits em.choose:before{content: '';width: 36px;height: 43px;background: url(//game.gtimg.cn/images/lol/act/a20200917tftset4/choosed.png) no-repeat;background-size: 100% 100%;position: absolute;top: -5px;left: -5px;display:block;filter: brightness(1.5);transform: scale(0.96);} */
-.grade1{background:url(//game.gtimg.cn/images/lol/act/a20200917tftset4/spr-label-3.png) no-repeat;background-position:0 -105px;}
-.grade2{background:url(//game.gtimg.cn/images/lol/act/a20200917tftset4/spr-label-3.png) no-repeat;background-position:0 -70px;}
-.grade3{background:url(//game.gtimg.cn/images/lol/act/a20200917tftset4/spr-label-3.png) no-repeat;background-position:0 -35px;}
-.grade4{background:url(//game.gtimg.cn/images/lol/act/a20200917tftset4/spr-label-3.png) no-repeat;background-position:0 0;}
+.grade1{
+    background: url(//game.gtimg.cn/images/lol/act/a20200917tftset4/spr-label-3.png) no-repeat 0 -105px;
+}
+.grade2{
+    background: url(//game.gtimg.cn/images/lol/act/a20200917tftset4/spr-label-3.png) no-repeat 0 -70px;
+}
+.grade3{
+    background: url(//game.gtimg.cn/images/lol/act/a20200917tftset4/spr-label-3.png) no-repeat 0 -35px;
+}
+.grade4{
+    background: url(//game.gtimg.cn/images/lol/act/a20200917tftset4/spr-label-3.png) no-repeat 0 0;
+}
 
 /* .choose:before {
     content: '';

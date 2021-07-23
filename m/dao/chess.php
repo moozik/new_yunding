@@ -1,8 +1,9 @@
 <?php
+
 /**
  * 英雄
  */
-class m_dao_chess{
+class m_dao_chess {
     /**
      * 数据key
      *
@@ -35,9 +36,8 @@ class m_dao_chess{
      */
     static public $time;
 
-    static function init()
-    {
-        if(!empty(self::$data)){
+    static function init() {
+        if (!empty(self::$data)) {
             return;
         }
         $retObj = m_dao_base::init(self::STATIC_KEY);
@@ -45,16 +45,16 @@ class m_dao_chess{
         self::$season = $retObj->season;
         self::$time = $retObj->time;
 
-        foreach($retObj->data as $key => $objItem) {
+        foreach ($retObj->data as $key => $objItem) {
             self::$data[$objItem->chessId] = $objItem;
         }
     }
+
     /**
-     * @param int $id
+     * @param $chessId
      * @return object
      */
-    static public function get($chessId)
-    {
+    static public function get($chessId) {
         return self::$data[$chessId];
     }
 }

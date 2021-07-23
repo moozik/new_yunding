@@ -201,8 +201,8 @@ https://lol.qq.com/act/a20200917tftset4/index.html
                         </div>
                     </div>
                     <div class="chess-list" style="min-width: 570px;">
-                        <!-- <button type="button" class="btn btn-secondary" disabled="disabled">分数:{{army.score}}</button> -->
-                        <button type="button" class="btn btn-info" disabled="disabled">强度:{{army.op}}</button> -->
+                         <button type="button" class="btn btn-secondary" disabled="disabled">分数:{{army.score}}</button>
+<!--                        <button type="button" class="btn btn-info" disabled="disabled">强度:{{army.op}}</button>-->
                         <button v-if="army.tips" type="button" class="btn btn-success" disabled="disabled">{{army.tips}}</button>
                     </div>
 

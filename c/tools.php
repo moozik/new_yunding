@@ -1,11 +1,7 @@
 <?php
 
-class c_tools extends lib_controlerBase{
-    // private $route = [
-    //     'chessSort'
-    // ];
-    function __construct()
-    {
+class c_tools extends lib_controlerBase {
+    function __construct() {
         parent::__construct();
         if (isset($_GET['login']) && SEN::PASSWORD === $_GET['login']) {
             setcookie("passwd", SEN::PASSWORD, time() + 86400);
@@ -17,7 +13,8 @@ class c_tools extends lib_controlerBase{
         }
         m_dao_chess::init();
     }
-    public function actionIndex(){
+
+    public function actionIndex() {
         $action = $_GET['a'] ?? '';
         $action_list = [
             //'log' => '参数日志',
@@ -32,12 +29,13 @@ class c_tools extends lib_controlerBase{
         }
         echo "<hr />\n";
 
-        if(array_key_exists($action, $action_list)){
+        if (array_key_exists($action, $action_list)) {
             $this->{$action}();
             echo 'done.';
         }
     }
-    static public function update(){
+
+    static public function update() {
         //强制更新json
         m_dao_base::init(m_dao_chess::STATIC_KEY, true);
         m_dao_base::init(m_dao_equip::STATIC_KEY, true);
@@ -46,43 +44,47 @@ class c_tools extends lib_controlerBase{
         m_dao_race::init();
         m_dao_job::init();
         //更新js
-        $fileContent = 
+        $fileContent =
             '/*update time:' . date('YmdHis') . '*/' .
             // 'var heroArr=' . SEN::encode(HERO::heroList()) . ';' .
             // 'var groupArr=' . SEN::encode(HERO::groupList()) . ';' .
             // 'var weaponArr=' . SEN::encode(HERO::weaponList()) . ';' .
             'var levelArr=' . lib_string::encode(lib_conf::LEVEL2COST) . ';';
-            // 'var GLevel=' . lib_string::encode($this->getGMapLevel()) . ';';
+        // 'var GLevel=' . lib_string::encode($this->getGMapLevel()) . ';';
 
         file_put_contents(SEN::static_path('define'), $fileContent);
     }
-    public function getGMapLevel(){
+
+    public function getGMapLevel() {
         $ret = [];
-        foreach(lib_conf::races as $Gid => $item){
+        foreach (lib_conf::races as $Gid => $item) {
             $ret[$Gid] = [
                 $item[0],
                 m_dao_race::$GidMap[$Gid],
             ];
         }
-        foreach(lib_conf::jobs as $Gid => $item){
+        foreach (lib_conf::jobs as $Gid => $item) {
             $ret[$Gid] = [
                 $item[0],
                 m_dao_job::$GidMap[$Gid],
             ];
         }
         return $ret;
-    } 
-    public function clean(){
+    }
+
+    public function clean() {
         foreach (scandir(SEN::cache_dir()) as $filePath) {
-            if(!in_array($filePath, ['.','..']))
+            if (!in_array($filePath, ['.', '..'])) {
                 unlink(SEN::cache_dir() . DIRECTORY_SEPARATOR . $filePath);
+            }
         }
         echo 'clean done.';
     }
-    public function check(){
+
+    public function check() {
         foreach (SEN::STATIC_FILE as $fileName) {
-            $localFile = ROOT_DIR .DIRECTORY_SEPARATOR. SEN::STATIC_DIR .DIRECTORY_SEPARATOR. $fileName;
-            $cdnUrl = SEN::CDN_URL .DIRECTORY_SEPARATOR. SEN::STATIC_DIR .DIRECTORY_SEPARATOR. $fileName;
+            $localFile = ROOT_DIR . DIRECTORY_SEPARATOR . SEN::STATIC_DIR . DIRECTORY_SEPARATOR . $fileName;
+            $cdnUrl = SEN::CDN_URL . DIRECTORY_SEPARATOR . SEN::STATIC_DIR . DIRECTORY_SEPARATOR . $fileName;
             $localData = file_get_contents($localFile);
             $cdnData = file_get_contents($cdnUrl);
             if ($localData === $cdnData) {
@@ -97,27 +99,4 @@ class c_tools extends lib_controlerBase{
     //     header("Content-type: text/plain; charset=utf-8");
     //     echo file_get_contents(SEN::log_file($_GET['f']));
     // }
-    /**
-     * 生成lib_conf::hero_sort 的配置
-     */
-    /*public function chessSort(){
-        $ret = [
-            5 => [],
-            4 => [],
-            3 => [],
-            2 => [],
-            1 => [],
-        ];
-        foreach(m_dao_chess::$data as &$chess){
-            $ret[$chess->price][] = $chess;
-        }
-        //展示
-        header("Content-type: text/plain; charset=utf-8");
-        foreach($ret as $price => $chessList){
-            foreach($chessList as $chess){
-                echo sprintf("%s,//%s %s %s\n",
-                    $chess->chessId, $chess->price, $chess->title, $chess->displayName);
-            }
-        }
-    }*/
 }
