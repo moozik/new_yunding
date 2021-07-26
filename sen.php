@@ -116,6 +116,9 @@ class SEN {
         if ('moozik.cn' == $_SERVER['SERVER_NAME']) {
             return false;
         }
+        if ('yunding.moozik.cn' == $_SERVER['SERVER_NAME']) {
+            return false;
+        }
         return true;
     }
 

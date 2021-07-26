@@ -8,11 +8,13 @@ class lib_log {
         'trace',
         'warning',
         'fatal',
+        'access',
     ];
     private $debugPath = '';
     private $tracePath = '';
     private $warningPath = '';
     private $fatalPath = '';
+    private $accessPath = '';
 
     private $rootDirLength = 0;
 

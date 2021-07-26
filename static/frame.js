@@ -322,17 +322,17 @@ var vm = new Vue({
             }
             this.chessValue = ret;
         },
-        saveNiceTeam: function (chessList, index) {
-            chessList.weapon = this.weaponListCache;
-            chessList.teamname = $('.teamname' + index).val();
-            $.post(
-                "/yunding/yunding.php?action=niceTeam",
-                {niceTeam: JSON.stringify(chessList)},
-                function (result) {
-                    alert(result);
-                }
-            );
-        },
+        // saveNiceTeam: function (chessList, index) {
+        //     chessList.weapon = this.weaponListCache;
+        //     chessList.teamname = $('.teamname' + index).val();
+        //     $.post(
+        //         "/yunding/yunding.php?action=niceTeam",
+        //         {niceTeam: JSON.stringify(chessList)},
+        //         function (result) {
+        //             alert(result);
+        //         }
+        //     );
+        // },
         //判断指定英雄是否在指定数组中 不存在返回false，存在返回下标
         chessInArray: function (chess, arr) {
             key = false;

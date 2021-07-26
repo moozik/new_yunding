@@ -11,6 +11,7 @@ class c_index extends lib_controlerBase {
             $obj->update();
         }
         m_dao_race::init();
+        lib_log::access("index",json_encode($_SERVER));
         SEN::display_page('index', [
             'timeStamp' => strtotime(m_dao_race::$time),
         ]);

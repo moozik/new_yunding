@@ -1,4 +1,7 @@
 <?php
+/**
+ * https://github.com/out0fmemory/qqwry.dat
+ */
 class iplocation
 {
 

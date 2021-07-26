@@ -253,7 +253,7 @@ class m_data_teamCalcOld {
      * 设置参数
      */
     public function setInput($input) {
-        lib_log::trace('calcInput', print_r($input, true));
+        // lib_log::trace('calcInput', print_r($input, true));
         $this->req = new m_object_teamCalcReq($input);
         $this->req->dealCostList();
         $this->req->dealWeaponPre();
