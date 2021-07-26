@@ -169,7 +169,10 @@ class m_object_teamCalcReq {
                 continue;
             }
             //costList
-            if (!in_array($chess->price, $this->costList)) {
+            if ($chess->price < 6 && !in_array($chess->price, $this->costList)) {
+                continue;
+            }
+            if ($chess->price == 6 && !in_array(5, $this->costList)) {
                 continue;
             }
             $this->freeChessArr[] = $chess->chessId;

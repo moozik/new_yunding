@@ -163,8 +163,6 @@ https://lol.qq.com/act/a20200917tftset4/index.html
                 <!-- <p style="font-size:14px;">左键添加到'已选阵容'，右键添加到'禁用英雄'。再次点击可以取消选择或取消禁用。</p> -->
                 <div style="min-height:270px">
                     <div class="chess-list" v-for="price in 6">
-                        <!-- <div :title="chess.description" v-for="chess in chessArr" v-if="checkGroupChess(chess, price)" v-on:click.left="clickChess(chess)" @contextmenu.prevent="banChess(chess)" :data-chessId="chess.chessId" class=" :class="['hi_'+chess.TFTID,'price_' + price]">
-                        </div> -->
                         <div v-for="chess in chessArr" v-if="checkGroupChess(chess, price)" class="chess_head" :class="'price_' + chess.price" v-on:click.left="clickChess(chess)" @contextmenu.prevent="banChess(chess)">
                             <div class="chess" :class="'hi_'+chess.TFTID" :data-chessId="chess.chessId" :title="chess.description">
                             </div>
@@ -173,7 +171,6 @@ https://lol.qq.com/act/a20200917tftset4/index.html
                     </div>
                 </div>
                 <span class="large-title" title="装备可以重复选择，点击左侧'已选装备'可以取消选择。">转职装备</span>
-                <!-- <p style="font-size:14px;">装备可以重复选择，点击左侧'已选装备'可以取消选择。</p> -->
                 <div class="chess-list">
                     <div class="weaponBtn weapon" :title="weapon.title" :data-weaponId="weapon.equipId" v-for="(weapon,index) in equipArr" v-if="weapon.raceId != null && weapon.raceId != 0 && checkGroupWeapon(weapon)" v-on:click.left="clickWeapon(weapon)">
                         <img :src="weapon.imagePath" />
@@ -287,7 +284,7 @@ https://lol.qq.com/act/a20200917tftset4/index.html
     <!--模板框架-->
     <script src="//ossweb-img.qq.com/images/js/ArtTemplate.js"></script>
     <!--配置-->
-    <script src="<?php echo SEN::static_url('define').'?t='.$timeStamp ?>"></script>
+    <!-- <script src="<?php echo SEN::static_url('define').'?t='.$timeStamp ?>"></script> -->
     <!--vue-->
     <script src="<?php echo SEN::static_url('frame').'?t='.$timeStamp ?>"></script>
 </body>
