@@ -21,24 +21,30 @@ class m_data_teamCalcOld {
         m_dao_race::init();
         m_dao_job::init();
         m_dao_chess::init();
-        // m_dao_equip::init();
+         m_dao_equip::init();
         self::$GidLevelMap = m_dao_job::$GidMap + m_dao_race::$GidMap;
         // lib_log::debug('GidLevelMap', self::$GidLevelMap);
     }
 
     function debugData() {
+        if(!SEN::isDevelop()){
+            return [];
+        }
         return [
             'req' => $this->req,
+            'equip' => m_dao_equip::$dataByGid,
+            'equip2' => m_dao_equip::$data,
+            'chess' => m_dao_chess::$data,
         ];
     }
 
     function forCountNew(): Generator {
         // lib_timer::start(__FUNCTION__);
         if (0 === $this->req->forCount) {
-            yield new m_data_teamList($this->req->inChess);
+            yield new m_object_teamList($this->req->inChess);
         } else {
             foreach (lib_tools::choseIterator($this->req->freeChessArrObj, $this->req->forCount) as $chessArrObj) {
-                yield new m_data_teamList(array_merge($this->req->inChessObj, $chessArrObj));
+                yield new m_object_teamList(array_merge($this->req->inChessObj, $chessArrObj));
             }
         }
         // lib_timer::stop(__FUNCTION__);
@@ -81,16 +87,6 @@ class m_data_teamCalcOld {
      * 计算阵容
      */
     function calc() {
-        /**
-         *     [forCountNew] => 0.60750102996826
-         *     [forCountOld] => 0.12744784355164
-         */
-        // 新算法更慢一点
-        // $this->forCountNew($teamList);
-        // 老算法更快
-        // $this->forCountOld($teamList);
-        // lib_log::debug('timer', lib_timer::getResult());
-        // exit;
         //存储队伍价格到数量的映射，用于快速筛选有价值的阵容
         $valueLog = [];
 
@@ -99,13 +95,7 @@ class m_data_teamCalcOld {
         $retData = [];
         //筛选出羁绊价值最高的组合
         foreach ($this->forCountOld() as $teamListParam) {
-            // $nameList = [];
-            // foreach($teamListParam as $i){
-            //     $nameList[] = $i->name;
-            // }
-            // lib_log::debug('$teamListParam', $nameList);
-
-            $teamListObj = new m_data_teamList($teamListParam);
+            $teamListObj = new m_object_teamList($teamListParam);
             //天选之人
             // if($this->req->theOne != 0){
             //     $teamListObj->group[$this->req->theOne] = 1;
@@ -120,8 +110,8 @@ class m_data_teamCalcOld {
                     lib_number::addOrDefault($teamListObj->group[$Gid], 1);
                 }
             }
-            //处理转职装备 $teamListObj->weapon
-            $this->dealWeapon($teamListObj);
+            //处理转职装备
+            $this->dealEquip($teamListObj);
             //遍历羁绊计算羁绊个数
             foreach ($teamListObj->group as $Gid => $count) {
                 //形成羁绊的有效英雄个数 类似3剧毒和4剧毒中，3个是有效的 $groupValue=3 $count=4
@@ -169,7 +159,6 @@ class m_data_teamCalcOld {
             $teamList[] = $teamListObj;
             //分段计算,优化计算量大的case
              if (count($teamList) >= 20000) {
-//                lib_log::debug('$teamList.count',count($teamList));
                  $retData = array_merge($retData, $this->calcValueTeam($valueLog, $teamList));
                  $teamList = [];
                  $valueLog = [];
@@ -202,7 +191,6 @@ class m_data_teamCalcOld {
                 break;
             }
         }
-//        lib_log::debug('divLine', $divLine);
         //取待排序阵容
         $sortTeamList = [];
         foreach ($teamList as $teamListObj) {
@@ -222,26 +210,30 @@ class m_data_teamCalcOld {
      * 处理转职装备
      * 剔除不合法装备，修正可用装备数量，添加提醒
      */
-    function dealWeapon($teamListObj) {
+    function dealEquip(m_object_teamList $teamListObj) {
         // lib_timer::start(__FUNCTION__);
-        if (empty($this->req->weapon)) {
+        if (empty($this->req->tagPlus)) {
             return;
         }
-        //遍历转职装备 并计算能用到的最大装备数量到 $teamListObj->weapon[$Gid]
-        foreach ($this->req->weapon as $Gid => $count) {
+        //遍历转职装备 并计算能用到的最大装备数量到 $teamListObj->equip[$Gid]
+        foreach ($this->req->tagPlusMap as $Gid => $count) {
             if (isset($teamListObj->group[$Gid])) {
-                $teamListObj->weapon[$Gid] = $this->req->teamChessCount - $teamListObj->group[$Gid];
+                $equipMax = $this->req->teamChessCount - $teamListObj->group[$Gid];
             } else {
-                $teamListObj->weapon[$Gid] = $this->req->teamChessCount;
+                $equipMax = $this->req->teamChessCount;
             }
-            if ($teamListObj->weapon[$Gid] < $count) {
+            if ($equipMax < $count) {
                 //装备过多，可用装备等于可装备人数
-                $count = $teamListObj->weapon[$Gid];
+                $count = $equipMax;
                 //获取羁绊名字
                 $teamListObj->tips[0] .= m_data_Factory::getGid($Gid)->name . ',';
             }
             //羁绊数量经过转职装备修正
             lib_number::addOrDefault($teamListObj->group[$Gid], $count);
+
+            for($i = 0; $i < $count; $i++){
+                $teamListObj->equip[] = m_dao_equip::getByGid($Gid);
+            }
         }
         if (!empty($teamListObj->tips[0])) {
             $teamListObj->tips[0] = '剩余装备:' . trim($teamListObj->tips[0], ',') . ';';
@@ -256,7 +248,7 @@ class m_data_teamCalcOld {
         // lib_log::trace('calcInput', print_r($input, true));
         $this->req = new m_object_teamCalcReq($input);
         $this->req->dealCostList();
-        $this->req->dealWeaponPre();
+        $this->req->dealEquipPre();
         $this->req->getFreeChess();
     }
 }

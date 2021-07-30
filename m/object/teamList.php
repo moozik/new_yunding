@@ -1,6 +1,6 @@
 <?php
 
-class m_data_teamList {
+class m_object_teamList {
     //棋子
     public $chessArrObj = [];
     //计算羁绊棋子价值
@@ -9,7 +9,6 @@ class m_data_teamList {
     public $group = [];
     //提示
     public $tips = ['', ''];
-
 
     /**
      * @var array[]
@@ -22,8 +21,7 @@ class m_data_teamList {
     ];
 
     public $score = 0;
-//    public $op = 0;
-    public $weapon = [];
+    public $equip = [];
 
     public function __construct($chessArrObj) {
         $this->chessArrObj = $chessArrObj;
@@ -34,8 +32,10 @@ class m_data_teamList {
             'chess' => array_map(function($chessObj){
                 return $chessObj->chessId;
             },$this->chessArrObj),
+            'equip' => array_map(function($equipObj){
+                return $equipObj->equipId;
+            },$this->equip),
             'score' => $this->score,
-//            'op' => $this->op,
             'tips' => $this->tips,
         ];
     }

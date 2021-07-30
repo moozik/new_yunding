@@ -70,7 +70,7 @@ img {width: 100%;height: 100%;}
     box-shadow: #0e0f16 0 4px 7px;
     display: inline-block;
 }
-.weapon {
+.equip {
     margin-right: 1px;
     margin-bottom: 1px;
     display: inline-block;
@@ -257,7 +257,7 @@ img {width: 100%;height: 100%;}
     margin-left: 15px;
     font-size: 0;
 }
-.weaponBox {
+.equipBox {
     vertical-align: top;
     display: inline-block;
     width: 34px;
@@ -315,13 +315,13 @@ img {width: 100%;height: 100%;}
 }
 
 /*装备简介*/
-#weapon-box {
+#equip-box {
     border: 1px solid #6f7584;
     background-color: #232937;
     height: 100%;
     padding: 10px;
 }
-#weapon-box .title {
+#equip-box .title {
     position: relative;
     width: 100%;
     height: 30px;

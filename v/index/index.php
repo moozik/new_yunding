@@ -54,7 +54,7 @@ https://lol.qq.com/act/a20200917tftset4/index.html
                 </div>
                 <div id="hero-box" style="display: none;">
                 </div>
-                <div id="weapon-box" style="display: none;">
+                <div id="equip-box" style="display: none;">
                 </div>
             </div>
 
@@ -108,8 +108,8 @@ https://lol.qq.com/act/a20200917tftset4/index.html
                 <span class="large-title">已选装备</span><span>(将计算转职装备，再次点击取消)</span>
                 <div class="lineTwo" style="min-height: 50px;">
                     <div class="chess-list">
-                        <div class="weapon" :title="weapon.title" v-for="(weapon,index) in weaponList" v-on:click="delWeapon(index)">
-                            <img :src="weapon.imagePath" />
+                        <div class="equip" :title="equip.title" v-for="(equip,index) in equipList" v-on:click="delEquip(index)">
+                            <img :src="equip.imagePath" />
                         </div>
                     </div>
                 </div>
@@ -140,9 +140,9 @@ https://lol.qq.com/act/a20200917tftset4/index.html
                 </div>
                 <span> {{ forCount }}个</span>
                 <?php if(SEN::isDevelop()){?>
-                    <span class="large-title">阵容棋子数</span>
+                    <!-- <span class="large-title">阵容棋子数</span>
                 <input type="range" class="form-control-range" v-model="teamCount" max="9" min="-1" step="1" v-on:mousemove="updateCostByTeamCount()">
-                <span> {{ teamCount }}个</span>
+                <span> {{ teamCount }}个</span> -->
                 <?php }?>
 
                 <!-- <span class="large-title" style="color:darkcyan;">天选之人(羁绊+1)</span>
@@ -172,13 +172,13 @@ https://lol.qq.com/act/a20200917tftset4/index.html
                 </div>
                 <span class="large-title" title="装备可以重复选择，点击左侧'已选装备'可以取消选择。">转职装备</span>
                 <div class="chess-list">
-                    <div class="weaponBtn weapon" :title="weapon.title" :data-weaponId="weapon.equipId" v-for="(weapon,index) in equipArr" v-if="weapon.raceId != null && weapon.raceId != 0 && checkGroupWeapon(weapon)" v-on:click.left="clickWeapon(weapon)">
-                        <img :src="weapon.imagePath" />
+                    <div class="equipBtn equip" :title="equip.title" :data-equipId="equip.equipId" v-for="(equip,index) in equipArr" v-if="equip.raceId != null && equip.raceId != 0 && checkGroupEquip(equip)" v-on:click.left="clickEquip(equip)">
+                        <img :src="equip.imagePath" />
                     </div>
                 </div>
                 <div class="chess-list">
-                    <div class="weaponBtn weapon" :title="weapon.title" :data-weaponId="weapon.equipId" v-for="(weapon,index) in equipArr" v-if="weapon.jobId != null && weapon.jobId != 0 && checkGroupWeapon(weapon)" v-on:click.left="clickWeapon(weapon)">
-                        <img :src="weapon.imagePath" />
+                    <div class="equipBtn equip" :title="equip.title" :data-equipId="equip.equipId" v-for="(equip,index) in equipArr" v-if="equip.jobId != null && equip.jobId != 0 && checkGroupEquip(equip)" v-on:click.left="clickEquip(equip)">
+                        <img :src="equip.imagePath" />
                     </div>
                 </div>
                 <div class="modal-footer">
@@ -193,25 +193,23 @@ https://lol.qq.com/act/a20200917tftset4/index.html
                 <span class="large-title">最优阵容</span>
                 <div v-for="army in chickenArmy" class="team_group">
                     <!--英雄列表-->
-                    <div class="chess-list" style="min-width: 570px;">>
-                        <div v-for="chess in army.chess" class="chess_head" :class="'price_' + chess.price">
-                            <div class="chess" :class="'hi_'+chess.TFTID" :data-chessId="chess.chessId" :title="chess.description">
+                        <div class="chess-list" style="min-width: 570px;">>
+                            <div v-for="chess in army.chess" class="chess_head" :class="'price_' + chess.price">
+                                <div class="chess" :class="'hi_'+chess.TFTID" :data-chessId="chess.chessId" :title="chess.description">
+                                </div>
+                                <div class="cost_tag">{{chess.price}}</div>
                             </div>
-                            <div class="cost_tag">{{chess.price}}</div>
                         </div>
-                    </div>
-                    <div class="result-jiban" style="min-width: 570px;">
-                        <div v-for="(item,index) in army.group" :class="item.classStr">
-                            <img :src="item.imagePath" />
-                            <span>{{item.count}}{{item.name}}</span>
+                        <div class="result-jiban" style="min-width: 570px;">
+                            <div v-for="(item,index) in army.group" :class="item.classStr">
+                                <img :src="item.imagePath" />
+                                <span>{{item.count}}{{item.name}}</span>
+                            </div>
                         </div>
-                    </div>
-                    <div class="chess-list" style="min-width: 570px;">
-                         <button type="button" class="btn btn-secondary" disabled="disabled">分数:{{army.score}}</button>
-<!--                        <button type="button" class="btn btn-info" disabled="disabled">强度:{{army.op}}</button>-->
-                        <button v-if="army.tips" type="button" class="btn btn-success" disabled="disabled">{{army.tips}}</button>
-                    </div>
-
+                        <div class="chess-list" style="min-width: 570px;">
+                            <button type="button" class="btn btn-secondary" disabled="disabled">分数:{{army.score}}</button>
+                            <button v-if="army.tips" type="button" class="btn btn-success" disabled="disabled">{{army.tips}}</button>
+                        </div>
                 </div>
             </div>
 
@@ -246,7 +244,7 @@ https://lol.qq.com/act/a20200917tftset4/index.html
             <p class="title">推荐装备</p>
             <div class="champions">
                 {{each equip as value index}}
-                <img class="weaponBox" src="{{value}}" />
+                <img class="equipBox" src="{{value}}" />
                 {{/each}}
             </div>
         </div>
@@ -264,13 +262,13 @@ https://lol.qq.com/act/a20200917tftset4/index.html
         </div>
     </script>
     <!-- 转职装备详情模板 -->
-    <script id="weaponTemp" type="text/html">
+    <script id="equipTemp" type="text/html">
         <p class="title">装备名称</p>
             <p style="color:#fff;">{{name}}</p>
         <p class="title">装备配方</p>
             <div class="champions">
                 {{each formulaArr as value index}}
-                <img class="weaponBox" src="{{value.imagePath}}" title="{{value.name}}" />
+                <img class="equipBox" src="{{value.imagePath}}" title="{{value.name}}" />
                 {{/each}}
             </div>
     </script>
@@ -278,9 +276,11 @@ https://lol.qq.com/act/a20200917tftset4/index.html
     <script src="https://cdn.staticfile.org/jquery/3.2.1/jquery.min.js"></script>
     <!-- 包括所有已编译的插件 -->
     <script src="https://cdn.staticfile.org/twitter-bootstrap/4.3.1/js/bootstrap.min.js"></script>
-    <!-- <script src="https://cdn.bootcss.com/vue/2.6.10/vue.min.js"></script> -->
-    <script src="https://cdn.staticfile.org/vue/2.4.2/vue.min.js"></script>
-    <!-- <script src="https://cdn.staticfile.org/vue-resource/1.5.1/vue-resource.min.js"></script> -->
+    <?php if(SEN::isDevelop()){?>
+        <script src="https://cdn.jsdelivr.net/npm/vue@2/dist/vue.js"></script>
+    <?php } else {?>
+        <script src="https://cdn.jsdelivr.net/npm/vue@2"></script>
+    <?php }?>
     <!--模板框架-->
     <script src="//ossweb-img.qq.com/images/js/ArtTemplate.js"></script>
     <!--配置-->

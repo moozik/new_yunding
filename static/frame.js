@@ -1,20 +1,23 @@
 //最大武器个数
-const WEAPON_MAX = 10;
+const EQUIP_MAX = 10;
 //最大输入队伍成员数
 const IN_HERO_MAX = 10;
 const CHESS_PRICE_FALSE = {1: false, 2: false, 3: false, 4: false, 5: false};
 const CHESS_PRICE_DEFAULT = {1: true, 2: true, 3: true, 4: false, 5: false};
-const levelArr={"1":[1],"2":[1],"3":[1,2],"4":[1,2,3],"5":[1,2,3,4],"6":[1,2,3,4],"7":[1,2,3,4,5],"8":[1,2,3,4,5],"9":[1,2,3,4,5],"10":[1,2,3,4,5]};
-window.DATA_race = {};
-window.DATA_job = {};
-window.DATA_Ggroup = {};
-window.equipId2equip = {};
+//不同级别对应能刷出的英雄价格
+const LEVEL_MAP={"1":[1],"2":[1],"3":[1,2],"4":[1,2,3],"5":[1,2,3,4],"6":[1,2,3,4],"7":[1,2,3,4,5],"8":[1,2,3,4,5],"9":[1,2,3,4,5],"10":[1,2,3,4,5]};
+// Set5.5转职纹章id列表，配置在https://lol.qq.com/tft/js/main.js?v=20210722
+const transJobEquipIdList = [533, 563, 575, 593, 599, 605, 609, 610, 611, 612, 613, 614, 615, 616, 617, 618, 619, 620, 621, 622, 623, 624];
+const DATA_race = {};
+const DATA_job = {};
+const DATA_Ggroup = {};
+const DATA_Equip = {};
 const GAME_URL = "//game.gtimg.cn/images/lol/act/img/tft/js";
 $.getJSON({
     url: GAME_URL + "/chess.js",
     async: false,
     success: function (ret) {
-        window.DATA_chess = ret;
+        DATA_chess = ret;
         $.ajax({
             type: "POST",
             url: "index/CheckVersion",
@@ -33,8 +36,8 @@ $.getJSON({
     success: function (ret) {
         for (let i in ret.data) {
             ret.data[i].Ggroup = parseInt(ret.data[i].raceId);
-            window.DATA_race[ret.data[i].raceId] = ret.data[i];
-            window.DATA_Ggroup[ret.data[i].raceId] = ret.data[i];
+            DATA_race[ret.data[i].raceId] = ret.data[i];
+            DATA_Ggroup[ret.data[i].raceId] = ret.data[i];
         }
     },
 });
@@ -44,8 +47,8 @@ $.getJSON({
     success: function (ret) {
         for (let i in ret.data) {
             ret.data[i].Ggroup = ret.data[i].jobId + 100;
-            window.DATA_job[ret.data[i].jobId] = ret.data[i];
-            window.DATA_Ggroup[parseInt(ret.data[i].jobId) + 100] = ret.data[i];
+            DATA_job[ret.data[i].jobId] = ret.data[i];
+            DATA_Ggroup[parseInt(ret.data[i].jobId) + 100] = ret.data[i];
         }
     },
 });
@@ -53,11 +56,11 @@ $.getJSON({
     url: GAME_URL + "/equip.js",
     async: false,
     success: function (ret) {
-        window.DATA_equip = ret;
+        DATA_equip = ret;
         for (let i in ret.data) {
             if (ret.data[i].equipId < 500)
                 continue;
-            window.equipId2equip[ret.data[i].equipId] = ret.data[i];
+            DATA_Equip[ret.data[i].equipId] = ret.data[i];
         }
     },
 });
@@ -94,12 +97,10 @@ var vm = new Vue({
         //装备
         equipArr: function () {
             const ret = {};
-            let equip, job, proStatus;
-            // Set5.5转职纹章id列表，配置在https://lol.qq.com/tft/js/main.js?v=20210722
-            const transJobEquipIdList = [533, 563, 575, 593, 599, 605, 609, 610, 611, 612, 613, 614, 615, 616, 617, 618, 619, 620, 621, 622, 623, 624];
+            let equip, job;
             for (let i in DATA_equip.data) {
                 equip = DATA_equip.data[i];
-                //排除老版本装备
+                //排除老版本装备 冗余
                 if (equip.equipId < 500) {
                     continue;
                 }
@@ -127,7 +128,7 @@ var vm = new Vue({
                 if (equip.formula !== "") {
                     var formula = '';
                     equip.formula.split(',').forEach((e, i) => {
-                        formula += window.equipId2equip[e].name + ' ';
+                        formula += DATA_Equip[e].name + ' ';
                     });
                     equip.title += "\n配方：" + formula;
                 }
@@ -157,9 +158,9 @@ var vm = new Vue({
         //吃鸡阵容
         chickenArmy: [], //最后结果
         //转职装备
-        weaponList: [],
+        equipList: [],
         //转职装备 临时存储
-        // weaponListCache: [],
+        // equipListCache: [],
     },
     methods: {
         //判断指定英雄是否属于当前组别
@@ -185,25 +186,25 @@ var vm = new Vue({
             return true;
         },
         //判断指定羁绊是否展示
-        checkGroupWeapon: function (weapon) {
+        checkGroupEquip: function (equip) {
             //屏蔽掉老版本
-            if (weapon.equipId < 500) {
+            if (equip.equipId < 500) {
                 return false;
             }
             //屏蔽非转职装备
-            if (weapon.raceId === '0' && weapon.jobId === '0') {
+            if (equip.raceId === '0' && equip.jobId === '0') {
                 return false;
             }
             if (this.groupCheckedType === '') {
                 return true;
             } else {
                 if (this.groupCheckedType === 'job') {
-                    if (weapon.jobId === this.groupCheckedId) {
+                    if (equip.jobId === this.groupCheckedId) {
                         return true;
                     }
                 }
                 if (this.groupCheckedType === 'race') {
-                    if (weapon.raceId === this.groupCheckedId) {
+                    if (equip.raceId === this.groupCheckedId) {
                         return true;
                     }
                 }
@@ -275,14 +276,14 @@ var vm = new Vue({
             }
         },
         //绑定转职装备
-        clickWeapon: function (weapon) {
-            if (this.weaponList.length < WEAPON_MAX) {
-                this.weaponList.push(weapon);
+        clickEquip: function (equip) {
+            if (this.equipList.length < EQUIP_MAX) {
+                this.equipList.push(equip);
             }
         },
         //删除转职装备
-        delWeapon: function (index) {
-            this.weaponList.splice(index, 1);
+        delEquip: function (index) {
+            this.equipList.splice(index, 1);
         },
         //修改金额
         forCountBtn: function (forCount) {
@@ -298,8 +299,8 @@ var vm = new Vue({
                 teamCount = this.inChessList.length + this.forCount;
             }
             const ret = CHESS_PRICE_FALSE;
-            for (let i in levelArr[teamCount]) {
-                ret[levelArr[teamCount][i]] = true;
+            for (let i in LEVEL_MAP[teamCount]) {
+                ret[LEVEL_MAP[teamCount][i]] = true;
             }
             this.chessValue = ret;
         },
@@ -315,22 +316,11 @@ var vm = new Vue({
             //     this.chessValue[i] = false;
             // }
             ret = CHESS_PRICE_FALSE;
-            for (let i in levelArr[this.teamCount]) {
-                ret[levelArr[this.teamCount][i]] = true;
+            for (let i in LEVEL_MAP[this.teamCount]) {
+                ret[LEVEL_MAP[this.teamCount][i]] = true;
             }
             this.chessValue = ret;
         },
-        // saveNiceTeam: function (chessList, index) {
-        //     chessList.weapon = this.weaponListCache;
-        //     chessList.teamname = $('.teamname' + index).val();
-        //     $.post(
-        //         "/yunding/yunding.php?action=niceTeam",
-        //         {niceTeam: JSON.stringify(chessList)},
-        //         function (result) {
-        //             alert(result);
-        //         }
-        //     );
-        // },
         //判断指定英雄是否在指定数组中 不存在返回false，存在返回下标
         chessInArray: function (chess, arr) {
             key = false;
@@ -354,7 +344,7 @@ var vm = new Vue({
             this.inChessList.splice(0);
             this.chessBanList.splice(0);
             this.chickenArmy.splice(0);
-            this.weaponList.splice(0);
+            this.equipList.splice(0);
             this.groupCheckedId = 0;
             this.groupCheckedType = '';
             this.forCount = 3;
@@ -391,7 +381,7 @@ $(document).on("mouseenter", ".chess", function () {
     if (typeof ret.recEquip != "undefined") {
         const tmp = ret.recEquip.split(",");
         tmp.forEach((equipId, index) => {
-            ret.equip.push(window.equipId2equip[equipId].imagePath);
+            ret.equip.push(DATA_Equip[equipId].imagePath);
         });
     }
     $("#hero-box").html(template("heroTemp", ret));
@@ -400,22 +390,22 @@ $(document).on("mouseenter", ".chess", function () {
 /**
  * 鼠标移入武器图标
  */
-$(document).on("mouseenter", ".weaponBtn", function () {
+$(document).on("mouseenter", ".equipBtn", function () {
     $("#app > div:nth-child(2) > div:nth-child(1) > div").css("display", "none");
-    var weaponObj = window.equipId2equip[this.dataset.weaponid];
-    weaponObj.formulaArr = [];
-    if (weaponObj.formula != "") {
-        weaponObj.formula.split(',').forEach((e, i) => {
-            weaponObj.formulaArr.push(window.equipId2equip[e]);
+    var equipObj = DATA_Equip[this.dataset.equipid];
+    equipObj.formulaArr = [];
+    if (equipObj.formula != "") {
+        equipObj.formula.split(',').forEach((e, i) => {
+            equipObj.formulaArr.push(DATA_Equip[e]);
         });
     }
-    $("#weapon-box").html(template("weaponTemp", weaponObj));
-    $("#weapon-box").css("display", "block");
+    $("#equip-box").html(template("equipTemp", equipObj));
+    $("#equip-box").css("display", "block");
 });
 $("#runBtn").click(function () {
     //删除原有数据
     vm.chickenArmy.splice(0);
-    // vm.weaponListCache = vm.weaponList;
+    // vm.equipListCache = vm.equipList;
 
     //拼接数据
     const getData = {
@@ -426,7 +416,8 @@ $("#runBtn").click(function () {
         forCount: vm.forCount,
         inChess: [],
         banChess: [],
-        weapon: [],
+        equip: [],
+        tagPlus: [],
         costList: [],
     };
     vm.inChessList.forEach((e) => {
@@ -435,14 +426,15 @@ $("#runBtn").click(function () {
     vm.chessBanList.forEach((e) => {
         getData.banChess.push(parseInt(e.chessId));
     });
-    vm.weaponList.forEach((e) => {
+    vm.equipList.forEach((e) => {
+        getData.equip.push(parseInt(e.equipId));
         if (e.jobId !== '0' && e.jobId !== null) {
-            getData.weapon.push(parseInt(e.jobId) + 100);
+            getData.tagPlus.push(parseInt(e.jobId) + 100);
         } else {
-            getData.weapon.push(parseInt(e.raceId));
+            getData.tagPlus.push(parseInt(e.raceId));
         }
     });
-    for (var i in vm.chessValue) {
+    for (let i in vm.chessValue) {
         if (vm.chessValue[i]) {
             getData.costList.push(parseInt(i));
         }
@@ -481,8 +473,8 @@ function displayPage(teamArrObj) {
             for (const GId in teamObj.group[key]) {
                 classStr = 'grade' + key;
                 group.push({
-                    name: window.DATA_Ggroup[GId].name,
-                    imagePath: window.DATA_Ggroup[GId].imagePath,
+                    name: DATA_Ggroup[GId].name,
+                    imagePath: DATA_Ggroup[GId].imagePath,
                     gid: GId,
                     id: (GId > 100) ? (GId - 100) : GId,
                     count: teamObj.group[key][GId],
@@ -495,7 +487,6 @@ function displayPage(teamArrObj) {
             group: group,
             score: teamObj.score,
             tips: teamObj.tips,
-            op: teamObj.op,
         });
     });
 }

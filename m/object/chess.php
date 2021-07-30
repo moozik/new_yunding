@@ -39,7 +39,7 @@ class m_object_chess{
      * 
      * @var array
      */
-    public $equipIds = [];
+//    public $equipIds = [];
     
     /**
      * @param $chessObj

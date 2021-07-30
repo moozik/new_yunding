@@ -37,9 +37,20 @@ class m_object_teamCalcReq {
      */
     public $chessArrObj = [];
     /**
-     * 转职装备 Gid
+     * 转职装备
+     * 原始数据
      */
-    public $weapon = [];
+    public $equip = [];
+    /**
+     * 转职装备
+     * 原始数据
+     */
+    public $tagPlus = [];
+    /**
+     * 转职装备
+     * 原始数据
+     */
+    public $tagPlusMap = [];
     /**
      * 棋子价格限制
      */
@@ -59,7 +70,7 @@ class m_object_teamCalcReq {
     /**
      * 空闲位置个数
      */
-    public $freePosition = 0;
+//    public $freePosition = 0;
 
     function __construct($input) {
         //初始化数据源
@@ -91,8 +102,11 @@ class m_object_teamCalcReq {
         if (isset($input->banChess)) {
             $this->banChess = lib_tools::arrIntval($input->banChess);
         }
-        if (isset($input->weapon)) {
-            $this->weapon = lib_tools::arrIntval($input->weapon);
+        if (isset($input->equip)) {
+            $this->equip = lib_tools::arrIntval($input->equip);
+        }
+        if (isset($input->tagPlus)) {
+            $this->tagPlus = lib_tools::arrIntval($input->tagPlus);
         }
         if (isset($input->costList)) {
             $this->costList = lib_tools::arrIntval($input->costList);
@@ -117,21 +131,21 @@ class m_object_teamCalcReq {
         }
     }
 
-    public function dealWeaponPre() {
+    public function dealEquipPre() {
         //转职装备预处理
-        if (!empty($this->weapon)) {
+        if (!empty($this->tagPlus)) {
             //处理转职装备
             // if(count($this->weapon) > lib_conf::IN_WEAPON_MAX){
             //     //超过最大值的装备被删除
             //     $this->weapon = array_slice($this->weapon, 0, lib_conf::IN_WEAPON_MAX);
             // }
             //groupid2count映射
-            $weaponGroup2Count = [];
-            foreach ($this->weapon as $Gid) {
-                lib_number::addOrDefault($weaponGroup2Count[$Gid], 1);
+            $equipGroup2Count = [];
+            foreach ($this->tagPlus as $Gid) {
+                lib_number::addOrDefault($equipGroup2Count[$Gid], 1);
             }
-            $this->weapon = $weaponGroup2Count;
-            lib_log::debug('$this->weapon', $this->weapon);
+            $this->tagPlusMap = $equipGroup2Count;
+            //lib_log::debug('$this->equip', $this->equip);
         }
     }
 

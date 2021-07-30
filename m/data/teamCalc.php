@@ -448,7 +448,7 @@ class m_data_teamCalc {
         // if(0 !== $this->req->theOne){
         //     lib_number::addOrDefault($this->inputGid2count[$this->req->theOne], 1);
         // }
-        foreach ($this->req->weapon as $Gid) {
+        foreach ($this->req->equip as $Gid) {
             lib_number::addCount(__FUNCTION__);
             lib_number::addOrDefault($this->inputGid2count[$Gid], 1);
         }
@@ -476,7 +476,7 @@ class m_data_teamCalc {
         lib_log::trace('calcInput', print_r($input, true));
         $this->req = new m_object_teamCalcReq($input);
         $this->req->dealCostList();
-        $this->req->dealWeaponPre();
+        $this->req->dealEquipPre();
         $this->req->getFreeChess();
     }
 }

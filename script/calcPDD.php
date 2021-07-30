@@ -66,7 +66,7 @@ class calcPdd extends m_data_teamCalcOld{
             
 
             //处理转职装备 $teamListObj->weapon
-            $this->dealWeapon($teamListObj);
+            $this->dealEquip($teamListObj);
             //遍历羁绊计算羁绊个数
             foreach($teamListObj->group as $Gid => $count){
                 $Gcount = self::$GidLevelMap[$Gid][$count];
@@ -108,7 +108,7 @@ class calcPdd extends m_data_teamCalcOld{
         lib_log::trace('calcInput', print_r($input, true));
         $this->req = new m_object_teamCalcReq($input);
         // $this->req->dealCostList();
-        $this->req->dealWeaponPre();
+        $this->req->dealEquipPre();
         $this->req->getFreeChess();
     }
 }
