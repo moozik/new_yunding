@@ -14,10 +14,10 @@ class m_object_teamList {
      * @var array[]
      */
     public $resultGroup = [
-        0 => [],
         1 => [],
         2 => [],
         3 => [],
+        4 => [],
     ];
 
     public $score = 0;

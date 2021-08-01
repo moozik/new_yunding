@@ -131,13 +131,11 @@ class m_data_teamCalcOld {
                 if ($Gid == 113 && $count == 2) {
                     continue;
                 }
-                //计算羁绊等级,根据 $Gcount 有效个数
+                //计算羁绊级别,根据 $Gcount 有效个数 羁绊等级为1234
                 $opLevel = lib_conf::GidOPLevel($Gid, $Gcount);
-//                if ('' === $opLevel || null === $opLevel) {
-//                    lib_log::debug('GidOPLevel', [$teamListObj->chessArrObj, $Gid, $Gcount, $opLevel]);
-//                }
                 $teamListObj->resultGroup[$opLevel][$Gid] = $Gcount;
-                //(羁绊级别 + 1) * 羁绊个数 = 羁绊分数
+                // 羁绊级别 * 羁绊个数 = 羁绊分数
+                // 会根据 羁绊分数 来计算阵容强度
                 $teamListObj->score += $opLevel * $Gcount;
             }
             if (!empty($teamListObj->tips[1])) {
