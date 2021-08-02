@@ -8,7 +8,7 @@ class c_index extends lib_controlerBase {
         m_dao_race::init();
         lib_log::access("index",json_encode($_SERVER));
         SEN::display_page('index', [
-            'timeStamp' => strtotime(m_dao_race::$time),
+            'timeStamp' => strtotime(m_dao_race::$time) + 1627872224,
         ]);
     }
 
