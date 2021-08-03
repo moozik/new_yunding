@@ -87,8 +87,8 @@ class lib_log {
     }
 
     private function LogMore($logLev, $name, $msg, $file) {
-        if (file_exists(iplocation::$filename)) {
-            $ipLocation = new iplocation();
+        if (file_exists(lib_iplocation::$filename)) {
+            $ipLocation = new lib_iplocation();
             $position = $ipLocation->getlocation($this->ip);
         }
         error_log(

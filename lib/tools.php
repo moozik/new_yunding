@@ -30,12 +30,12 @@ class lib_tools {
      * @param array $inArr
      * @param $count
      * @return yield
-     * @throws lib_fatalException
+     * @throws frame_fatalException
      */
     static function choseIterator(array $inArr, $count) {
         $inArrLen = count($inArr);
         if ($inArrLen < $count) {
-            throw new lib_fatalException(sprintf('inArr count error.inarr%s,count%s', lib_string::encode($inArr), $count));
+            throw new frame_fatalException(sprintf('inArr count error.inarr%s,count%s', lib_string::encode($inArr), $count));
         }
         if ($inArrLen === $count) {
             yield $inArr;
@@ -241,9 +241,9 @@ class lib_tools {
      */
     static function Gid2Name($Gid) {
         if ($Gid > 100) {
-            return m_dao_job::$data[$Gid - 100]->name;
+            return app_m_dao_job::$data[$Gid - 100]->name;
         } else {
-            return m_dao_race::$data[$Gid]->name;
+            return app_m_dao_race::$data[$Gid]->name;
         }
     }
 }
