@@ -2,7 +2,7 @@
 declare(strict_types=1);
 // ini_set("display_errors", "On");
 // error_reporting(E_ALL);
-require_once 'sen.php';
+require_once 'frame/sen.php';
 SEN::init();
 $routeInfo = SEN::getRoute();
 if (file_exists($routeInfo[0])) {
@@ -12,11 +12,9 @@ if (file_exists($routeInfo[0])) {
             define('ROUTE_CONTROLLER', $routeInfo[1]);
             define('ROUTE_ACTION', $routeInfo[2]);
             $className = $routeInfo[1];
-            // lib_log::debug("ROUTE_CONTROLER", ROUTE_CONTROLER);
-            // lib_log::debug("ROUTE_ACTION", ROUTE_ACTION);
             $obj = new $className();
             $obj->execute();
-        } catch (lib_fatalException $e) {
+        } catch (frame_fatalException $e) {
             //致命异常
             $fatalStr = sprintf("exception occured,errno:[%s], msg:[%s] \n#  %s(%s) \n%s",
                 $e->getCode(), $e->getMessage(), $e->getFile(), $e->getLine(), $e->getTraceAsString());

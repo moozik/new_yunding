@@ -11,14 +11,6 @@ class lib_array {
         }, $arr));
     }
 
-    static function append(&$arr, $val) {
-        if (is_array($arr)) {
-            $arr[] = $val;
-        } else {
-            $arr = [$val];
-        }
-    }
-
     /**
      * 排序函数
      *

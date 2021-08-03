@@ -1,8 +1,8 @@
 .vs/
 .vscode/
 .idea/
-cache/
 log/
+/data/
 test*
 *.dat
 *.log
@@ -13,4 +13,3 @@ test*
 *.json
 *.tar
 test.php
-static/define.js
