@@ -4,4 +4,4 @@
 3. 最多计算三个空缺位置的最佳阵容，以打分形式逆序排列
 4. 支持ban英雄和转职装备
 
-在线地址:https://yunding.moozik.cn
+在线地址:https://m00zik.com/yunding/
