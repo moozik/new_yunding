@@ -81,7 +81,7 @@ https://lol.qq.com/act/a20200917tftset4/index.html
         </div>
         <div class="row clearfix">
             <div class="col-md-4 column">
-                <span class="large-title">已选英雄</span><span>(英雄池左键添加，再次点击取消)</span>
+                <span class="large-title">已选英雄(人口:{{positionCount}})</span><span>(英雄池左键添加，再次点击取消)</span>
                 <div class="lineTwo" style="min-height: 50px;">
                     <div class="chess-list">
                         <!-- 选用英雄列表 -->
@@ -172,15 +172,15 @@ https://lol.qq.com/act/a20200917tftset4/index.html
                 </div>
                 <span class="large-title" title="装备可以重复选择，点击左侧'已选装备'可以取消选择。">转职装备</span>
                 <div class="chess-list">
-                    <div class="equipBtn equip" :title="equip.title" :data-equipId="equip.equipId" v-for="(equip,index) in equipArr" v-if="equip.raceId != null && equip.raceId != 0 && checkGroupEquip(equip)" v-on:click.left="clickEquip(equip)">
+                    <div class="equipBtn equip" :title="equip.title" :data-equipId="equip.equipId" v-for="(equip,index) in equipArr" v-if="checkGroupEquip(equip)" v-on:click.left="clickEquip(equip)">
                         <img :src="equip.imagePath" />
                     </div>
                 </div>
-                <div class="chess-list">
+                <!-- <div class="chess-list">
                     <div class="equipBtn equip" :title="equip.title" :data-equipId="equip.equipId" v-for="(equip,index) in equipArr" v-if="equip.jobId != null && equip.jobId != 0 && checkGroupEquip(equip)" v-on:click.left="clickEquip(equip)">
                         <img :src="equip.imagePath" />
                     </div>
-                </div>
+                </div> -->
                 <div class="modal-footer">
                     <button type="button" class="btn btn-primary btn-lg" id="runBtn"><i class="fa fa-bomb"></i> 计算</button>
                     <button type="button" class="btn btn-secondary btn-lg" v-on:click="clearBtn()"><i class="fa fa-trash-o fa-lg"></i> 清空</button>
@@ -254,10 +254,9 @@ https://lol.qq.com/act/a20200917tftset4/index.html
             <div class="info">
                 <img src="{{skillImage}}" alt="" />
                 <div class="name">
-                    <span title="{{skillIntroduce}}">{{skillName}}</span>
-                    <!-- <span>{{skillType}}</span> -->
+                    <span>{{skillName}}</span>
                 </div>
-                <!-- <p class="description">{{skillIntroduce}}</p> -->
+                <p class="description">{{skillDetail}}</p>
             </div>
         </div>
     </script>

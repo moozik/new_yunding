@@ -32,8 +32,7 @@ class SEN {
         'define' => 'define.js',
         'frame' => 'frame.js',
         'css' => 'css.css',
-    ];
-    const DATA_FILE = [
+        
         'chess' => 'chess.json',
         'race' => 'race.json',
         'job' => 'job.json',
@@ -134,9 +133,6 @@ class SEN {
 
     static function static_path($name) {
         return implode(DIRECTORY_SEPARATOR, [ROOT_DIR, self::STATIC_DIR, self::STATIC_FILE[$name]]);
-    }
-    static function data_path($name) {
-        return implode(DIRECTORY_SEPARATOR, [ROOT_DIR, self::DATA_DIR, self::DATA_FILE[$name]]);
     }
 
     static function ico_url() {

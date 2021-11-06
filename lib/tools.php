@@ -211,7 +211,6 @@ class lib_tools {
         if (!array_key_exists(1, $ret)) {
             $ret[1] = 0;
         }
-        // for($i = 2; $i < $count; $i++){
         for ($i = 2; $i < 12; $i++) {
             if (!array_key_exists($i, $ret)) {
                 $ret[$i] = $ret[$i - 1];

@@ -15,6 +15,9 @@ class app_m_data_teamCalcOld {
      * job race 羁绊个数对应关系数组
      */
     static public $GidLevelMap = [];
+    private $debugData = [
+        'teamListCount' => 0,
+    ];
 
     function __construct() {
         //初始化dao
@@ -30,12 +33,7 @@ class app_m_data_teamCalcOld {
         if(!SEN::isDevelop()){
             return [];
         }
-        return [
-            'req' => $this->req,
-            'equip' => app_m_dao_equip::$dataByGid,
-            'equip2' => app_m_dao_equip::$data,
-            'chess' => app_m_dao_chess::$data,
-        ];
+        return $this->debugData;
     }
 
     function forCountNew(): Generator {
@@ -55,20 +53,36 @@ class app_m_data_teamCalcOld {
         }
 
         foreach ($this->req->freeChessArrObj as $k1 => $chessObj_1) {
-            if ($this->req->forCount == 1) {
+            if ($this->req->forCount === 1) {
+                //1人口无法匹配巨像
+                if($chessObj_1->isTheFat()){
+                    continue;
+                }
                 yield (array_merge($this->req->inChessObj, [$chessObj_1]));
+                continue;
+            }
+            //2人口匹配巨像直接返回
+            if($chessObj_1->isTheFat()){
                 continue;
             }
             foreach ($this->req->freeChessArrObj as $k2 => $chessObj_2) {
                 if ($k2 <= $k1) {
                     continue;
                 }
-                if ($this->req->forCount == 2) {
+                if ($this->req->forCount === 2) {
+                    //2人口只在第一个位置匹配巨像
+                    if($chessObj_2->isTheFat()){
+                        continue;
+                    }
                     yield (array_merge($this->req->inChessObj, [$chessObj_1, $chessObj_2]));
                     continue;
                 }
                 foreach ($this->req->freeChessArrObj as $k3 => $chessObj_3) {
                     if ($k3 <= $k2) {
+                        continue;
+                    }
+                    //第三个位置不匹配巨像
+                    if($chessObj_3->isTheFat()){
                         continue;
                     }
                     yield (array_merge($this->req->inChessObj, [$chessObj_1, $chessObj_2, $chessObj_3]));
@@ -90,10 +104,7 @@ class app_m_data_teamCalcOld {
         //筛选出羁绊价值最高的组合
         foreach ($this->forCountOld() as $teamListParam) {
             $teamListObj = new app_m_object_teamList($teamListParam);
-            //天选之人
-            // if($this->req->theOne != 0){
-            //     $teamListObj->group[$this->req->theOne] = 1;
-            // }
+            //初步判断是否ok
 
             //给当前羁绊计数
             foreach ($teamListObj->chessArrObj as $chessObj) {
@@ -106,23 +117,24 @@ class app_m_data_teamCalcOld {
             }
             //处理转职装备
             $this->dealEquip($teamListObj);
+            //浪费的羁绊数量，用于剪枝
+            $wastCount = 0;
             //遍历羁绊计算羁绊个数
             foreach ($teamListObj->group as $Gid => $count) {
                 //形成羁绊的有效英雄个数 类似3剧毒和4剧毒中，3个是有效的 $groupValue=3 $count=4
                 $Glevel = &self::$GidLevelMap[$Gid];
                 $Gcount = $Glevel[$count];
+                //计算浪费羁绊的数量
+                $wastCount += $count - $Gcount;
                 //如果没有形成羁绊，那么删除当前阵营
                 if (0 == $Gcount) {
                     unset($teamListObj->group[$Gid]);
+                    //TODO refactry 放到最后
                     if (0 != $Glevel[$count + 1]) {
                         //如果数量+1buff不为0，则加入tips
                         $teamListObj->tips[1] .= '[' . ($count + 1) . app_m_data_Factory::getGid($Gid)->name . '],';
                     }
                     //当前羁绊不成形
-                    continue;
-                }
-                //神王特殊羁绊，两个神王不能生效
-                if ($Gid == 113 && $count == 2) {
                     continue;
                 }
                 //计算羁绊级别,根据 $Gcount 有效个数 羁绊等级为1234
@@ -132,15 +144,15 @@ class app_m_data_teamCalcOld {
                 // 会根据 羁绊分数 来计算阵容强度
                 $teamListObj->score += $opLevel * $Gcount;
             }
-            if (!empty($teamListObj->tips[1])) {
-                $teamListObj->tips[1] = '即将成型:' . trim($teamListObj->tips[1], ',') . ';';
-            }
-
             //如果普通羁绊和顶级羁绊都为空 那么跳出 20191109修复bug：之判断了普通羁绊没判断顶级羁绊
-            if (empty($teamListObj->resultGroup)) {
+            // if (empty($teamListObj->resultGroup)) {
+            if ($this->req->forCount != 0 && $wastCount > $this->req->teamChessCount) {
                 //释放
                 unset($teamListObj);
                 continue;
+            }
+            if (!empty($teamListObj->tips[1])) {
+                $teamListObj->tips[1] = '即将成型:' . trim($teamListObj->tips[1], ',') . ';';
             }
 
             //阵容价值=棋子价值+羁绊价值
@@ -150,16 +162,17 @@ class app_m_data_teamCalcOld {
             $teamListObj->tips = implode('', $teamListObj->tips);
             $teamList[] = $teamListObj;
             //分段计算,优化计算量大的case
-             if (count($teamList) >= 20000) {
-                 $retData = array_merge($retData, $this->calcValueTeam($valueLog, $teamList));
-                 $teamList = [];
-                 $valueLog = [];
-             }
+            //  if (count($teamList) >= 20000) {
+            //      $retData = array_merge($retData, $this->calcValueTeam($valueLog, $teamList));
+            //      $teamList = [];
+            //      $valueLog = [];
+            //  }
         }
         if (!empty($teamList)) {
             $retData = array_merge($retData, $this->calcValueTeam($valueLog, $teamList));
         }
-        return array_slice(lib_array::sort($retData, 'score'), 0, usr_conf::SHOW_LIMIT);
+        $retData = array_slice(lib_array::sort($retData, 'score'), 0, usr_conf::SHOW_LIMIT);
+        return $retData;
     }
 
     /**
@@ -170,6 +183,7 @@ class app_m_data_teamCalcOld {
      * @return array
      */
     function calcValueTeam(&$valueLog, &$teamList) {
+        $this->debugData['teamListCount'] += count($teamList);
         //根据key降序
         krsort($valueLog);
         //取头部阵容
@@ -242,5 +256,6 @@ class app_m_data_teamCalcOld {
         $this->req->dealCostList();
         $this->req->dealEquipPre();
         $this->req->getFreeChess();
+        $this->debugData['req'] = $this->req;
     }
 }

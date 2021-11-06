@@ -2,12 +2,13 @@
 const EQUIP_MAX = 10;
 //最大输入队伍成员数
 const IN_HERO_MAX = 10;
+const BAN_HERO_MAX = 10;
 const CHESS_PRICE_FALSE = {1: false, 2: false, 3: false, 4: false, 5: false};
 const CHESS_PRICE_DEFAULT = {1: true, 2: true, 3: true, 4: false, 5: false};
 //不同级别对应能刷出的英雄价格
 const LEVEL_MAP={"1":[1],"2":[1],"3":[1,2],"4":[1,2,3],"5":[1,2,3,4],"6":[1,2,3,4],"7":[1,2,3,4,5],"8":[1,2,3,4,5],"9":[1,2,3,4,5],"10":[1,2,3,4,5]};
 // Set5.5转职纹章id列表，配置在https://lol.qq.com/tft/js/main.js?v=20210722
-const transJobEquipIdList = [533, 563, 575, 593, 599, 605, 609, 610, 611, 612, 613, 614, 615, 616, 617, 618, 619, 620, 621, 622, 623, 624];
+const transJobEquipIdList = [6001,6002,6003,6004,6005,6006,6007,6008];
 const DATA_race = {};
 const DATA_job = {};
 const DATA_Ggroup = {};
@@ -56,10 +57,9 @@ $.getJSON({
     url: GAME_URL + "/equip.js",
     async: false,
     success: function (ret) {
-        DATA_equip = ret;
         for (let i in ret.data) {
-            if (ret.data[i].equipId < 500)
-                continue;
+            // if (ret.data[i].equipId < 6000)
+            //     continue;
             DATA_Equip[ret.data[i].equipId] = ret.data[i];
         }
     },
@@ -98,12 +98,8 @@ var vm = new Vue({
         equipArr: function () {
             const ret = {};
             let equip, job;
-            for (let i in DATA_equip.data) {
-                equip = DATA_equip.data[i];
-                //排除老版本装备 冗余
-                if (equip.equipId < 500) {
-                    continue;
-                }
+            for (let i in DATA_Equip) {
+                equip = DATA_Equip[i];
                 if (transJobEquipIdList.indexOf(+equip.equipId) === -1) {
                     continue;
                 }
@@ -140,15 +136,14 @@ var vm = new Vue({
         //当前选中羁绊
         groupCheckedId: 0,
         groupCheckedType: '',
-
-        // theOneRace: 0,
-        // theOneJob: 0,
         //当前羁绊组合
         groupList: [],
         //被ban英雄
         chessBanList: [],
         //当前选中英雄
         inChessList: [],
+        //人口数量
+        positionCount : 0,
         //价值筛选
         chessValue: CHESS_PRICE_DEFAULT,
         //待计算个数
@@ -245,6 +240,10 @@ var vm = new Vue({
         //绑定英雄池左键
         clickChess: function (chess) {
             inChessList = this.inChessList;
+            if(chess.races == "约德尔大王"){
+                //不允许添加
+                return;
+            }
             //clickChess
             ret = this.chessInArray(chess, inChessList);
             if (ret !== false) {
@@ -254,11 +253,13 @@ var vm = new Vue({
                 //英雄不存在，添加
 
                 //10个英雄上限
-                if (inChessList.length === IN_HERO_MAX) return;
+                if (this.positionCount === IN_HERO_MAX) return;
 
                 //添加
                 inChessList.push(chess);
             }
+            //更新人口
+            this.positionCount = this.inChessListLength();
             //刷新金额限制
             if (this.teamCount === -1) {
                 this.updateCost();
@@ -272,6 +273,7 @@ var vm = new Vue({
             if (ret !== false) {
                 chessBanList.splice(ret, 1);
             } else {
+                if (this.chessBanList.length === BAN_HERO_MAX) return;
                 chessBanList.push(chess);
             }
         },
@@ -293,10 +295,10 @@ var vm = new Vue({
         //更新英雄价格区间
         updateCost: function () {
             let teamCount;
-            if (this.inChessList.length + this.forCount > 7) {
+            if (this.positionCount + this.forCount > 7) {
                 teamCount = 7;
             } else {
-                teamCount = this.inChessList.length + this.forCount;
+                teamCount = this.positionCount + this.forCount;
             }
             const ret = CHESS_PRICE_FALSE;
             for (let i in LEVEL_MAP[teamCount]) {
@@ -304,22 +306,15 @@ var vm = new Vue({
             }
             this.chessValue = ret;
         },
-        //更新费用限制 by 阵容数量
-        updateCostByTeamCount: function () {
-            // var teamCount;
-            // if (this.inChessList.length + this.forCount > 7) {
-            //     teamCount = 7;
-            // } else {
-            //     teamCount = this.inChessList.length + this.forCount;
-            // }
-            // for(let i in this.chessValue){
-            //     this.chessValue[i] = false;
-            // }
-            ret = CHESS_PRICE_FALSE;
-            for (let i in LEVEL_MAP[this.teamCount]) {
-                ret[LEVEL_MAP[this.teamCount][i]] = true;
-            }
-            this.chessValue = ret;
+        //获取英雄占用格子数 特殊考虑巨像
+        inChessListLength: function() {
+            var ret = this.inChessList.length;
+            this.inChessList.forEach(chess => {
+                if(chess.jobIds.indexOf("5") != -1){
+                    ret++;
+                }
+            });
+            return ret;
         },
         //判断指定英雄是否在指定数组中 不存在返回false，存在返回下标
         chessInArray: function (chess, arr) {
@@ -352,6 +347,17 @@ var vm = new Vue({
             // this.theOneJob = 0;
             // this.theOneRace = 0;
             this.chessValue = CHESS_PRICE_DEFAULT;
+            //更新人口
+            this.positionCount = 0;
+        },
+
+        //更新费用限制 by 阵容数量 debug中的功能
+        updateCostByTeamCount: function () {
+            ret = CHESS_PRICE_FALSE;
+            for (let i in LEVEL_MAP[this.teamCount]) {
+                ret[LEVEL_MAP[this.teamCount][i]] = true;
+            }
+            this.chessValue = ret;
         },
     },
 });
@@ -378,7 +384,7 @@ $(document).on("mouseenter", ".chess", function () {
     const chess = DATA_chess.data;
     const ret = vm.chessArr[$(this).attr("data-chessId")];
     ret.equip = [];
-    if (typeof ret.recEquip != "undefined") {
+    if (typeof ret.recEquip != "undefined" && ret.recEquip != "") {
         const tmp = ret.recEquip.split(",");
         tmp.forEach((equipId, index) => {
             ret.equip.push(DATA_Equip[equipId].imagePath);

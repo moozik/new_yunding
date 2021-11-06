@@ -12,7 +12,7 @@ class app_c_teamCalc extends frame_controlerBase {
      * @return void
      * @throws Exception
      */
-    function inputCheck()  {
+    function inputCheck() {
         if (empty($this->arrInput['data'])) {
             throw new Exception('param data empty.');
         }

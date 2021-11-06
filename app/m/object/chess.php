@@ -34,12 +34,6 @@ class app_m_object_chess{
      * races jobs + 100
      */
     public $Gids = [];
-    /**
-     * 推荐装备
-     * 
-     * @var array
-     */
-//    public $equipIds = [];
     
     /**
      * @param $chessObj
@@ -60,5 +54,12 @@ class app_m_object_chess{
         $this->jobIds = app_m_data_Factory::getJobArr(usr_def::job, $chessObj->jobIds);
         $this->Gids = $this->raceIds + $this->jobIds;
         // $this->equipIds = app_m_data_Factory::getArr(usr_def::equip, $chessObj->recEquip);
+    }
+
+    /**
+     * 巨像英雄
+     */
+    public function isTheFat(){
+        return $this->chessId === 3 || $this->chessId === 14 || $this->chessId === 31;
     }
 }

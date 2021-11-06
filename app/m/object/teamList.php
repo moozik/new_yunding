@@ -26,6 +26,12 @@ class app_m_object_teamList {
     public function __construct($chessArrObj) {
         $this->chessArrObj = $chessArrObj;
     }
+    /**
+     * 初步判断阵容强度
+     */
+    public function areYouOk() {
+
+    }
     public function getArr() {
         return [
             'group' => $this->resultGroup,

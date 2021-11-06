@@ -5,10 +5,6 @@
  */
 class app_m_object_teamCalcReq {
     /**
-     * 天选之人
-     */
-    // public $theOne = 0;
-    /**
      * 循环层数
      */
     public $forCount = 3;
@@ -177,16 +173,17 @@ class app_m_object_teamCalcReq {
         $this->freeChessArr = [];
         $this->freeChessArrObj = [];
         foreach (app_m_dao_chess::$data as $chess) {
+            //大魔王不匹配
+            if ($chess->chessId === 45){
+                continue;
+            }
             //inChess banChess
             if (in_array($chess->chessId, $this->inChess)
                 || in_array($chess->chessId, $this->banChess)) {
                 continue;
             }
             //costList
-            if ($chess->price < 6 && !in_array($chess->price, $this->costList)) {
-                continue;
-            }
-            if ($chess->price == 6 && !in_array(5, $this->costList)) {
+            if (!in_array($chess->price, $this->costList)) {
                 continue;
             }
             $this->freeChessArr[] = $chess->chessId;
