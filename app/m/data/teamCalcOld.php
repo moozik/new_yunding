@@ -20,11 +20,6 @@ class app_m_data_teamCalcOld {
     ];
 
     function __construct() {
-        //初始化dao
-        app_m_dao_race::init();
-        app_m_dao_job::init();
-        app_m_dao_chess::init();
-        app_m_dao_equip::init();
         self::$GidLevelMap = app_m_dao_job::$GidMap + app_m_dao_race::$GidMap;
         // lib_log::debug('GidLevelMap', self::$GidLevelMap);
     }

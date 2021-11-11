@@ -53,13 +53,17 @@ class SEN {
     static function init() {
         //自动加载 _分割
         spl_autoload_register(function ($className) {
-            // require_once str_replace('_', DIRECTORY_SEPARATOR, strtolower($className)) . '.php';
             require_once str_replace('_', DIRECTORY_SEPARATOR, $className) . '.php';
         });
         define('ROOT_DIR', realpath('.'));
         define('SITE_URL', dirname($_SERVER['REQUEST_SCHEME'] . '://' . $_SERVER['HTTP_HOST'] . $_SERVER['SCRIPT_NAME']));
         define('IS_DEVELOP', self::isDevelop());
         define('IS_MANAGER', self::isMe());
+        //初始化json数据
+        app_m_dao_chess::init();
+        app_m_dao_job::init();
+        app_m_dao_race::init();
+        app_m_dao_equip::init();
     }
 
     /**
@@ -95,10 +99,7 @@ class SEN {
      * @return bool
      */
     static function isDevelop() {
-        if ('moozik.cn' == $_SERVER['SERVER_NAME']) {
-            return false;
-        }
-        if ('yunding.moozik.cn' == $_SERVER['SERVER_NAME']) {
+        if (in_array($_SERVER['SERVER_NAME'], ['moozik.cn','m00zik.com','yunding.moozik.cn','yunding.m00zik.com'])){
             return false;
         }
         return true;
@@ -111,9 +112,12 @@ class SEN {
     static function isMe() {
         if (isset($_COOKIE['passwd']) && SEN::PASSWORD == $_COOKIE['passwd']) {
             return true;
-        } else {
-            return false;
         }
+        if (isset($_GET['login']) && SEN::PASSWORD === $_GET['login']) {
+            setcookie("passwd", SEN::PASSWORD, time() + 86400);
+            return true;
+        }
+        return false;
     }
 
     static function static_url($name) {
@@ -131,8 +135,21 @@ class SEN {
         require_once implode(DIRECTORY_SEPARATOR, [ROOT_DIR, 'app', 'v', $res[1], $name . '.php']);
     }
 
+    /**
+     * 静态文件路径获取
+     */
     static function static_path($name) {
         return implode(DIRECTORY_SEPARATOR, [ROOT_DIR, self::STATIC_DIR, self::STATIC_FILE[$name]]);
+    }
+    /**
+     * 数据文件路径获取
+     */
+    static function data_path($name) {
+        $dirPath = ROOT_DIR . DIRECTORY_SEPARATOR . self::DATA_DIR;
+        if (!is_dir($dirPath)){
+            mkdir($dirPath);
+        }
+        return $dirPath . DIRECTORY_SEPARATOR . self::STATIC_FILE[$name];
     }
 
     static function ico_url() {

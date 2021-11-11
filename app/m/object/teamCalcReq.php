@@ -69,10 +69,6 @@ class app_m_object_teamCalcReq {
 //    public $freePosition = 0;
 
     function __construct($input) {
-        //初始化数据源
-        app_m_dao_race::init();
-        app_m_dao_job::init();
-        app_m_dao_chess::init();
         // 原样参数
         // if(isset($input->theOne)){
         //     $this->theOne = intval($input->theOne);

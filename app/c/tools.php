@@ -3,15 +3,10 @@
 class app_c_tools extends frame_controlerBase {
     function __construct() {
         parent::__construct();
-        if (isset($_GET['login']) && SEN::PASSWORD === $_GET['login']) {
-            setcookie("passwd", SEN::PASSWORD, time() + 86400);
-        } else {
-            if (!IS_MANAGER) {
-                header("HTTP/1.1 404 Not Found");
-                exit;
-            }
+        if (!IS_MANAGER) {
+            header("HTTP/1.1 404 Not Found");
+            exit;
         }
-        app_m_dao_chess::init();
     }
 
     public function actionIndex() {
@@ -33,26 +28,6 @@ class app_c_tools extends frame_controlerBase {
             $this->{$action}();
             echo 'done.';
         }
-    }
-
-    static public function update() {
-        //强制更新json
-        app_m_dao_base::init(app_m_dao_chess::STATIC_KEY, true);
-        app_m_dao_base::init(app_m_dao_equip::STATIC_KEY, true);
-        app_m_dao_base::init(app_m_dao_race::STATIC_KEY, true);
-        app_m_dao_base::init(app_m_dao_job::STATIC_KEY, true);
-        app_m_dao_race::init();
-        app_m_dao_job::init();
-        //更新js
-        $fileContent =
-            '/*update time:' . date('YmdHis') . '*/' .
-            // 'var heroArr=' . SEN::encode(HERO::heroList()) . ';' .
-            // 'var groupArr=' . SEN::encode(HERO::groupList()) . ';' .
-            // 'var weaponArr=' . SEN::encode(HERO::weaponList()) . ';' .
-            'var levelArr=' . lib_string::encode(usr_conf::LEVEL2COST) . ';';
-        // 'var GLevel=' . lib_string::encode($this->getGMapLevel()) . ';';
-
-        file_put_contents(SEN::static_path('define'), $fileContent);
     }
 
     public function getGMapLevel() {
