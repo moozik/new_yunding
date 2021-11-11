@@ -4,7 +4,6 @@ class app_m_dao_base {
 
     static function init($staticKey, $ifUpdate = false) {
         $localPath = SEN::data_path($staticKey);
-        echo $localPath."\n";
         if (!$ifUpdate && file_exists($localPath)) {
             $res = file_get_contents($localPath);
             $dataObj = json_decode($res);
