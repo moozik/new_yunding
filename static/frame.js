@@ -8,12 +8,13 @@ const CHESS_PRICE_DEFAULT = {1: true, 2: true, 3: true, 4: false, 5: false};
 //不同级别对应能刷出的英雄价格
 const LEVEL_MAP={"1":[1],"2":[1],"3":[1,2],"4":[1,2,3],"5":[1,2,3,4],"6":[1,2,3,4],"7":[1,2,3,4,5],"8":[1,2,3,4,5],"9":[1,2,3,4,5],"10":[1,2,3,4,5]};
 // Set5.5转职纹章id列表，配置在https://lol.qq.com/tft/js/main.js?v=20210722
-const transJobEquipIdList = [6001,6002,6003,6004,6005,6006,6007,6008];
+const transJobEquipIdList = [6001,6002,6003,6004,6005,6006,6007,6008, 6011,6012,6013,6014,6015,6016,6017,6018,6019,6020];
 const DATA_race = {};
 const DATA_job = {};
 const DATA_Ggroup = {};
 const DATA_Equip = {};
 const GAME_URL = "//game.gtimg.cn/images/lol/act/img/tft/js";
+//http://game.gtimg.cn/images/lol/act/tftzlkauto/json/hexJson/hex.json 海克斯科技
 $.getJSON({
     url: GAME_URL + "/chess.js",
     async: false,
