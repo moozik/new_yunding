@@ -49,14 +49,6 @@ https://lol.qq.com/act/a20200917tftset4/index.html
             </div>
         </div>
         <div class="row clearfix">
-            <div class="col-md-4 column" style="height:340px;">
-                <div id="group-box" style="display: none;">
-                </div>
-                <div id="hero-box" style="display: none;">
-                </div>
-                <div id="equip-box" style="display: none;">
-                </div>
-            </div>
 
             <div class="col-md-4 column">
                 <span class="large-title">特质</span>
@@ -78,8 +70,55 @@ https://lol.qq.com/act/a20200917tftset4/index.html
                 </div>
             </div>
 
+            <div class="col-md-4 column" style="height:340px;">
+                <div id="group-box" style="display: none;">
+                </div>
+                <div id="hero-box" style="display: none;">
+                </div>
+                <div id="equip-box" style="display: none;">
+                </div>
+            </div>
+
+
         </div>
         <div class="row clearfix">
+            <div class="col-md-8 column">
+                <span class="large-title" title="左键添加到'已选阵容'，右键添加到'禁用英雄'。再次点击可以取消选择或取消禁用。">英雄池</span>
+                <!-- <p style="font-size:14px;">左键添加到'已选阵容'，右键添加到'禁用英雄'。再次点击可以取消选择或取消禁用。</p> -->
+                <div style="min-height:270px">
+                    <div class="chess-list" v-for="price in 6">
+                        <div v-for="chess in chessArr" v-if="checkGroupChess(chess, price)" class="chess_head" :class="'price_' + chess.price" v-on:click.left="clickChess(chess)" @contextmenu.prevent="banChess(chess)">
+                            <div class="chess" :class="'hi_'+chess.TFTID" :data-chessId="chess.chessId" :title="chess.description">
+                            </div>
+                            <div class="cost_tag">{{chess.price}}</div>
+                        </div>
+                    </div>
+                </div>
+                <span class="large-title" title="装备可以重复选择，点击左侧'已选装备'可以取消选择。">转职装备</span>
+                <div class="chess-list">
+                    <div class="equipBtn equip" :title="equip.title" :data-equipId="equip.equipId" v-for="(equip,index) in equipArr" v-if="equip.raceId != null && equip.raceId != 0 && checkGroupEquip(equip)" v-on:click.left="clickEquip(equip)">
+                        <img :src="equip.imagePath" />
+                    </div>
+                </div>
+                <div class="chess-list">
+                    <div class="equipBtn equip" :title="equip.title" :data-equipId="equip.equipId" v-for="(equip,index) in equipArr" v-if="equip.jobId != null && equip.jobId != 0 && checkGroupEquip(equip)" v-on:click.left="clickEquip(equip)">
+                        <img :src="equip.imagePath" />
+                    </div>
+                </div>
+
+                <span class="large-title" style="color:darkcyan;">海克斯(开发中)</span>
+                <span>海克斯之心:</span>
+                <select v-model="hexType1" class="form-control">
+                    <option value="">-</option>
+                    <option v-for="(item,index) in hexArr" :value="item.name" :title="item.description" v-if="item.type == 1">{{item.name}}</option>
+                </select>
+                <span>海克斯之魂:</span>
+                <select v-model="hexType3" class="form-control">
+                    <option value="">-</option>
+                    <option v-for="(item,index) in hexArr" :value="item.name" :title="item.description" v-if="item.type == 3">{{item.name}}</option>
+                </select>
+            </div>
+
             <div class="col-md-4 column">
                 <span class="large-title">已选英雄(人口:{{positionCount}})</span><span>(英雄池左键添加，再次点击取消)</span>
                 <div class="lineTwo" style="min-height: 50px;">
@@ -144,43 +183,6 @@ https://lol.qq.com/act/a20200917tftset4/index.html
                 <input type="range" class="form-control-range" v-model="teamCount" max="9" min="-1" step="1" v-on:mousemove="updateCostByTeamCount()">
                 <span> {{ teamCount }}个</span> -->
                 <?php }?>
-
-                <!-- <span class="large-title" style="color:darkcyan;">天选之人(羁绊+1)</span>
-                <span>特质:</span>
-                <select v-model="theOneRace" class="form-control" v-on:change="theOneJob = 0">
-                    <option value="0">-</option>
-                    <option v-for="(group,index) in raceArr" :value="parseInt(group.raceId)">{{group.name}}</option>
-                </select>
-                <span>职业:</span>
-                <select v-model="theOneJob" class="form-control" v-on:change="theOneRace = 0">
-                    <option value="0">-</option>
-                    <option v-for="(group,index) in jobArr" :value="parseInt(group.jobId) + 100">{{group.name}}</option>
-                </select> -->
-            </div>
-
-            <div class="col-md-8 column">
-                <span class="large-title" title="左键添加到'已选阵容'，右键添加到'禁用英雄'。再次点击可以取消选择或取消禁用。">英雄池</span>
-                <!-- <p style="font-size:14px;">左键添加到'已选阵容'，右键添加到'禁用英雄'。再次点击可以取消选择或取消禁用。</p> -->
-                <div style="min-height:270px">
-                    <div class="chess-list" v-for="price in 6">
-                        <div v-for="chess in chessArr" v-if="checkGroupChess(chess, price)" class="chess_head" :class="'price_' + chess.price" v-on:click.left="clickChess(chess)" @contextmenu.prevent="banChess(chess)">
-                            <div class="chess" :class="'hi_'+chess.TFTID" :data-chessId="chess.chessId" :title="chess.description">
-                            </div>
-                            <div class="cost_tag">{{chess.price}}</div>
-                        </div>
-                    </div>
-                </div>
-                <span class="large-title" title="装备可以重复选择，点击左侧'已选装备'可以取消选择。">转职装备</span>
-                <div class="chess-list">
-                    <div class="equipBtn equip" :title="equip.title" :data-equipId="equip.equipId" v-for="(equip,index) in equipArr" v-if="equip.raceId != null && equip.raceId != 0 && checkGroupEquip(equip)" v-on:click.left="clickEquip(equip)">
-                        <img :src="equip.imagePath" />
-                    </div>
-                </div>
-                <div class="chess-list">
-                    <div class="equipBtn equip" :title="equip.title" :data-equipId="equip.equipId" v-for="(equip,index) in equipArr" v-if="equip.jobId != null && equip.jobId != 0 && checkGroupEquip(equip)" v-on:click.left="clickEquip(equip)">
-                        <img :src="equip.imagePath" />
-                    </div>
-                </div>
                 <div class="modal-footer">
                     <button type="button" class="btn btn-primary btn-lg" id="runBtn"><i class="fa fa-bomb"></i> 计算</button>
                     <button type="button" class="btn btn-secondary btn-lg" v-on:click="clearBtn()"><i class="fa fa-trash-o fa-lg"></i> 清空</button>

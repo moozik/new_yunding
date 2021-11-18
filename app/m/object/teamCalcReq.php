@@ -68,6 +68,8 @@ class app_m_object_teamCalcReq {
      */
 //    public $freePosition = 0;
 
+    public $hexTecType1 = 0;
+    public $hexTecType3 = 0;
     function __construct($input) {
         // 原样参数
         // if(isset($input->theOne)){

@@ -13,8 +13,21 @@ const DATA_race = {};
 const DATA_job = {};
 const DATA_Ggroup = {};
 const DATA_Equip = {};
+const DATA_Hex = {};
 const GAME_URL = "//game.gtimg.cn/images/lol/act/img/tft/js";
-//http://game.gtimg.cn/images/lol/act/tftzlkauto/json/hexJson/hex.json 海克斯科技
+// 海克斯科技
+$.getJSON({
+    url: "//game.gtimg.cn/images/lol/act/tftzlkauto/json/hexJson/hex.json",
+    async: false,
+    success: function (data) {
+        for (let i in data) {
+            if(data[i].name.indexOf('之心') == -1 && data[i].name.indexOf('之魂') == -1){
+                continue;
+            }
+            DATA_Hex[i] = data[i];
+        }
+    },
+});
 $.getJSON({
     url: GAME_URL + "/chess.js",
     async: false,
@@ -75,6 +88,8 @@ var vm = new Vue({
         raceArr: DATA_race,
         //职业
         jobArr: DATA_job,
+        //海克斯科技
+        hexArr: DATA_Hex,
         //英雄
         chessArr: function () {
             const ret = {};
@@ -155,6 +170,9 @@ var vm = new Vue({
         chickenArmy: [], //最后结果
         //转职装备
         equipList: [],
+        //海克斯科技
+        hexType1: '',
+        hexType3: '',
         //转职装备 临时存储
         // equipListCache: [],
     },
@@ -367,7 +385,7 @@ var vm = new Vue({
  */
 $(document).on("mouseenter", ".groupBtn", function () {
     let data;
-    $("#app > div:nth-child(2) > div:nth-child(1) > div").css("display", "none");
+    $("#app > div:nth-child(2) > div:nth-child(3) > div").css("display", "none");
     const id = $(this).attr("data-raceId") || $(this).attr("data-jobId");
     if ($(this).attr("data-raceId")) {
         data = vm.raceArr[id];
@@ -381,7 +399,7 @@ $(document).on("mouseenter", ".groupBtn", function () {
  * 鼠标移入英雄图标
  */
 $(document).on("mouseenter", ".chess", function () {
-    $("#app > div:nth-child(2) > div:nth-child(1) > div").css("display", "none");
+    $("#app > div:nth-child(2) > div:nth-child(3) > div").css("display", "none");
     const chess = DATA_chess.data;
     const ret = vm.chessArr[$(this).attr("data-chessId")];
     ret.equip = [];
@@ -398,7 +416,7 @@ $(document).on("mouseenter", ".chess", function () {
  * 鼠标移入武器图标
  */
 $(document).on("mouseenter", ".equipBtn", function () {
-    $("#app > div:nth-child(2) > div:nth-child(1) > div").css("display", "none");
+    $("#app > div:nth-child(2) > div:nth-child(3) > div").css("display", "none");
     var equipObj = DATA_Equip[this.dataset.equipid];
     equipObj.formulaArr = [];
     if (equipObj.formula != "") {
@@ -416,8 +434,9 @@ $("#runBtn").click(function () {
 
     //拼接数据
     const getData = {
-        //天选羁绊
-        // theOne: (vm.theOneJob) != 0 ? vm.theOneJob : vm.theOneRace,
+        //海克斯科技
+        hexType1: vm.hexType1,
+        hexType3: vm.hexType3,
         //队伍成员个数
         teamCount: parseInt(vm.teamCount),
         forCount: vm.forCount,
