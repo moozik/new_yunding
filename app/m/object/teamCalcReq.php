@@ -68,8 +68,8 @@ class app_m_object_teamCalcReq {
      */
 //    public $freePosition = 0;
 
-    public $hexTecType1 = 0;
-    public $hexTecType3 = 0;
+    public $hexTecGid1 = 0;
+    public $hexTecGid3 = 0;
     function __construct($input) {
         // 原样参数
         // if(isset($input->theOne)){
@@ -123,10 +123,19 @@ class app_m_object_teamCalcReq {
         if (empty($this->costList)) {
             throw new Exception("参数错误costList");
         }
+        //海克斯
+        if (!empty($input->hexType1)){
+            $this->hexTecGid1 = $this->getGidByHex($input->hexType1);
+        }
+        if (!empty($input->hexType3)){
+            $this->hexTecGid3 = $this->getGidByHex($input->hexType3);
+        }
     }
 
+    /**
+     * 转职装备预处理
+     */
     public function dealEquipPre() {
-        //转职装备预处理
         if (!empty($this->tagPlus)) {
             //处理转职装备
             // if(count($this->weapon) > usr_def::IN_WEAPON_MAX){
@@ -187,5 +196,22 @@ class app_m_object_teamCalcReq {
             $this->freeChessArr[] = $chess->chessId;
             $this->freeChessArrObj[] = app_m_data_Factory::get(usr_def::chess, $chess->chessId);
         }
+    }
+
+    /**
+     * 根据海克斯装备名称搜索gid
+     */
+    public function getGidByHex($hexName) {
+        foreach (app_m_dao_job::$data as $jobItem) {
+            if (strpos($hexName, $jobItem->name) === 0) {
+                return $jobItem->jobId + 100;
+            }
+        }
+        foreach (app_m_dao_race::$data as $raceItem) {
+            if (strpos($hexName, $raceItem->name) === 0) {
+                return $raceItem->raceId;
+            }
+        }
+        throw new Exception("参数异常,hexName:" . $hexName);
     }
 }

@@ -368,6 +368,8 @@ var vm = new Vue({
             this.chessValue = CHESS_PRICE_DEFAULT;
             //更新人口
             this.positionCount = 0;
+            this.hexType1 = '';
+            this.hexType2 = '';
         },
 
         //更新费用限制 by 阵容数量 debug中的功能

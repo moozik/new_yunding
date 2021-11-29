@@ -21,7 +21,6 @@ class app_m_data_teamCalcOld {
 
     function __construct() {
         self::$GidLevelMap = app_m_dao_job::$GidMap + app_m_dao_race::$GidMap;
-        // lib_log::debug('GidLevelMap', self::$GidLevelMap);
     }
 
     function debugData() {
@@ -101,6 +100,13 @@ class app_m_data_teamCalcOld {
             $teamListObj = new app_m_object_teamList($teamListParam);
             //初步判断是否ok
 
+            //海克斯科技
+            if (!empty($this->req->hexTecGid1)){
+                lib_number::addOrDefault($teamListObj->group[$this->req->hexTecGid1], 1);
+            }
+            if (!empty($this->req->hexTecGid3)){
+                lib_number::addOrDefault($teamListObj->group[$this->req->hexTecGid3], 2);
+            }
             //给当前羁绊计数
             foreach ($teamListObj->chessArrObj as $chessObj) {
                 //棋子价值
@@ -133,7 +139,7 @@ class app_m_data_teamCalcOld {
                     continue;
                 }
                 //计算羁绊级别,根据 $Gcount 有效个数 羁绊等级为1234
-                $opLevel = usr_conf::GidOPLevel($Gid, $Gcount);
+                $opLevel = usr_conf::racesJobs[$Gid][$Gcount];
                 $teamListObj->resultGroup[$opLevel][$Gid] = $Gcount;
                 // 羁绊级别 * 羁绊个数 = 羁绊分数
                 // 会根据 羁绊分数 来计算阵容强度

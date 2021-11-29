@@ -117,6 +117,9 @@ class SEN {
             setcookie("passwd", SEN::PASSWORD, time() + 86400);
             return true;
         }
+        if (self::isDevelop()) {
+            return true;
+        }
         return false;
     }
 
