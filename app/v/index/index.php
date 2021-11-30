@@ -106,13 +106,13 @@ https://lol.qq.com/act/a20200917tftset4/index.html
                     </div>
                 </div>
 
-                <span class="large-title" style="color:darkcyan;">海克斯(开发中)</span>
-                <span>海克斯之心:</span>
+                <span class="large-title" style="color:darkcyan;">海克斯</span>
+                <span>海克斯之心(羁绊+1):</span>
                 <select v-model="hexType1" class="form-control">
                     <option value="">-</option>
                     <option v-for="(item,index) in hexArr" :value="item.name" :title="item.description" v-if="item.type == 1">{{item.name}}</option>
                 </select>
-                <span>海克斯之魂:</span>
+                <span>海克斯之魂(羁绊+2):</span>
                 <select v-model="hexType3" class="form-control">
                     <option value="">-</option>
                     <option v-for="(item,index) in hexArr" :value="item.name" :title="item.description" v-if="item.type == 3">{{item.name}}</option>
