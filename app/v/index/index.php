@@ -84,10 +84,9 @@ https://lol.qq.com/act/a20200917tftset4/index.html
         <div class="row clearfix">
             <div class="col-md-8 column">
                 <span class="large-title" title="左键添加到'已选阵容'，右键添加到'禁用英雄'。再次点击可以取消选择或取消禁用。">英雄池</span>
-                <!-- <p style="font-size:14px;">左键添加到'已选阵容'，右键添加到'禁用英雄'。再次点击可以取消选择或取消禁用。</p> -->
                 <div style="min-height:270px">
                     <div class="chess-list" v-for="price in 6">
-                        <div v-for="chess in chessArr" v-if="checkGroupChess(chess, price)" class="chess_head" :class="'price_' + chess.price" v-on:click.left="clickChess(chess)" @contextmenu.prevent="banChess(chess)">
+                        <div v-for="chess in chessArr" v-if="checkGroupChess(chess, price)" class="chess_head" :class="'price_' + chess.price" v-on:click.left="pickChess(chess)" @contextmenu.prevent="banChess(chess)">
                             <div class="chess" :class="'hi_'+chess.TFTID" :data-chessId="chess.chessId" :title="chess.description">
                             </div>
                             <div class="cost_tag">{{chess.price}}</div>
@@ -106,7 +105,7 @@ https://lol.qq.com/act/a20200917tftset4/index.html
                     </div>
                 </div>
 
-                <span class="large-title" style="color:darkcyan;">海克斯</span>
+                <span class="large-title" style="color:darkcyan;">海克斯科技</span>
                 <span>海克斯之心(羁绊+1):</span>
                 <select v-model="hexType1" class="form-control">
                     <option value="">-</option>
@@ -124,7 +123,7 @@ https://lol.qq.com/act/a20200917tftset4/index.html
                 <div class="lineTwo" style="min-height: 50px;">
                     <div class="chess-list">
                         <!-- 选用英雄列表 -->
-                        <div v-for="chess in inChessList" class="chess_head" :class="'price_' + chess.price" v-on:click.left="clickChess(chess)">
+                        <div v-for="chess in inChessList" class="chess_head" :class="'price_' + chess.price" v-on:click.left="pickChess(chess)">
                             <div class="chess" :class="'hi_'+chess.TFTID" :data-chessId="chess.chessId" :title="chess.description">
                             </div>
                             <div class="cost_tag">{{chess.price}}</div>
@@ -136,7 +135,7 @@ https://lol.qq.com/act/a20200917tftset4/index.html
                 <div class="lineTwo" style="min-height: 50px;">
                     <div class="chess-list">
                         <!-- 禁用英雄列表 -->
-                        <div v-for="chess in chessBanList" class="chess_head" :class="'price_' + chess.price" v-on:click.left="clickChess(chess)">
+                        <div v-for="chess in chessBanList" class="chess_head" :class="'price_' + chess.price" v-on:click.left="banChess(chess)">
                             <div class="chess" :class="'hi_'+chess.TFTID" :data-chessId="chess.chessId" :title="chess.description">
                             </div>
                             <div class="cost_tag">{{chess.price}}</div>
@@ -183,7 +182,7 @@ https://lol.qq.com/act/a20200917tftset4/index.html
                 <input type="range" class="form-control-range" v-model="teamCount" max="9" min="-1" step="1" v-on:mousemove="updateCostByTeamCount()">
                 <span> {{ teamCount }}个</span> -->
                 <?php }?>
-                <div class="modal-footer">
+                <div class="modal-body">
                     <button type="button" class="btn btn-primary btn-lg" id="runBtn"><i class="fa fa-bomb"></i> 计算</button>
                     <button type="button" class="btn btn-secondary btn-lg" v-on:click="clearBtn()"><i class="fa fa-trash-o fa-lg"></i> 清空</button>
                 </div>

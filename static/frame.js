@@ -256,14 +256,14 @@ var vm = new Vue({
                 }
             }
         },
-        //绑定英雄池左键
-        clickChess: function (chess) {
+        //绑定英雄池左键 已选池左键
+        pickChess: function (chess) {
             inChessList = this.inChessList;
             if(chess.races == "约德尔大王"){
                 //不允许添加
                 return;
             }
-            //clickChess
+            //pickChess
             ret = this.chessInArray(chess, inChessList);
             if (ret !== false) {
                 //英雄已存在，删除
@@ -284,7 +284,7 @@ var vm = new Vue({
                 this.updateCost();
             }
         },
-        //绑定英雄池右键
+        //绑定英雄池右键 ban选池左键
         banChess: function (chess) {
             let chessBanList = this.chessBanList;
             //banChess
