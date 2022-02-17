@@ -380,6 +380,9 @@ var vm = new Vue({
             }
             this.chessValue = ret;
         },
+        headImage: function (tftId) {
+            return 'background: url(//game.gtimg.cn/images/lol/act/img/tft/champions/'+tftId+'.png);background-size: cover;'
+        }
     },
 });
 /**

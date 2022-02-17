@@ -7,7 +7,7 @@ class app_c_index extends frame_controlerBase {
     public function actionIndex() {
         lib_log::access("index",json_encode($_SERVER));
         SEN::display_page('index', [
-            'timeStamp' => strtotime(app_m_dao_race::$time) + 1638245850,
+            'timeStamp' => strtotime(app_m_dao_race::$time) + 1645105509,
         ]);
     }
 

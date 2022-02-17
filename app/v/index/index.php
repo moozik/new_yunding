@@ -87,7 +87,7 @@ https://lol.qq.com/act/a20200917tftset4/index.html
                 <div style="min-height:270px">
                     <div class="chess-list" v-for="price in 6">
                         <div v-for="chess in chessArr" v-if="checkGroupChess(chess, price)" class="chess_head" :class="'price_' + chess.price" v-on:click.left="pickChess(chess)" @contextmenu.prevent="banChess(chess)">
-                            <div class="chess" :class="'hi_'+chess.TFTID" :data-chessId="chess.chessId" :title="chess.description">
+                            <div class="chess" :style="headImage(chess.TFTID)" :data-chessId="chess.chessId" :title="chess.description">
                             </div>
                             <div class="cost_tag">{{chess.price}}</div>
                         </div>
@@ -124,7 +124,7 @@ https://lol.qq.com/act/a20200917tftset4/index.html
                     <div class="chess-list">
                         <!-- 选用英雄列表 -->
                         <div v-for="chess in inChessList" class="chess_head" :class="'price_' + chess.price" v-on:click.left="pickChess(chess)">
-                            <div class="chess" :class="'hi_'+chess.TFTID" :data-chessId="chess.chessId" :title="chess.description">
+                            <div class="chess" :style="headImage(chess.TFTID)" :data-chessId="chess.chessId" :title="chess.description">
                             </div>
                             <div class="cost_tag">{{chess.price}}</div>
                         </div>
@@ -136,7 +136,7 @@ https://lol.qq.com/act/a20200917tftset4/index.html
                     <div class="chess-list">
                         <!-- 禁用英雄列表 -->
                         <div v-for="chess in chessBanList" class="chess_head" :class="'price_' + chess.price" v-on:click.left="banChess(chess)">
-                            <div class="chess" :class="'hi_'+chess.TFTID" :data-chessId="chess.chessId" :title="chess.description">
+                            <div class="chess" :style="headImage(chess.TFTID)" :data-chessId="chess.chessId" :title="chess.description">
                             </div>
                             <div class="cost_tag">{{chess.price}}</div>
                         </div>
@@ -196,7 +196,7 @@ https://lol.qq.com/act/a20200917tftset4/index.html
                     <!--英雄列表-->
                         <div class="chess-list" style="min-width: 570px;">>
                             <div v-for="chess in army.chess" class="chess_head" :class="'price_' + chess.price">
-                                <div class="chess" :class="'hi_'+chess.TFTID" :data-chessId="chess.chessId" :title="chess.description">
+                                <div class="chess" :style="headImage(chess.TFTID)" :data-chessId="chess.chessId" :title="chess.description">
                                 </div>
                                 <div class="cost_tag">{{chess.price}}</div>
                             </div>
@@ -237,7 +237,7 @@ https://lol.qq.com/act/a20200917tftset4/index.html
     <!-- 英雄详情模板 -->
     <script id="heroTemp" type="text/html">
         <div class="details">
-            <div class="hi_{{TFTID}}" style="background-size: cover;"></div>
+            <div style="background: url(//game.gtimg.cn/images/lol/act/img/tft/champions/{{TFTID}}.png);background-size: cover;"></div>
             <p><span>{{title}} {{displayName}}<span class="glyphicon glyphicon-sort-by-order-alt"></span></span><span>{{races}},{{jobs}}</span></p>
         </div>
         {{if equip}}
