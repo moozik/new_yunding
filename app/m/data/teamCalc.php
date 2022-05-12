@@ -409,8 +409,8 @@ class app_m_data_teamCalc {
                     usr_def::Gcount => $countIn,
                     // 需要的个数
                     usr_def::Gneed => $countIn - $existCount,
-                    //存储羁绊的稀有度 0123依次变高
-                    usr_def::GOPlevel => usr_conf::GidOPLevel($Gid, $countIn),
+                    //存储羁绊的稀有度 1234依次变高
+                    usr_def::GOPlevel => app_m_object_groups::$opList[$Gid][$countIn],
                 ];
                 //$Gid;
                 // if(isset($canChoseGidList[$countIn])){

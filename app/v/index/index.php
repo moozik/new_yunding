@@ -257,7 +257,7 @@ https://lol.qq.com/act/a20200917tftset4/index.html
                 <div class="name">
                     <span>{{skillName}}</span>
                 </div>
-                <p class="description">{{skillDetail}}</p>
+                <!-- <p class="description">{{skillDetail}}</p> -->
             </div>
         </div>
     </script>

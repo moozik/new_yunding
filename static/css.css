@@ -69,6 +69,7 @@ img {width: 100%;height: 100%;}
     border-radius: 50%;
     box-shadow: #0e0f16 0 4px 7px;
     display: inline-block;
+    background-size: cover;
 }
 .equip {
     margin-right: 1px;

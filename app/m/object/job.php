@@ -24,5 +24,6 @@ class app_m_object_job extends app_m_object_groups{
             $this->level[] = $count;
         }
         $this->GidMap = lib_tools::getLevelMap($jobObj);
+        self::colorList($this->GId, $jobObj->job_color_list);
     }
 }

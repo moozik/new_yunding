@@ -381,7 +381,7 @@ var vm = new Vue({
             this.chessValue = ret;
         },
         headImage: function (tftId) {
-            return 'background: url(//game.gtimg.cn/images/lol/act/img/tft/champions/'+tftId+'.png);background-size: cover;'
+            return 'background-image:url(//game.gtimg.cn/images/lol/act/img/tft/champions/'+tftId+'.png);'
         }
     },
 });
@@ -411,7 +411,9 @@ $(document).on("mouseenter", ".chess", function () {
     if (typeof ret.recEquip != "undefined" && ret.recEquip != "") {
         const tmp = ret.recEquip.split(",");
         tmp.forEach((equipId, index) => {
-            ret.equip.push(DATA_Equip[equipId].imagePath);
+            if (DATA_Equip.hasOwnProperty(equipId)) {
+                ret.equip.push(DATA_Equip[equipId].imagePath);
+            }
         });
     }
     $("#hero-box").html(template("heroTemp", ret));
@@ -426,7 +428,9 @@ $(document).on("mouseenter", ".equipBtn", function () {
     equipObj.formulaArr = [];
     if (equipObj.formula != "") {
         equipObj.formula.split(',').forEach((e, i) => {
-            equipObj.formulaArr.push(DATA_Equip[e]);
+            if (DATA_Equip.hasOwnProperty(e)) {
+                equipObj.formulaArr.push(DATA_Equip[e]);
+            }
         });
     }
     $("#equip-box").html(template("equipTemp", equipObj));

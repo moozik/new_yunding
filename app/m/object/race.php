@@ -17,13 +17,10 @@ class app_m_object_race extends app_m_object_groups{
         $this->GId = $raceObj->raceId;
         $this->name = $raceObj->name;
         $this->level = [];
-        if(empty($raceObj->level)){
-            //汕海绘卷null
-            $this->level[] = 1;
-        }else 
         foreach($raceObj->level as $count => $text){
             $this->level[] = $count;
         }
         $this->GidMap = lib_tools::getLevelMap($raceObj);
+        self::colorList($this->GId, $raceObj->race_color_list);
     }
 }

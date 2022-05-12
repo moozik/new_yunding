@@ -139,7 +139,7 @@ class app_m_data_teamCalcOld {
                     continue;
                 }
                 //计算羁绊级别,根据 $Gcount 有效个数 羁绊等级为1234
-                $opLevel = usr_conf::racesJobs[$Gid][$Gcount];
+                $opLevel = app_m_object_groups::$opList[$Gid][$Gcount];
                 $teamListObj->resultGroup[$opLevel][$Gid] = $Gcount;
                 // 羁绊级别 * 羁绊个数 = 羁绊分数
                 // 会根据 羁绊分数 来计算阵容强度

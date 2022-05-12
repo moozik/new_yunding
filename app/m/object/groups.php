@@ -3,45 +3,11 @@
  * 族群：种族或者职业
  * 
  */
-abstract class app_m_object_groups{
+class app_m_object_groups{
     /**
-     * id
-     *
-     * @var int
+     * 强度级别
      */
-    // public $id;
-    /**
-     * 当前种族数量
-     *
-     * @var int
-     */
-    // public $count = 0;
-    /**
-     * 当前种族是否有效
-     *
-     * @var bool
-     */
-    // public $isWork = false;
-    /**
-     * 当前种族有效个数
-     *
-     * @var int
-     */
-    // public $isWorkCount = 0;
-
-    /**
-     * 当前价值
-     *
-     * @var integer
-     */
-    // public $value = 0;
-    /**
-     * 即将成型的种族数量
-     *
-     * @var int
-     */
-    // public $featureCount = 0;
-
+    public static $opList = [];
     /**
      * 返回可用羁绊数量
      * @return int
@@ -53,5 +19,19 @@ abstract class app_m_object_groups{
             //找不到返回顶级羁绊的数量
             return $this->GidMap[0];
         }
+    }
+
+    /**
+     * 解析color_list字段
+     * 3:1,5:2,7:3,9:4
+     */
+    public static function colorList($Gid, $colorList) {
+        $ret = [];
+        $p1 = explode(",", $colorList);
+        foreach($p1 as $item) {
+            $p2 = explode(":", $item);
+            $ret[(int)$p2[0]] = (int)$p2[1];
+        }
+        self::$opList[$Gid] = $ret;
     }
 }
