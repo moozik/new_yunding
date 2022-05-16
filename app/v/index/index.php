@@ -277,9 +277,9 @@ https://lol.qq.com/act/a20200917tftset4/index.html
     <!-- 包括所有已编译的插件 -->
     <script src="https://cdn.staticfile.org/twitter-bootstrap/4.3.1/js/bootstrap.min.js"></script>
     <?php if(SEN::isDevelop()){?>
-        <script src="https://cdn.jsdelivr.net/npm/vue@2/dist/vue.js"></script>
+        <script src="https://unpkg.com/vue@2.6.14/dist/vue.js"></script>
     <?php } else {?>
-        <script src="https://cdn.jsdelivr.net/npm/vue@2"></script>
+        <script src="https://unpkg.com/vue@2.6.14/dist/vue.min.js"></script>
     <?php }?>
     <!--模板框架-->
     <script src="//ossweb-img.qq.com/images/js/ArtTemplate.js"></script>
