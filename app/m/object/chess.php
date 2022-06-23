@@ -31,23 +31,23 @@ class app_m_object_chess{
 
     /**
      * 存储种族和职业
-     * races jobs + 100
+     * races jobs + usr_def::GID_NUMBER
      */
     public $Gids = [];
     
     /**
-     * @param $chessObj
+     * @param $chessId
      */
-    function __construct($chessObj)
+    function __construct($chessId)
     {
-        if(is_numeric($chessObj)){
-            $chessObj = app_m_dao_chess::$data[$chessObj];
-        }
+        $chessObj = app_m_dao_chess::$data[$chessId];
         if(empty($chessObj)){
             return false;
         }
         $this->price = $chessObj->price;
         $this->chessId = $chessObj->chessId;
+        $this->isDragonGod = $chessObj->isDragonGod;
+        $this->dragonGodId = $chessObj->dragonGodId;
         $this->name = $chessObj->title . ' ' . $chessObj->displayName;
         
         $this->raceIds = app_m_data_Factory::getRaceArr(usr_def::race, $chessObj->raceIds);
@@ -59,7 +59,7 @@ class app_m_object_chess{
     /**
      * 巨像英雄
      */
-    public function isTheFat(){
-        return $this->chessId === 3 || $this->chessId === 14 || $this->chessId === 31;
-    }
+    // public function isTheFat(){
+    //     return $this->chessId === 3 || $this->chessId === 14 || $this->chessId === 31;
+    // }
 }

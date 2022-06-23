@@ -239,8 +239,8 @@ class lib_tools {
      * 转换Gid为羁绊名称
      */
     static function Gid2Name($Gid) {
-        if ($Gid > 100) {
-            return app_m_dao_job::$data[$Gid - 100]->name;
+        if ($Gid > usr_def::GID_NUMBER) {
+            return app_m_dao_job::$data[$Gid - usr_def::GID_NUMBER]->name;
         } else {
             return app_m_dao_race::$data[$Gid]->name;
         }

@@ -56,7 +56,7 @@ class app_m_dao_equip {
             }
             self::$data[$objItem->equipId] = $objItem;
             if(!empty($objItem->jobId) && $objItem->jobId != '0'){
-                self::$dataByGid[$objItem->jobId + 100] = $objItem;
+                self::$dataByGid[$objItem->jobId + usr_def::GID_NUMBER] = $objItem;
             }
             if(!empty($objItem->raceId) && $objItem->raceId != '0'){
                 self::$dataByGid[$objItem->raceId] = $objItem;
@@ -78,10 +78,8 @@ class app_m_dao_equip {
      * 判断id是否合法
      */
     static public function isValid($id) {
-        // Set5.5转职纹章id列表，配置在https://lol.qq.com/tft/js/main.js?v=20210722
-        $transJobEquipIdList = [533, 563, 575, 593, 599, 605, 609, 610, 611, 612, 613, 614, 615, 616, 617, 618, 619, 620, 621, 622, 623, 624];
         $id = intval($id);
-        if (in_array($id, $transJobEquipIdList)) {
+        if ($id >= 7000) {
             return true;
         }
         return false;

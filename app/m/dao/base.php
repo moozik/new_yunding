@@ -13,13 +13,13 @@ class app_m_dao_base {
             file_put_contents($localPath, json_encode($dataObj, JSON_UNESCAPED_UNICODE));
         }
         //转int类型
-        foreach ($dataObj->data as $key => $val) {
-            foreach ($val as $key2 => $val2) {
-                if (filter_var($val2, FILTER_VALIDATE_INT)) {
-                    $dataObj->data[$key]->{$key2} = intval($val2);
-                }
-            }
-        }
+        // foreach ($dataObj->data as $key => $val) {
+        //     foreach ($val as $key2 => $val2) {
+        //         if (filter_var($val2, FILTER_VALIDATE_INT)) {
+        //             $dataObj->data[$key]->{$key2} = intval($val2);
+        //         }
+        //     }
+        // }
         return $dataObj;
     }
 }

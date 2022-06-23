@@ -52,7 +52,7 @@ class app_m_dao_job {
 
         foreach ($retObj->data as $key => $objItem) {
             self::$data[$objItem->jobId] = $objItem;
-            self::$GidMap[$objItem->jobId + 100] = lib_tools::getLevelMap($objItem);
+            self::$GidMap[$objItem->jobId + usr_def::GID_NUMBER] = lib_tools::getLevelMap($objItem);
         }
     }
 }

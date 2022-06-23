@@ -37,12 +37,14 @@ class SEN {
         'race' => 'race.json',
         'job' => 'job.json',
         'equip' => 'equip.json',
+        'hex' => 'hex.json',
     ];
     const REMOTE_URL = [
         'chess' => 'http://game.gtimg.cn/images/lol/act/img/tft/js/chess.js',
         'race' => 'http://game.gtimg.cn/images/lol/act/img/tft/js/race.js',
         'job' => 'http://game.gtimg.cn/images/lol/act/img/tft/js/job.js',
         'equip' => 'http://game.gtimg.cn/images/lol/act/img/tft/js/equip.js',
+        'hex' => 'http://game.gtimg.cn/images/lol/act/img/tft/js/hex.js',
     ];
     const SITE = [
         'title' => '云顶之弈计算器',
@@ -64,6 +66,7 @@ class SEN {
         app_m_dao_job::init();
         app_m_dao_race::init();
         app_m_dao_equip::init();
+        app_m_dao_hex::init();
     }
 
     /**

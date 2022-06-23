@@ -31,5 +31,13 @@ class app_c_tools extends frame_controlerBase {
     }
 
     public function actionTest() {
+        // echo json_encode(app_m_dao_chess::$data);
+        // print_r(new app_m_object_chess('10202_7114'));
+        // print_r(app_m_data_Factory::get(usr_def::chess, '10202_7015'));
+        // print_r(app_m_dao_job::$GidMap + app_m_dao_race::$GidMap);
+        // $obj = new app_m_object_equip(7009);
+        // $obj = app_m_data_Factory::get(usr_def::equip, 7009);
+        // print_r($obj);
+        // var_dump($obj->getGid());
     }
 }

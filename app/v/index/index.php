@@ -85,11 +85,9 @@ https://lol.qq.com/act/a20200917tftset4/index.html
             <div class="col-md-8 column">
                 <span class="large-title" title="左键添加到'已选阵容'，右键添加到'禁用英雄'。再次点击可以取消选择或取消禁用。">英雄池</span>
                 <div style="min-height:270px">
-                    <div class="chess-list" v-for="price in 6">
+                    <div class="chess-list" v-for="price in [1,2,3,4,5,8,10]">
                         <div v-for="chess in chessArr" v-if="checkGroupChess(chess, price)" class="chess_head" :class="'price_' + chess.price" v-on:click.left="pickChess(chess)" @contextmenu.prevent="banChess(chess)">
-                            <div class="chess" :style="headImage(chess.TFTID)" :data-chessId="chess.chessId" :title="chess.description">
-                            </div>
-                            <div class="cost_tag">{{chess.price}}</div>
+                            <chess-div v-bind:chess="chess"></chess-div>
                         </div>
                     </div>
                 </div>
@@ -105,17 +103,12 @@ https://lol.qq.com/act/a20200917tftset4/index.html
                     </div>
                 </div>
 
-                <span class="large-title" style="color:darkcyan;">海克斯科技</span>
-                <span>海克斯之心(羁绊+1):</span>
-                <select v-model="hexType1" class="form-control">
-                    <option value="">-</option>
-                    <option v-for="(item,index) in hexArr" :value="item.name" :title="item.description" v-if="item.type == 1">{{item.name}}</option>
-                </select>
-                <span>海克斯之魂(羁绊+2):</span>
-                <select v-model="hexType3" class="form-control">
-                    <option value="">-</option>
-                    <option v-for="(item,index) in hexArr" :value="item.name" :title="item.description" v-if="item.type == 3">{{item.name}}</option>
-                </select>
+                <span class="large-title" style="color:darkcyan;">强化符文</span>
+                <div class="chess-list">
+                    <div class="hex hex_tag" :title="hex.name + '\n' + hex.description" :data-hexId="hex.hexId" v-for="(hex,index) in hexArr" v-on:click.left="clickHex(hex)">
+                        <img :src="hex.imgUrl" />
+                    </div>
+                </div>
             </div>
 
             <div class="col-md-4 column">
@@ -124,9 +117,7 @@ https://lol.qq.com/act/a20200917tftset4/index.html
                     <div class="chess-list">
                         <!-- 选用英雄列表 -->
                         <div v-for="chess in inChessList" class="chess_head" :class="'price_' + chess.price" v-on:click.left="pickChess(chess)">
-                            <div class="chess" :style="headImage(chess.TFTID)" :data-chessId="chess.chessId" :title="chess.description">
-                            </div>
-                            <div class="cost_tag">{{chess.price}}</div>
+                            <chess-div v-bind:chess="chess"></chess-div>
                         </div>
                     </div>
                 </div>
@@ -136,9 +127,7 @@ https://lol.qq.com/act/a20200917tftset4/index.html
                     <div class="chess-list">
                         <!-- 禁用英雄列表 -->
                         <div v-for="chess in chessBanList" class="chess_head" :class="'price_' + chess.price" v-on:click.left="banChess(chess)">
-                            <div class="chess" :style="headImage(chess.TFTID)" :data-chessId="chess.chessId" :title="chess.description">
-                            </div>
-                            <div class="cost_tag">{{chess.price}}</div>
+                            <chess-div v-bind:chess="chess"></chess-div>
                         </div>
                     </div>
                 </div>
@@ -152,13 +141,22 @@ https://lol.qq.com/act/a20200917tftset4/index.html
                     </div>
                 </div>
 
+                <span class="large-title">已选符文</span>
+                <div class="lineTwo" style="min-height: 50px;">
+                    <div class="chess-list">
+                        <div class="hex hex_tag" :title="hex.description" :data-hexId="hex.hexId" v-for="(hex,index) in hexList" v-on:click.left="clickHex(hex)">
+                            <img :src="hex.imgUrl" />
+                        </div>
+                    </div>
+                </div>
+
                 <span class="large-title">可选价格</span>
                 <div class="btn-group btn-group-toggle" data-toggle="buttons"></div>
                 <button type="button" class="btn" v-bind:class="{'btn-primary':chessValue[1]}" v-on:click="valBtn(1)">1 <i class="fa fa-rmb"></i></button>
                 <button type="button" class="btn" v-bind:class="{'btn-primary':chessValue[2]}" v-on:click="valBtn(2)">2 <i class="fa fa-rmb"></i></button>
                 <button type="button" class="btn" v-bind:class="{'btn-primary':chessValue[3]}" v-on:click="valBtn(3)">3 <i class="fa fa-rmb"></i></button>
                 <button type="button" class="btn" v-bind:class="{'btn-primary':chessValue[4]}" v-on:click="valBtn(4)">4 <i class="fa fa-rmb"></i></button>
-                <button type="button" class="btn" v-bind:class="{'btn-primary':chessValue[5]}" v-on:click="valBtn(5)">5 <i class="fa fa-rmb"></i></button>
+                <button type="button" class="btn" v-bind:class="{'btn-primary':chessValue[5]}" v-on:click="valBtn(5)">5/8/10 <i class="fa fa-rmb"></i></button>
                 
                 <span class="large-title">计算英雄个数</span>
 
@@ -196,15 +194,21 @@ https://lol.qq.com/act/a20200917tftset4/index.html
                     <!--英雄列表-->
                         <div class="chess-list" style="min-width: 570px;">>
                             <div v-for="chess in army.chess" class="chess_head" :class="'price_' + chess.price">
-                                <div class="chess" :style="headImage(chess.TFTID)" :data-chessId="chess.chessId" :title="chess.description">
-                                </div>
-                                <div class="cost_tag">{{chess.price}}</div>
+                                <chess-div v-bind:chess="chess"></chess-div>
                             </div>
                         </div>
                         <div class="result-jiban" style="min-width: 570px;">
                             <div v-for="(item,index) in army.group" :class="item.classStr">
                                 <img :src="item.imagePath" />
                                 <span>{{item.count}}{{item.name}}</span>
+                            </div>
+                        </div>
+                        <div class="chess-list" style="min-width: 570px;">
+                            <div class="hex hex_tag" :title="hex.name + '\n' + hex.description" v-for="(hex,index) in army.hex">
+                                <img :src="hex.imgUrl" />
+                            </div>
+                            <div class="equip" :title="equip.title" v-for="(equip,index) in army.equip">
+                                <img :src="equip.imagePath" />
                             </div>
                         </div>
                         <div class="chess-list" style="min-width: 570px;">

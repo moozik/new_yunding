@@ -6,6 +6,7 @@ class usr_def {
     const job = 2;
     const race = 3;
     const equip = 4;
+    const hex = 5;
 
     //用于app_m_data_teamCalc generateGcombination变量
     const Gid = 0;
@@ -18,4 +19,6 @@ class usr_def {
     const Gmid = 1;
     const Ghigh = 2;
     const Gbest = 3;
+
+    const GID_NUMBER = 0;
 }

@@ -3,28 +3,30 @@ const EQUIP_MAX = 10;
 //最大输入队伍成员数
 const IN_HERO_MAX = 10;
 const BAN_HERO_MAX = 10;
-const CHESS_PRICE_FALSE = {1: false, 2: false, 3: false, 4: false, 5: false};
 const CHESS_PRICE_DEFAULT = {1: true, 2: true, 3: true, 4: false, 5: false};
 //不同级别对应能刷出的英雄价格
 const LEVEL_MAP={"1":[1],"2":[1],"3":[1,2],"4":[1,2,3],"5":[1,2,3,4],"6":[1,2,3,4],"7":[1,2,3,4,5],"8":[1,2,3,4,5],"9":[1,2,3,4,5],"10":[1,2,3,4,5]};
-// Set5.5转职纹章id列表，配置在https://lol.qq.com/tft/js/main.js?v=20210722
-const transJobEquipIdList = [6001,6002,6003,6004,6005,6006,6007,6008, 6011,6012,6013,6014,6015,6016,6017,6018,6019,6020];
 const DATA_race = {};
 const DATA_job = {};
 const DATA_Ggroup = {};
 const DATA_Equip = {};
 const DATA_Hex = {};
+//龙神id
+const DRAGON_GOD_JOBID = "7015"
+//龙神chessId列表
+const DRAGON_GOD_LIST = ['102_7012','102_7106','136_7007','136_7101','3001_7105','3002_7011','3002_7104','10201_7008','10201_7109','10202_7003','10202_7114','13601_7112'];
 const GAME_URL = "//game.gtimg.cn/images/lol/act/img/tft/js";
-// 海克斯科技
+// 海克斯科技/强化符文
 $.getJSON({
-    url: "//game.gtimg.cn/images/lol/act/tftzlkauto/json/hexJson/hex.json",
+    // url: "//game.gtimg.cn/images/lol/act/tftzlkauto/json/hexJson/hex.json",
+    url: GAME_URL + "/hex.js",
     async: false,
     success: function (data) {
         for (let i in data) {
             if(data[i].name.indexOf('之心') == -1 && data[i].name.indexOf('之魂') == -1){
                 continue;
             }
-            DATA_Hex[i] = data[i];
+            DATA_Hex[data[i].hexId] = data[i];
         }
     },
 });
@@ -61,9 +63,13 @@ $.getJSON({
     async: false,
     success: function (ret) {
         for (let i in ret.data) {
-            ret.data[i].Ggroup = ret.data[i].jobId + 100;
+            // 跳过召唤物
+            if (ret.data[i].jobId == 7201) {
+                continue;
+            }
+            ret.data[i].Ggroup = parseInt(ret.data[i].jobId);
             DATA_job[ret.data[i].jobId] = ret.data[i];
-            DATA_Ggroup[parseInt(ret.data[i].jobId) + 100] = ret.data[i];
+            DATA_Ggroup[ret.data[i].jobId] = ret.data[i];
         }
     },
 });
@@ -72,12 +78,31 @@ $.getJSON({
     async: false,
     success: function (ret) {
         for (let i in ret.data) {
-            // if (ret.data[i].equipId < 6000)
-            //     continue;
             DATA_Equip[ret.data[i].equipId] = ret.data[i];
         }
     },
 });
+
+const chessDiv = Vue.extend({
+    template:`
+        <div class="dragon_tag">
+            <div class="chess" :style="headImage(chess.TFTID)" :data-chessId="chess.chessId" :title="chess.description">
+            </div>
+            <div class="cost_tag">{{chess.price}}</div>
+            <div class="dragon_text" v-if="chess.hasOwnProperty('dragonTriple') && chess.dragonTriple != null">{{chess.dragonTriple.name}}</div>
+        </div>
+    `,
+    data(){
+        return {}
+    },
+    methods: {
+        headImage: function(tftId){
+            return 'background-image:url(//game.gtimg.cn/images/lol/act/img/tft/champions/'+tftId+'.png);'
+        }
+    },
+    props: ['chess']
+});
+Vue.component('chess-div',chessDiv)
 var vm = new Vue({
     el: "#app",
     data: {
@@ -88,7 +113,7 @@ var vm = new Vue({
         raceArr: DATA_race,
         //职业
         jobArr: DATA_job,
-        //海克斯科技
+        //海克斯科技/强化符文
         hexArr: DATA_Hex,
         //英雄
         chessArr: function () {
@@ -96,17 +121,54 @@ var vm = new Vue({
             let chess = {};
             // var detail;
             let proStatus;
+            let buildChess = chess => {
+                return {
+                    description: chess.description,
+                    dragonTriple: chess.dragonTriple,
+                    TFTID: chess.TFTID,
+                    chessId: chess.chessId,
+                    displayName: chess.displayName,
+                    jobIds: chess.jobIds,
+                    jobs: chess.jobs,
+                    price: chess.price,
+                    proStatus: chess.proStatus,
+                    raceIds: chess.raceIds,
+                    races: chess.races,
+                    recEquip: chess.recEquip,
+                    skillDetail: chess.skillDetail,
+                    skillImage: chess.skillImage,
+                    skillIntroduce: chess.skillIntroduce,
+                    title: chess.title,
+                }
+            }
             for (let i in DATA_chess.data) {
                 chess = DATA_chess.data[i];
-                chess.fullName = chess.title + ' ' + chess.displayName;
+                let fullName = chess.title + ' ' + chess.displayName;
 
                 //是否增强
                 proStatus = ('无' === chess.proStatus) ? '' : ("\n版本改动：" + chess.proStatus);
                 //描述
-                chess.description = '名称：' + chess.fullName + "\n职业：" + chess.races + ' ' + chess.jobs + "\n\n技能：" + chess.skillIntroduce + proStatus;
+                chess.description = '名称：' + fullName + "\n职业：" + chess.races + ' ' + chess.jobs + "\n\n技能：" + chess.skillIntroduce + proStatus;
                 chess.jobIds = chess.jobIds.split(',');
                 chess.raceIds = chess.raceIds.split(',');
-                ret[DATA_chess.data[i].chessId] = chess;
+                if (chess.raceIds.indexOf('7102') >= 0) {
+                    chess.raceIds.splice(chess.raceIds.indexOf('7102'), 1)
+                }
+                if (chess.jobIds.indexOf(DRAGON_GOD_JOBID) != -1) {
+                    //龙神 遍历3倍的羁绊
+                    let originChessID = chess.chessId
+                    chess.jobIds.concat(chess.raceIds).forEach(item => {
+                        if (item != DRAGON_GOD_JOBID) {
+                            chess.chessId = originChessID + '_' + item;
+                            // 翻倍的羁绊
+                            chess.dragonTriple = DATA_Ggroup[item];
+                            ret[chess.chessId] = buildChess(chess);
+                        }
+                    })
+                }else{
+                    chess.dragonTriple = null;
+                    ret[chess.chessId] = buildChess(chess);
+                }
             }
             return ret;
         }(),
@@ -116,7 +178,7 @@ var vm = new Vue({
             let equip, job;
             for (let i in DATA_Equip) {
                 equip = DATA_Equip[i];
-                if (transJobEquipIdList.indexOf(+equip.equipId) === -1) {
+                if (+equip.equipId < 7000) {
                     continue;
                 }
                 //只要转职装备
@@ -170,9 +232,9 @@ var vm = new Vue({
         chickenArmy: [], //最后结果
         //转职装备
         equipList: [],
-        //海克斯科技
-        hexType1: '',
-        hexType3: '',
+        //海克斯科技/强化符文
+        hexList: [],
+        // hexType3: '',
         //转职装备 临时存储
         // equipListCache: [],
     },
@@ -258,31 +320,55 @@ var vm = new Vue({
         },
         //绑定英雄池左键 已选池左键
         pickChess: function (chess) {
-            inChessList = this.inChessList;
-            if(chess.races == "约德尔大王"){
-                //不允许添加
-                return;
-            }
+            // if(chess.races == "约德尔大王"){
+            //     //不允许添加
+            //     return;
+            // }
+            
+            //10个英雄上限
+            if (this.positionCount === IN_HERO_MAX) return;
+            
             //pickChess
-            ret = this.chessInArray(chess, inChessList);
-            if (ret !== false) {
-                //英雄已存在，删除
-                inChessList.splice(ret, 1);
-            } else {
-                //英雄不存在，添加
+            while(true){
+                ret = this.chessInArray(chess, this.inChessList);
+                if (ret !== false) {
+                    //英雄已存在，删除
+                    this.inChessList.splice(ret, 1);
+                    break;
+                }
 
-                //10个英雄上限
-                if (this.positionCount === IN_HERO_MAX) return;
+                //不为龙神直接添加
+                if (chess.dragonTriple == null) {
+                    this.inChessList.push(chess);
+                    break;
+                }
 
-                //添加
-                inChessList.push(chess);
+                //龙神
+                //1. inChess中有其他龙神直接替换
+                let existDragonIndex = -1;
+                this.inChessList.forEach((chessItem, index) => {
+                    if (chessItem.dragonTriple != null) {
+                        existDragonIndex = index;
+                    }
+                })
+
+                if (existDragonIndex != -1) {
+                    this.inChessList.splice(existDragonIndex, 1);
+                    this.inChessList.push(chess);
+                    break;
+                }
+                //2. 没有的话判断有没有位置添加
+                if (this.positionCount + 1 === IN_HERO_MAX) {
+                    //就剩一个位置不能添加龙神
+                    return;
+                }
+                this.inChessList.push(chess);
+                break;
             }
             //更新人口
             this.positionCount = this.inChessListLength();
             //刷新金额限制
-            if (this.teamCount === -1) {
-                this.updateCost();
-            }
+            this.updateCost();
         },
         //绑定英雄池右键 ban选池左键
         banChess: function (chess) {
@@ -294,6 +380,23 @@ var vm = new Vue({
             } else {
                 if (this.chessBanList.length === BAN_HERO_MAX) return;
                 chessBanList.push(chess);
+            }
+        },
+        //绑定转职装备
+        clickHex: function (hex) {
+            if (this.hexList.length == 3) {
+                return
+            }
+            pos = -1
+            this.hexList.forEach((item, index) => {
+                if (item.hexId == hex.hexId) {
+                    pos = index
+                }
+            })
+            if (pos != -1) {
+                this.hexList.splice(pos, 1)
+            } else {
+                this.hexList.push(hex)
             }
         },
         //绑定转职装备
@@ -313,13 +416,11 @@ var vm = new Vue({
         },
         //更新英雄价格区间
         updateCost: function () {
-            let teamCount;
+            let teamCount = this.positionCount + this.forCount;
             if (this.positionCount + this.forCount > 7) {
                 teamCount = 7;
-            } else {
-                teamCount = this.positionCount + this.forCount;
             }
-            const ret = CHESS_PRICE_FALSE;
+            const ret = {1: false, 2: false, 3: false, 4: false, 5: false};
             for (let i in LEVEL_MAP[teamCount]) {
                 ret[LEVEL_MAP[teamCount][i]] = true;
             }
@@ -329,7 +430,7 @@ var vm = new Vue({
         inChessListLength: function() {
             var ret = this.inChessList.length;
             this.inChessList.forEach(chess => {
-                if(chess.jobIds.indexOf("5") != -1){
+                if(chess.jobIds.indexOf(DRAGON_GOD_JOBID) != -1){
                     ret++;
                 }
             });
@@ -359,6 +460,7 @@ var vm = new Vue({
             this.chessBanList.splice(0);
             this.chickenArmy.splice(0);
             this.equipList.splice(0);
+            this.hexList.splice(0);
             this.groupCheckedId = 0;
             this.groupCheckedType = '';
             this.forCount = 3;
@@ -368,8 +470,8 @@ var vm = new Vue({
             this.chessValue = CHESS_PRICE_DEFAULT;
             //更新人口
             this.positionCount = 0;
-            this.hexType1 = '';
-            this.hexType2 = '';
+            // this.hexType1 = '';
+            // this.hexType2 = '';
         },
 
         //更新费用限制 by 阵容数量 debug中的功能
@@ -444,30 +546,32 @@ $("#runBtn").click(function () {
     //拼接数据
     const getData = {
         //海克斯科技
-        hexType1: vm.hexType1,
-        hexType3: vm.hexType3,
+        hexList:[],
         //队伍成员个数
         teamCount: parseInt(vm.teamCount),
         forCount: vm.forCount,
         inChess: [],
         banChess: [],
         equip: [],
-        tagPlus: [],
+        // tagPlus: [],
         costList: [],
     };
+    vm.hexList.forEach(e => {
+        getData.hexList.push(e.hexId);
+    });
     vm.inChessList.forEach((e) => {
-        getData.inChess.push(parseInt(e.chessId));
+        getData.inChess.push(e.chessId);
     });
     vm.chessBanList.forEach((e) => {
-        getData.banChess.push(parseInt(e.chessId));
+        getData.banChess.push(e.chessId);
     });
     vm.equipList.forEach((e) => {
         getData.equip.push(parseInt(e.equipId));
-        if (e.jobId !== '0' && e.jobId !== null) {
-            getData.tagPlus.push(parseInt(e.jobId) + 100);
-        } else {
-            getData.tagPlus.push(parseInt(e.raceId));
-        }
+        // if (e.jobId !== '0' && e.jobId !== null) {
+        //     getData.tagPlus.push(parseInt(e.jobId));
+        // } else {
+        //     getData.tagPlus.push(parseInt(e.raceId));
+        // }
     });
     for (let i in vm.chessValue) {
         if (vm.chessValue[i]) {
@@ -495,7 +599,19 @@ function displayPage(teamArrObj) {
     vm.chickenArmy.splice(0);
     let chess = [];
     let group = [];
+    let equip = [];
+    let hex = [];
     let classStr = '';
+
+    if (teamArrObj.length > 0) {
+        teamArrObj[0].equip.forEach((equipId) => {
+            equip.push(vm.equipArr[equipId]);
+        })
+        teamArrObj[0].hex.forEach((hexId) => {
+            hex.push(vm.hexArr[hexId]);
+        })
+    }
+
     teamArrObj.forEach((teamObj, index) => {
         chess = [];
         group = [];
@@ -510,8 +626,8 @@ function displayPage(teamArrObj) {
                 group.push({
                     name: DATA_Ggroup[GId].name,
                     imagePath: DATA_Ggroup[GId].imagePath,
-                    gid: GId,
-                    id: (GId > 100) ? (GId - 100) : GId,
+                    // gid: GId,
+                    // id: (GId > GID_NUMBER) ? (GId - GID_NUMBER) : GId,
                     count: teamObj.group[key][GId],
                     classStr: classStr,
                 });
@@ -520,6 +636,8 @@ function displayPage(teamArrObj) {
         vm.chickenArmy.push({
             chess: chess,
             group: group,
+            equip: equip,
+            hex: hex,
             score: teamObj.score,
             tips: teamObj.tips,
         });

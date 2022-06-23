@@ -22,13 +22,13 @@ class app_m_object_equip{
     /**
      * 配方
      */
-    public $formula = '';
+    // public $formula = '';
     /**
      * 名字
      */
-    public $name = '';
-    public $type = 0;
-    public $keywords = '';
+    // public $name = '';
+    // public $type = 0;
+    // public $keywords = '';
 
     function __construct($equipObj)
     {
@@ -38,16 +38,25 @@ class app_m_object_equip{
         if(empty($equipObj)){
             return false;
         }
-        $this->equipId = $equipObj->equipId;
-        $this->formula = $equipObj->formula;
-        $this->type = $equipObj->type;
-        $this->keywords = $equipObj->keywords;
-        $this->name = $equipObj->name;
+        $this->equipId = (int)$equipObj->equipId;
+        // $this->formula = $equipObj->formula;
+        // $this->type = $equipObj->type;
+        // $this->keywords = $equipObj->keywords;
+        // $this->name = $equipObj->name;
 
         if($equipObj->jobId != '0'){
             $this->jobId = (int)$equipObj->jobId;
         }else if($equipObj->raceId != '0'){
             $this->raceId = (int)$equipObj->raceId;
+        }
+    }
+
+    function getGid() {
+        if ($this->jobId > 0) {
+            return $this->jobId;
+        }
+        if ($this->raceId > 0) {
+            return $this->raceId;
         }
     }
 }

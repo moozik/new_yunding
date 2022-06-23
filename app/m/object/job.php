@@ -8,8 +8,8 @@ class app_m_object_job extends app_m_object_groups{
     function __construct($jobObj)
     {
         if(is_numeric($jobObj)){
-            if($jobObj > 100){
-                $jobObj -= 100;
+            if($jobObj > usr_def::GID_NUMBER){
+                $jobObj -= usr_def::GID_NUMBER;
             }
             $jobObj = app_m_dao_job::$data[$jobObj];
         }
@@ -17,7 +17,7 @@ class app_m_object_job extends app_m_object_groups{
             return false;
         }
         $this->jobId = $jobObj->jobId;
-        $this->GId = $jobObj->jobId + 100;
+        $this->GId = $jobObj->jobId + usr_def::GID_NUMBER;
         $this->name = $jobObj->name;
         $this->level = [];
         foreach($jobObj->level as $count => $text){

@@ -1,42 +1,66 @@
 * {margin: 0;padding: 0;}
 img {width: 100%;height: 100%;}
+:root{
+    --c1: #999;
+    --c2: #5fcc29;
+    --c3: #297acc;
+    --c4: #cc29cc;
+    --c5: #cca329;
+    --c6: #f3391e;
+    --c8: #cc29cc;
+    --c10: #cca329;
+}
+
 /* 英雄边框颜色 */
+
 .price_1 .chess{
-    border: 2px solid #999;
+    border: 2px solid var(--c1);
 }
 .price_2 .chess{
-    border: 2px solid #5fcc29;
+    border: 2px solid var(--c2);
 }
 .price_3 .chess{
-    border: 2px solid #297acc
+    border: 2px solid var(--c3)
 }
 .price_4 .chess{
-    border: 2px solid #cc29cc
+    border: 2px solid var(--c4)
 }
 .price_5 .chess{
-    border: 2px solid #cca329
+    border: 2px solid var(--c5)
 }
 .price_6 .chess{
-    border: 2px solid #c1a25f
+    border: 2px solid var(--c6)
 }
+/* .price_8 .chess{
+    border: 2px solid var(--c8)
+}
+.price_10 .chess{
+    border: 2px solid var(--c10)
+} */
 /* 价格边框颜色 */
 .price_1 .cost_tag{
-    background-color: #999;
+    background-color: var(--c1);
 }
 .price_2 .cost_tag{
-    background-color: #5fcc29;
+    background-color: var(--c2);
 }
 .price_3 .cost_tag{
-    background-color: #297acc;
+    background-color: var(--c3);
 }
 .price_4 .cost_tag{
-    background-color: #cc29cc;
+    background-color: var(--c4);
 }
 .price_5 .cost_tag{
-    background-color: #cca329;
+    background-color: var(--c5);
 }
 .price_6 .cost_tag{
-    background-color: #c1a25f;
+    background-color: var(--c6);
+}
+.price_8 .cost_tag{
+    background-color: var(--c8);
+}
+.price_10 .cost_tag{
+    background-color: var(--c10);
 }
 /* 价签 */
 .cost_tag{
@@ -52,7 +76,58 @@ img {width: 100%;height: 100%;}
     color: #fff5e0;
     font-size: 12px;
     pointer-events: none;
+    z-index: 1;
 }
+/* 龙标 */
+.price_8 .dragon_text{
+    background-color: var(--c8);
+}
+.price_10 .dragon_text{
+    background-color: var(--c10);
+}
+.dragon_text{
+    position: absolute;
+    bottom: -2px;
+    right: 13px;
+    display: block;
+    width: auto;
+    height: auto;
+    line-height: 18px;
+    border-radius: 5px;
+    text-align: center;
+    color: #ffffff;
+    font-size: 12px;
+    pointer-events: none;
+    z-index: 1;
+}
+.price_8 .dragon_tag::after{
+    background-image: url(//game.gtimg.cn/images/lol/tft/content-site/sprite-img.png);
+    background-size: 288px 244px;
+    background-repeat: no-repeat;
+    content: '';
+    position: absolute;
+    top: 0px;
+    left: 0px;
+    background-position: 0px -159px;
+    width: 50px;
+    height: 50px;
+    pointer-events: none;
+
+}
+.price_10 .dragon_tag::after{
+    background-image: url(//game.gtimg.cn/images/lol/tft/content-site/sprite-img.png);
+    background-size: 288px 244px;
+    background-repeat: no-repeat;
+    content: '';
+    position: absolute;
+    top: 0px;
+    left: 0px;
+    background-position: -131px -90px;
+    width: 50px;
+    height: 50px;
+    pointer-events: none;
+}
+
 .chess_head{
     width: 50px;
     height: 50px;
@@ -70,6 +145,27 @@ img {width: 100%;height: 100%;}
     box-shadow: #0e0f16 0 4px 7px;
     display: inline-block;
     background-size: cover;
+}
+.hex_tag {
+    width: 0.5rem;
+    height: 0.5rem;
+    background: url(//game.gtimg.cn/images/lol/tft/content-site/bg-hex.png) no-repeat center;
+    background-size: 100% 100%;
+    margin: 0 auto;
+    display: flex;
+    display: -webkit-flex;
+    justify-content: center;
+    align-items: center;
+}
+.hex {
+    margin-right: 1px;
+    margin-bottom: 1px;
+    display: inline-block;
+    width: 50px;
+    height: 50px;
+    position: relative;
+    cursor: pointer;
+    padding: 0;
 }
 .equip {
     margin-right: 1px;

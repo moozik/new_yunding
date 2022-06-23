@@ -13,6 +13,7 @@ class app_m_data_Factory {
         usr_def::job => [],
         usr_def::race => [],
         usr_def::equip => [],
+        usr_def::hex => [],
     ];
 
     /**
@@ -36,6 +37,9 @@ class app_m_data_Factory {
             case usr_def::equip:
                 self::$instance[$key][$id] = new app_m_object_equip($id);
                 break;
+            case usr_def::hex:
+                self::$instance[$key][$id] = new app_m_object_hex($id);
+                break;
         }
         return self::$instance[$key][$id];
     }
@@ -46,14 +50,14 @@ class app_m_data_Factory {
      * @return app_m_object_groups
      */
     static function getGid($Gid): app_m_object_groups {
-        if ($Gid > 100) {
+        if ($Gid > usr_def::GID_NUMBER) {
             $key = usr_def::job;
         }
         $key = usr_def::race;
         if (array_key_exists($Gid, self::$instance[$key])) {
             return self::$instance[$key][$Gid];
         }
-        self::$instance[$key][$Gid] = $Gid > 100 ? new app_m_object_job($Gid) : new app_m_object_race($Gid);
+        self::$instance[$key][$Gid] = $Gid > usr_def::GID_NUMBER ? new app_m_object_job($Gid) : new app_m_object_race($Gid);
         return self::$instance[$key][$Gid];
     }
 
@@ -85,14 +89,14 @@ class app_m_data_Factory {
     static function getJobArr($key, $id) {
         if (is_int($id) || (is_string($id) && is_numeric($id))) {
             if (self::get($key, intval($id))) {
-                return [($id + 100) => self::get($key, intval($id))];
+                return [($id + usr_def::GID_NUMBER) => self::get($key, intval($id))];
             }
         }
         if (is_string($id)) {
             $ret = [];
             foreach (explode(',', $id) as $idItem) {
                 if (isset(app_m_dao_job::$data[$idItem])) {
-                    $ret[($idItem + 100)] = self::get($key, intval($idItem));
+                    $ret[($idItem + usr_def::GID_NUMBER)] = self::get($key, intval($idItem));
                 }
             }
             return $ret;

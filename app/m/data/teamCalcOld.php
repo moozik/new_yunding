@@ -30,56 +30,47 @@ class app_m_data_teamCalcOld {
         return $this->debugData;
     }
 
-    function forCountNew(): Generator {
-        if (0 === $this->req->forCount) {
-            yield new app_m_object_teamList($this->req->inChess);
-        } else {
-            foreach (lib_tools::choseIterator($this->req->freeChessArrObj, $this->req->forCount) as $chessArrObj) {
-                yield new app_m_object_teamList(array_merge($this->req->inChessObj, $chessArrObj));
-            }
-        }
-    }
-
     function forCountOld() {
         if ($this->req->forCount === 0) {
-            yield ($this->req->inChessObj);
+            yield [];
+            // yield ($this->req->inChessObj);
             return;
         }
 
         foreach ($this->req->freeChessArrObj as $k1 => $chessObj_1) {
-            if ($this->req->forCount === 1) {
-                //1人口无法匹配巨像
-                if($chessObj_1->isTheFat()){
-                    continue;
-                }
-                yield (array_merge($this->req->inChessObj, [$chessObj_1]));
+            // 龙神 只允许有一个 只有第一个位置才匹配龙神
+            if ($this->req->haveDragonGod && $chessObj_1->isDragonGod) {
                 continue;
             }
-            //2人口匹配巨像直接返回
-            if($chessObj_1->isTheFat()){
+            if ($this->req->forCount === 1) {
+                yield [$chessObj_1];
+                // yield (array_merge($this->req->inChessObj, [$chessObj_1]));
                 continue;
             }
             foreach ($this->req->freeChessArrObj as $k2 => $chessObj_2) {
                 if ($k2 <= $k1) {
                     continue;
                 }
-                if ($this->req->forCount === 2) {
-                    //2人口只在第一个位置匹配巨像
-                    if($chessObj_2->isTheFat()){
-                        continue;
-                    }
-                    yield (array_merge($this->req->inChessObj, [$chessObj_1, $chessObj_2]));
+                // 龙神 只允许有一个
+                if ($chessObj_2->isDragonGod) {
                     continue;
                 }
+                if ($this->req->forCount === 2) {
+                    yield [$chessObj_1, $chessObj_2];
+                    // yield (array_merge($this->req->inChessObj, [$chessObj_1, $chessObj_2]));
+                    continue;
+                }
+                //只在第二个位置不为龙神时进循环
                 foreach ($this->req->freeChessArrObj as $k3 => $chessObj_3) {
                     if ($k3 <= $k2) {
                         continue;
                     }
-                    //第三个位置不匹配巨像
-                    if($chessObj_3->isTheFat()){
+                    // 龙神 只允许有一个
+                    if ($chessObj_3->isDragonGod) {
                         continue;
                     }
-                    yield (array_merge($this->req->inChessObj, [$chessObj_1, $chessObj_2, $chessObj_3]));
+                    yield [$chessObj_1, $chessObj_2, $chessObj_3];
+                    // yield (array_merge($this->req->inChessObj, [$chessObj_1, $chessObj_2, $chessObj_3]));
                 }
             }
         }
@@ -95,20 +86,40 @@ class app_m_data_teamCalcOld {
         //结果数组
         $teamList = [];
         $retData = [];
+        
+        //输入的棋子价值idVal
+        $inChessIdVal = 0;
+        //各羁绊个数
+        $group = [];
+        foreach($this->req->inChessObj as $chess) {
+            $inChessIdVal += $chess->price;
+            foreach($chess->Gids as $Gid => $groupObj){
+                lib_number::addOrDefault($group[$Gid], 1);
+            }
+        }
+
+        //海克斯科技 和 龙神(输入)
+        foreach($this->req->tagPlusByHex as $gid){//todo todo
+            lib_number::addOrDefault($group[$gid], 1);
+        }
         //筛选出羁绊价值最高的组合
         foreach ($this->forCountOld() as $teamListParam) {
-            $teamListObj = new app_m_object_teamList($teamListParam);
-            //初步判断是否ok
+            $teamListObj = new app_m_object_teamList();
+            //set输入阵容
+            $teamListObj->setChessArrObj($this->req->inChessObj);
+            //set遍历阵容
+            $teamListObj->setChessArrObj($teamListParam);
+            $teamListObj->setIdVal($inChessIdVal);
+            $teamListObj->setGroup($group);
 
-            //海克斯科技
-            if (!empty($this->req->hexTecGid1)){
-                lib_number::addOrDefault($teamListObj->group[$this->req->hexTecGid1], 1);
-            }
-            if (!empty($this->req->hexTecGid3)){
-                lib_number::addOrDefault($teamListObj->group[$this->req->hexTecGid3], 2);
-            }
+
             //给当前羁绊计数
-            foreach ($teamListObj->chessArrObj as $chessObj) {
+            foreach ($teamListParam as $chessObj) {
+                //龙神(遍历) 额外两个羁绊
+                if ($chessObj->isDragonGod) {
+                    lib_number::addOrDefault($teamListObj->group[$chessObj->dragonGodId], 2);
+                }
+
                 //棋子价值
                 $teamListObj->idVal += $chessObj->price;
                 //给当前英雄的所有羁绊计数
@@ -123,15 +134,14 @@ class app_m_data_teamCalcOld {
             //遍历羁绊计算羁绊个数
             foreach ($teamListObj->group as $Gid => $count) {
                 //形成羁绊的有效英雄个数 类似3剧毒和4剧毒中，3个是有效的 $groupValue=3 $count=4
-                $Glevel = &self::$GidLevelMap[$Gid];
-                $Gcount = $Glevel[$count];
+                $Gcount = self::$GidLevelMap[$Gid][$count];
                 //计算浪费羁绊的数量
                 $wastCount += $count - $Gcount;
                 //如果没有形成羁绊，那么删除当前阵营
                 if (0 == $Gcount) {
                     unset($teamListObj->group[$Gid]);
                     //TODO refactry 放到最后
-                    if (0 != $Glevel[$count + 1]) {
+                    if (0 != self::$GidLevelMap[$Gid][$count + 1]) {
                         //如果数量+1buff不为0，则加入tips
                         $teamListObj->tips[1] .= '[' . ($count + 1) . app_m_data_Factory::getGid($Gid)->name . '],';
                     }
@@ -173,6 +183,10 @@ class app_m_data_teamCalcOld {
             $retData = array_merge($retData, $this->calcValueTeam($valueLog, $teamList));
         }
         $retData = array_slice(lib_array::sort($retData, 'score'), 0, usr_conf::SHOW_LIMIT);
+        //补充hex
+        foreach($retData as &$item){
+            $item['hex'] = $this->req->inHexList;
+        }
         return $retData;
     }
 
@@ -184,7 +198,7 @@ class app_m_data_teamCalcOld {
      * @return array
      */
     function calcValueTeam(&$valueLog, &$teamList) {
-        $this->debugData['teamListCount'] += count($teamList);
+        $this->debugData['teamListCount'] = count($teamList);
         //根据key降序
         krsort($valueLog);
         //取头部阵容
@@ -219,11 +233,11 @@ class app_m_data_teamCalcOld {
      */
     function dealEquip(app_m_object_teamList $teamListObj) {
         // lib_timer::start(__FUNCTION__);
-        if (empty($this->req->tagPlus)) {
+        if (empty($this->req->inEquipMap)) {
             return;
         }
         //遍历转职装备 并计算能用到的最大装备数量到 $teamListObj->equip[$Gid]
-        foreach ($this->req->tagPlusMap as $Gid => $count) {
+        foreach ($this->req->inEquipMap as $Gid => $count) {
             if (isset($teamListObj->group[$Gid])) {
                 $equipMax = $this->req->teamChessCount - $teamListObj->group[$Gid];
             } else {
@@ -254,9 +268,6 @@ class app_m_data_teamCalcOld {
     public function setInput($input) {
         // lib_log::trace('calcInput', print_r($input, true));
         $this->req = new app_m_object_teamCalcReq($input);
-        $this->req->dealCostList();
-        $this->req->dealEquipPre();
-        $this->req->getFreeChess();
         $this->debugData['req'] = $this->req;
     }
 }

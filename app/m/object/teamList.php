@@ -23,8 +23,18 @@ class app_m_object_teamList {
     public $score = 0;
     public $equip = [];
 
-    public function __construct($chessArrObj) {
-        $this->chessArrObj = $chessArrObj;
+    public function __construct() {
+    }
+    public function setChessArrObj($chessArrObj) {
+        foreach($chessArrObj as $chessObj) {
+            $this->chessArrObj[] = $chessObj;
+        }
+    }
+    public function setGroup($group) {
+        $this->group = $group;
+    }
+    public function setIdVal($val) {
+        $this->idVal = $val;
     }
     /**
      * 初步判断阵容强度
