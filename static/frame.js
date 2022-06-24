@@ -384,20 +384,23 @@ var vm = new Vue({
         },
         //绑定转职装备
         clickHex: function (hex) {
-            if (this.hexList.length == 3) {
-                return
-            }
-            pos = -1
+            let existPos = -1;
+            let sameTypePos = -1;
             this.hexList.forEach((item, index) => {
                 if (item.hexId == hex.hexId) {
-                    pos = index
+                    existPos = index
+                }else if (item.type == hex.type) {
+                    sameTypePos = index
                 }
             })
-            if (pos != -1) {
-                this.hexList.splice(pos, 1)
-            } else {
-                this.hexList.push(hex)
+            if (existPos != -1) {
+                this.hexList.splice(existPos, 1)
+                return
             }
+            if (sameTypePos != -1) {
+                this.hexList.splice(sameTypePos, 1)
+            }
+            this.hexList.push(hex)
         },
         //绑定转职装备
         clickEquip: function (equip) {

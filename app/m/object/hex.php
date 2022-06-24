@@ -18,6 +18,9 @@ class app_m_object_hex {
     }
 
     public function getGid(){
+        if ($this->hexId == '127') {
+            $this->name = '冒险家';
+        }
         foreach (app_m_dao_job::$data as $jobItem) {
             if (strpos($this->name, $jobItem->name) === 0) {
                 return $jobItem->jobId + usr_def::GID_NUMBER;
@@ -28,6 +31,6 @@ class app_m_object_hex {
                 return $raceItem->raceId;
             }
         }
-        throw new Exception("参数异常,hexName:" . $this->name);
+        throw new Exception(sprintf("参数异常,hexName:%s,id:%d", $this->name, $this->hexId));
     }
 }
