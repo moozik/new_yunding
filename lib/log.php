@@ -3,18 +3,20 @@
 class lib_log {
     private static $instance = null;
     private $ip = '';
-    private $arrLogLevel = [
-        'debug',
-        'trace',
-        'warning',
-        'fatal',
-        'access',
-    ];
+
     private $debugPath = '';
     private $tracePath = '';
     private $warningPath = '';
     private $fatalPath = '';
     private $accessPath = '';
+
+    private $fileMap = [
+        'debug' => 'trace',
+        'trace' => 'trace',
+        'warning' => 'fatal',
+        'fatal' => 'fatal',
+        'access' => 'trace',
+    ];
 
     private $rootDirLength = 0;
 
@@ -26,8 +28,8 @@ class lib_log {
         if (!file_exists($lodDir)) {
             mkdir($lodDir);
         }
-        foreach ($this->arrLogLevel as $levelName) {
-            $this->{$levelName . 'Path'} = self::log_file($levelName);
+        foreach ($this->fileMap as $key => $levelName) {
+            $this->{$key . 'Path'} = self::log_file($levelName);
         }
     }
 
@@ -87,18 +89,17 @@ class lib_log {
     }
 
     private function LogMore($logLev, $name, $msg, $file) {
-        if (file_exists(lib_iplocation::$filename)) {
-            $ipLocation = new lib_iplocation();
-            $position = $ipLocation->getlocation($this->ip);
+        if (!empty($this->ip) && file_exists(SEN::data_path('ip2region'))) {
+            $ip2region = new lib_XdbSearcher(SEN::data_path('ip2region'));
+            $position = $ip2region->search($this->ip);
         }
         error_log(
             sprintf(
-                "%s:%s [%s-%s%s][logid:%s][%s]\n%s:%s\n",
+                "%s:%s [%s-%s][logid:%s][%s]\n%s:%s\n",
                 $logLev,
                 date('Y-m-d H:i:s'),
                 $this->ip,
-                $position['country']??"",
-                $position['area']??"",
+                $position??"",
                 LOG_ID,
                 $_SERVER['HTTP_USER_AGENT'],
                 $name,

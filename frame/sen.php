@@ -38,6 +38,8 @@ class SEN {
         'job' => 'job.json',
         'equip' => 'equip.json',
         'hex' => 'hex.json',
+
+        'ip2region' => 'ip2region.xdb',
     ];
     const REMOTE_URL = [
         'chess' => 'http://game.gtimg.cn/images/lol/act/img/tft/js/chess.js',
@@ -189,7 +191,7 @@ class SEN {
                 }
             }
         }
-        return 'IPERR';
+        return '';
     }
 }
 
