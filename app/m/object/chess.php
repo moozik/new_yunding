@@ -34,6 +34,12 @@ class app_m_object_chess{
      * races jobs + usr_def::GID_NUMBER
      */
     public $Gids = [];
+
+    /**
+     * 棋子名称
+     * @var string
+     */
+    public $name = "";
     
     /**
      * @param $chessId
@@ -46,8 +52,8 @@ class app_m_object_chess{
         }
         $this->price = $chessObj->price;
         $this->chessId = $chessObj->chessId;
-        $this->isDragonGod = $chessObj->isDragonGod;
-        $this->dragonGodId = $chessObj->dragonGodId;
+        $this->isDragonGod = false;//龙神
+        //$this->dragonGodId = $chessObj->dragonGodId;
         $this->name = $chessObj->title . ' ' . $chessObj->displayName;
         
         $this->raceIds = app_m_data_Factory::getRaceArr(usr_def::race, $chessObj->raceIds);
@@ -56,10 +62,4 @@ class app_m_object_chess{
         // $this->equipIds = app_m_data_Factory::getArr(usr_def::equip, $chessObj->recEquip);
     }
 
-    /**
-     * 巨像英雄
-     */
-    // public function isTheFat(){
-    //     return $this->chessId === 3 || $this->chessId === 14 || $this->chessId === 31;
-    // }
 }

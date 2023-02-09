@@ -23,6 +23,9 @@ $.getJSON({
     async: false,
     success: function (data) {
         for (let i in data) {
+            if (ret.data[i].isShow !== "1") {
+                continue
+            }
             if(data[i].name.indexOf('之心') == -1 && data[i].name.indexOf('之魂') == -1){
                 continue;
             }
@@ -78,6 +81,9 @@ $.getJSON({
     async: false,
     success: function (ret) {
         for (let i in ret.data) {
+            if (ret.data[i].isShow !== "1") {
+                continue
+            }
             DATA_Equip[ret.data[i].equipId] = ret.data[i];
         }
     },
@@ -178,7 +184,7 @@ var vm = new Vue({
             let equip, job;
             for (let i in DATA_Equip) {
                 equip = DATA_Equip[i];
-                if (+equip.equipId < 7000) {
+                if (equip.isShow !== "1") {
                     continue;
                 }
                 //只要转职装备
@@ -320,11 +326,6 @@ var vm = new Vue({
         },
         //绑定英雄池左键 已选池左键
         pickChess: function (chess) {
-            // if(chess.races == "约德尔大王"){
-            //     //不允许添加
-            //     return;
-            // }
-            
             //10个英雄上限
             if (this.positionCount === IN_HERO_MAX) return;
             

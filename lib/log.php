@@ -45,7 +45,7 @@ class lib_log {
 
     static function genLogid() {
         $arr = gettimeofday();
-        $logId = $arr['sec'] * 100000 + $arr['usec'] / 10 & 2147483647 | 2147483648;
+        $logId = (($arr['sec'] * 100000) + (int)($arr['usec'] / 10)) & 2147483647 | 2147483648;
         define('LOG_ID', $logId);
     }
 
@@ -97,8 +97,8 @@ class lib_log {
                 $logLev,
                 date('Y-m-d H:i:s'),
                 $this->ip,
-                $position['country'],
-                $position['area'],
+                $position['country']??"",
+                $position['area']??"",
                 LOG_ID,
                 $_SERVER['HTTP_USER_AGENT'],
                 $name,
@@ -116,7 +116,6 @@ class lib_log {
      */
     private function Log($logLev, $name, $msg, $file) {
         $trace = debug_backtrace();
-        //print_r($trace);
         error_log(
             sprintf(
                 "%s:%s logid[%s][%s:%s]\n%s:%s\n",

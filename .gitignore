@@ -2,6 +2,7 @@
 .vscode/
 .idea/
 log/
+logs/
 /data/
 test*
 *.dat
@@ -13,3 +14,4 @@ test*
 *.json
 *.tar
 test.php
+.env

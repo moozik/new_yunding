@@ -156,7 +156,7 @@ https://lol.qq.com/act/a20200917tftset4/index.html
                 <button type="button" class="btn" v-bind:class="{'btn-primary':chessValue[2]}" v-on:click="valBtn(2)">2 <i class="fa fa-rmb"></i></button>
                 <button type="button" class="btn" v-bind:class="{'btn-primary':chessValue[3]}" v-on:click="valBtn(3)">3 <i class="fa fa-rmb"></i></button>
                 <button type="button" class="btn" v-bind:class="{'btn-primary':chessValue[4]}" v-on:click="valBtn(4)">4 <i class="fa fa-rmb"></i></button>
-                <button type="button" class="btn" v-bind:class="{'btn-primary':chessValue[5]}" v-on:click="valBtn(5)">5/8/10 <i class="fa fa-rmb"></i></button>
+                <button type="button" class="btn" v-bind:class="{'btn-primary':chessValue[5]}" v-on:click="valBtn(5)">5 <i class="fa fa-rmb"></i></button>
                 
                 <span class="large-title">计算英雄个数</span>
 

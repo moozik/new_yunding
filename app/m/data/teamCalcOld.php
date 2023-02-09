@@ -39,9 +39,9 @@ class app_m_data_teamCalcOld {
 
         foreach ($this->req->freeChessArrObj as $k1 => $chessObj_1) {
             // 龙神 只允许有一个 只有第一个位置才匹配龙神
-            if ($this->req->haveDragonGod && $chessObj_1->isDragonGod) {
-                continue;
-            }
+            //if ($this->req->haveDragonGod && $chessObj_1->isDragonGod) {
+            //    continue;
+            //}
             if ($this->req->forCount === 1) {
                 yield [$chessObj_1];
                 // yield (array_merge($this->req->inChessObj, [$chessObj_1]));
@@ -52,9 +52,9 @@ class app_m_data_teamCalcOld {
                     continue;
                 }
                 // 龙神 只允许有一个
-                if ($chessObj_2->isDragonGod) {
-                    continue;
-                }
+                //if ($chessObj_2->isDragonGod) {
+                //    continue;
+                //}
                 if ($this->req->forCount === 2) {
                     yield [$chessObj_1, $chessObj_2];
                     // yield (array_merge($this->req->inChessObj, [$chessObj_1, $chessObj_2]));
@@ -66,9 +66,9 @@ class app_m_data_teamCalcOld {
                         continue;
                     }
                     // 龙神 只允许有一个
-                    if ($chessObj_3->isDragonGod) {
-                        continue;
-                    }
+                    //if ($chessObj_3->isDragonGod) {
+                    //    continue;
+                    //}
                     yield [$chessObj_1, $chessObj_2, $chessObj_3];
                     // yield (array_merge($this->req->inChessObj, [$chessObj_1, $chessObj_2, $chessObj_3]));
                 }
@@ -116,9 +116,9 @@ class app_m_data_teamCalcOld {
             //给当前羁绊计数
             foreach ($teamListParam as $chessObj) {
                 //龙神(遍历) 额外两个羁绊
-                if ($chessObj->isDragonGod) {
-                    lib_number::addOrDefault($teamListObj->group[$chessObj->dragonGodId], 2);
-                }
+                //if ($chessObj->isDragonGod) {
+                //    lib_number::addOrDefault($teamListObj->group[$chessObj->dragonGodId], 2);
+                //}
 
                 //棋子价值
                 $teamListObj->idVal += $chessObj->price;

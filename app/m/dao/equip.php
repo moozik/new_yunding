@@ -51,7 +51,14 @@ class app_m_dao_equip {
         self::$time = $retObj->time;
 
         foreach ($retObj->data as $key => $objItem) {
-            if (!self::isValid($objItem->equipId)) {
+            //if (!self::isValid($objItem->equipId)) {
+            //    continue;
+            //}
+            //if ($objItem->equipId == "8010") {
+            //    echo json_encode($objItem);
+            //    exit;
+            //}
+            if ($objItem->isShow == "0") {
                 continue;
             }
             self::$data[$objItem->equipId] = $objItem;
