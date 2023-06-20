@@ -38,7 +38,10 @@ https://lol.qq.com/act/a20200917tftset4/index.html
                         使用方法：1.在英雄池选择棋子 2.禁用不想选用的英雄，选择当前转职装备，调整目标价格，调整计算个数 3. 点击计算
                     </p>
                     <p>
-                        <span style="color:red;">建议pc端浏览器使用</span> <a href="https://moozik.cn/archives/807/">给我建议</a>
+                        (工作比较忙，已很久没有维护，有研发能力的可以移步 <a href="https://github.com/moozik/new_yunding">源码</a>)
+                    </p>
+                    <p>
+                        <span style="color:red;">建议pc端浏览器使用</span> <a href="https://m00zik.com/archives/807/">给我建议</a>
                     </p>
 
                     <!-- http://www.fontawesome.com.cn/faicons/ -->
